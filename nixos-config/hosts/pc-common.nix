@@ -10,7 +10,6 @@
 
     # Connectivity
     tailscale
-    #mullvad-vpn
     ungoogled-chromium
 
     # Editors
@@ -71,7 +70,7 @@
     lact
     jq
     qbittorrent
-    #bitwarden-desktop
+    bitwarden-desktop
 
     # Framework
     framework-tool
