@@ -1,0 +1,168 @@
+// Place your key bindings in this file to override the defaults
+[
+  {
+    "key": "alt+b",
+    "command": "workbench.action.toggleSidebarVisibility",
+  },
+  {
+    "key": "ctrl+b",
+    "command": "-workbench.action.toggleSidebarVisibility",
+  },
+  {
+    "key": "shift+alt+v",
+    "command": "workbench.action.editorDictation.start",
+    "when": "hasSpeechProvider && !editorDictation.inProgress && !editorReadonly",
+  },
+  {
+    "key": "ctrl+alt+v",
+    "command": "-workbench.action.editorDictation.start",
+    "when": "hasSpeechProvider && !editorDictation.inProgress && !editorReadonly",
+  },
+  {
+    "key": "ctrl+alt+v",
+    "command": "toggleVim",
+  },
+  {
+    //quickfix
+    "key": "ctrl+.",
+    "command": "editor.action.quickFix",
+    "when": "editorHasCodeActionsProvider && textInputFocus && !editorReadonly",
+  },
+  {
+    "key": "h",
+    "command": "editor.action.scrollLeftHover",
+    "when": "editorHoverFocused",
+  },
+  {
+    "key": "j",
+    "command": "editor.action.scrollDownHover",
+    "when": "editorHoverFocused",
+  },
+  {
+    "key": "k",
+    "command": "editor.action.scrollUpHover",
+    "when": "editorHoveredFocused",
+  },
+  {
+    "key": "l",
+    "command": "editor.action.scrollRightHover",
+    "when": "editorHoverFocused",
+  },
+  {
+    "key": "ctrl+h",
+    "command": "actions.find",
+    "when": "editorFocus && editorIsOpen",
+  },
+  {
+    "key": "ctrl+h",
+    "command": "closeFindWidget",
+    "when": "editorFocus && editorIsOpen && findWidgetVisible",
+  },
+  {
+    "key": "ctrl+shift+h",
+    "command": "editor.action.startFindReplaceAction",
+    "when": "editorFocus && editorIsOpen",
+  },
+  {
+    "key": "ctrl+n",
+    "command": "editor.action.nextMatchFindAction",
+    "when": "editorFocus && findWidgetVisible",
+  },
+  {
+    "key": "ctrl+p",
+    "command": "editor.action.previousMatchFindAction",
+    "when": "editorFocus && findWidgetVisible",
+  },
+  {
+    "key": "ctrl+shift+t",
+    "command": "workbench.action.togglePanel",
+  },
+  {
+    "key": "ctrl+shift+n",
+    "command": "workbench.action.terminal.new",
+    "when": "terminalIsOpen && terminalFocus",
+  },
+  {
+    "key": "ctrl+n",
+    "command": "workbench.action.terminal.focusNext",
+    "when": "terminalIsOpen && terminalFocus",
+  },
+  {
+    "key": "ctrl+p",
+    "command": "workbench.action.terminal.focusPrevious",
+    "when": "terminalIsOpen && terminalFocus",
+  },
+  {
+    "key": "ctrl+q",
+    "command": "workbench.action.terminal.kill",
+    "when": "terminalIsOpen && terminalFocus",
+  },
+  // EXPLORER
+  {
+    "key": "ctrl+shift+e",
+    "command": "workbench.view.explorer",
+  },
+  {
+    "key": "n",
+    "command": "explorer.newFile",
+    "when": "filesExplorerFocus && !inputFocus",
+  },
+  {
+    "key": "shift+n",
+    "command": "explorer.newFolder",
+    "when": "filesExplorerFocus && !inputFocus",
+  },
+  {
+    "key": "x",
+    "command": "filesExplorer.cut",
+    "when": "filesExplorerFocus && !inputFocus",
+  },
+  {
+    "key": "p",
+    "command": "filesExplorer.paste",
+    "when": "filesExplorerFocus && !inputFocus",
+  },
+  {
+    "key": "d",
+    "command": "deleteFile",
+    "when": "filesExplorerFocus && !inputFocus",
+  },
+  // GIT
+  {
+    "command": "workbench.view.scm",
+    "key": "ctrl+shift+g",
+  },
+  {
+    "key": "ctrl+s",
+    "command": "git.stage",
+    "when": "activeViewlet == 'workbench.view.scm' && sideBarFocus",
+  },
+  {
+    "key": "ctrl+u",
+    "command": "git.unstage",
+    "when": "activeViewlet == 'workbench.view.scm' && sideBarFocus",
+  },
+  {
+    "key": "ctrl+c",
+    "command": "git.commitAllSigned",
+    "when": "activeViewlet == 'workbench.view.scm' && sideBarFocus",
+  },
+  {
+    "key": "ctrl+p",
+    "command": "git.push",
+    "when": "activeViewlet == 'workbench.view.scm' && sideBarFocus",
+},
+{
+    "key": "shift+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": {
+        "text": "\u001b\r"
+    },
+    "when": "terminalFocus"
+},
+  // {
+  //     "key": "ctrl+l",
+  //     "command": "ctrl+l",
+  //     "when": "terminalFocus"
+  // },
+]

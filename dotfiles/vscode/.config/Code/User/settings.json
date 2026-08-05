@@ -1,0 +1,150 @@
+{
+  "editor.renderWhitespace": "all",
+  // "vscoq.path": "/home/shashin/.opam/default/bin/vscoqtop",
+  "editor.minimap.enabled": false,
+  // "vscoq.proof.mode": 0,
+  // "cmake.showOptionsMovedNotification": false,
+  "git.openRepositoryInParentFolders": "never",
+  "cmake.configureOnOpen": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "cmake.pinnedCommands": [
+    "workbench.action.tasks.configureTaskRunner",
+    "workbench.action.tasks.runTask",
+  ],
+  "makefile.configureOnOpen": false,
+  "files.autoSave": "afterDelay",
+  "files.watcherExclude": {
+    "**/.bloop": true,
+    "**/.metals": true,
+    "**/.ammonite": true,
+  },
+  "rust-analyzer.cargo.features": "all",
+  "rust-analyzer.check.features": "all",
+  "rust-analyzer.cargo.cfgs": ["debug_assertions", "miri", "dev-graph"],
+  "workbench.sideBar.location": "right",
+  "dev.containers.dockerPath": "podman",
+  "workbench.startupEditor": "none",
+  "workbench.tree.indent": 17,
+/*   "themeswitcher.mappings": [
+    {
+      "time": "06:00",
+      "theme": "Minimal Mist Alternative",
+    },
+    {
+      "time": "18:00",
+      "theme": "Minimal Mist Dark",
+    },
+  ],
+  "themeswitcher.utcOffset": -6, */
+  "workbench.colorTheme": "Minimal Mist Dark",
+  "workbench.colorCustomizations": {},
+  "github.copilot.nextEditSuggestions.enabled": true,
+
+  "editor.wordWrap": "on",
+  "editor.lineNumbers": "relative",
+  "editor.cursorSurroundingLines": 8,
+  "vim.leader": "<Space>",
+  "vim.hlsearch": true,
+  "vim.inccommand": "replace",
+  "vim.visualModeKeyBindings": [
+    { "before": ["<"], "commands": ["editor.action.outdentLines"] },
+    { "before": [">"], "commands": ["editor.action.indentLines"] },
+    // Move selected lines while staying in visual mode
+    { "before": ["J"], "commands": ["editor.action.moveLinesDownAction"] },
+    { "before": ["K"], "commands": ["editor.action.moveLinesUpAction"] },
+    // toggle comment selection
+    {
+      "before": ["leader", "c"],
+      "commands": ["editor.action.commentLine"],
+    },
+    {
+      "before": ["leader", "C"],
+      "commands": ["editor.action.blockComment"],
+    },
+    {
+      "before": ["leader", "shift", "/"],
+      "commands": ["editor.action.blockComment"],
+    },
+    {
+      "before": ["<Space>", "s"],
+      "after": [":", "s", "/"],
+    },
+  ],
+
+  "vim.normalModeKeyBindingsNonRecursive": [
+    //mouse replacement keybindings
+    {
+      "before": ["leader", "h"],
+      "commands": ["workbench.action.focusLeftGroup"],
+    },
+    {
+      "before": ["leader", "j"],
+      "commands": ["workbench.action.focusBelowGroup"],
+    },
+    {
+      "before": ["leader", "k"],
+      "commands": ["workbench.action.focusAboveGroup"],
+    },
+    {
+      "before": ["leader", "l"],
+      "commands": ["workbench.action.focusRightGroup"],
+    },
+    // show hover
+    {
+      "before": ["leader", "K"],
+      "commands": ["editor.action.showHover"],
+    },
+
+    //tabs
+    // switch between tabs:
+    { "before": ["<S-l"], "commands": ["workbench.action.nextEditor"] },
+    { "before": ["<S-h>"], "commands": ["workbench.action.previousEditor"] },
+    // or Vim's ":bprevious" and ":bnext"
+
+    // switch between tabs in the same group:
+    { "before": ["<S-l>"], "commands": ["workbench.action.nextEditorInGroup"] },
+    {
+      "before": ["<S-h>"],
+      "commands": ["workbench.action.previousEditorInGroup"],
+    },
+    // VSCode has a shortcut for opening a specific tab in group
+    // { "key": "alt+1", "command": "workbench.action.openEditorAtIndex1" }
+
+    // Go to Definition
+    { "before": ["g", "d"], "commands": ["editor.action.goToDefinition"] },
+    // Peek Definition
+    { "before": ["g", "p", "d"], "commands": ["editor.action.peekDefinition"] },
+    // Show Hover
+    {
+      "before": ["g", "h"],
+      "commands": ["editor.action.showDefinitionPreviewHover"],
+    },
+    // Go to Implementations
+    { "before": ["g", "i"], "commands": ["editor.action.goToImplementation"] },
+    // Peek Implementations
+    {
+      "before": ["g", "p", "i"],
+      "commands": ["editor.action.peekImplementation"],
+    },
+    // Go to References
+    {
+      "before": ["g", "r"],
+      "commands": ["editor.action.referenceSearch.trigger"],
+    },
+    // Go to Type Definition
+    { "before": ["g", "t"], "commands": ["editor.action.goToTypeDefinition"] },
+    // Peek Type Definition
+    {
+      "before": ["g", "p", "t"],
+      "commands": ["editor.action.peekTypeDefinition"],
+    },
+
+    // remove conflict with Vim Ctrl+E
+    { "before": ["leader", "e"], "commands": ["workbench.action.quickOpen"] },
+    { "before": ["leader", "q"], "commands": ["workbench.action.closeActiveEditor"] },
+  ],
+  "claudeCode.preferredLocation": "panel",
+  "terminal.integrated.gpuAcceleration": "off",
+  "redhat.telemetry.enabled": false,
+
+}
