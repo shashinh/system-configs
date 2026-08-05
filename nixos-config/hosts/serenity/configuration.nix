@@ -367,6 +367,9 @@
       })
     python3Packages.huggingface-hub
     claude-code
+
+    # gpu monitor
+    lact
   ];
 
   # ===========================================================================

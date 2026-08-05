@@ -67,7 +67,6 @@
     kde-rounded-corners
     zip
     amdgpu_top
-    lact
     jq
     qbittorrent
     bitwarden-desktop
