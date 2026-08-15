@@ -73,6 +73,7 @@
     jq
     qbittorrent
     #bitwarden-desktop
+    powertop
 
     # Framework
     framework-tool
@@ -95,9 +96,6 @@
 
     # Power management.
     power-profiles-daemon.enable = true;
-
-    # Bluetooth.
-    blueman.enable = true;
 
     # tailscale
     tailscale.enable = true;
