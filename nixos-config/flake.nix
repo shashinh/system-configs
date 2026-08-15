@@ -12,6 +12,12 @@
 
     # Hardware-specific tweaks for the Framework Desktop AI Max+ 395.
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    
+    # Home Manager
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Declarative disk partitioning — replaces manual parted/mkfs commands.
     disko = {
@@ -40,7 +46,7 @@
   # `outputs` is a function that receives all the resolved inputs and returns
   # the things this flake provides. For a NixOS config the only thing we need
   # is `nixosConfigurations`.
-  outputs = { self, nixpkgs, nixos-hardware, disko, lanzaboote, impermanence, ... } @ inputs:
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, disko, lanzaboote, impermanence, ... } @ inputs:
   {
     nixosConfigurations.serenity = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -106,6 +112,13 @@
         ./hosts/nostromo/hardware-configuration.nix  # generated during install
         ./hosts/pc-common.nix
         ./hosts/nostromo/configuration.nix
+        # home
+        home-manager.nixosModules.home-manager {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.users.shashin = ./hosts/nostromo/home.nix;
+        }
       ];
     };
   };
