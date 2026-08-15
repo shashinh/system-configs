@@ -178,6 +178,16 @@
     firewall.enable = true;
   };
 
+  # tailscaled otherwise waits on NetworkManager-wait-online.service, which stalls
+  # 5-7s on WiFi association/DHCP and blocks multi-user.target -> graphical.target,
+  # delaying the login screen on cold boot. It doesn't need network confirmed-up
+  # to start; it reconnects on its own once the link is ready.
+  systemd.services.tailscaled.after = lib.mkForce [
+    "network-pre.target"
+    "NetworkManager.service"
+    "systemd-resolved.service"
+  ];
+
   # ===========================================================================
   # TIME AND LOCALE
   # ===========================================================================
