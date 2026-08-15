@@ -28,6 +28,12 @@
 
     # Declarative opt-in persistence — used later to finish impermanence setup.
     impermanence.url = "github:nix-community/impermanence";
+
+    # Custom Claude Code status line.
+    claude-code-statusline = {
+      url = "github:shashinh/claude-code-statusline";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ─── OUTPUTS ────────────────────────────────────────────────────────────────

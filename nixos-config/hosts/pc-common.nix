@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -10,6 +10,7 @@
 
     # Connectivity
     tailscale
+    #mullvad-vpn
     ungoogled-chromium
 
     # Editors
@@ -24,6 +25,7 @@
     zotero
     obsidian
     claude-code
+    inputs.claude-code-statusline.packages.${pkgs.system}.default
     opencode
     onedrivegui
     libreoffice-qt
@@ -67,9 +69,10 @@
     kde-rounded-corners
     zip
     amdgpu_top
+    lact
     jq
     qbittorrent
-    bitwarden-desktop
+    #bitwarden-desktop
 
     # Framework
     framework-tool
