@@ -1,4 +1,4 @@
-# ─── DISKO DISK LAYOUT FOR SERENITY ─────────────────────────────────────────
+# ─── DISKO DISK LAYOUT FOR NOSTROMO ─────────────────────────────────────────
 #
 # Primary SSD  (1 TB)  /dev/nvme0n1  ← UPDATE if lsblk shows otherwise
 #   Part 1: ESP  2 GiB  FAT32  mounted at /boot
@@ -14,11 +14,7 @@
 #             @snapshots /.snapshots   ← BTRFS snapshot target
 #           postCreateHook creates @root-blank so the wipe service has a target.
 #
-# Secondary SSD (2 TB)  /dev/nvme1n1  ← UPDATE if lsblk shows otherwise
-#   Part 1: LUKS2 (cryptdata) → BTRFS "data"
-#           Subvolume @data mounted at /data
-#
-# Both LUKS devices:
+# Singular LUKS device:
 #   - LUKS2 format with argon2id PBKDF (required by systemd-cryptenroll/TPM)
 #   - allowDiscards = true (SSD TRIM; acceptable trade-off for a home desktop)
 #   - After install: enroll both to TPM2+PIN via systemd-cryptenroll (Phase 8)
@@ -27,7 +23,7 @@
 #
 # !! BEFORE RUNNING DISKO !!
 # Verify device names with:   lsblk -d -o NAME,SIZE,MODEL
-# Update the two `device` fields below to match your actual drives.
+# Update the `device` fields below to match your actual drives.
 #
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -146,55 +142,6 @@
           };
         };
       };
-
-      # ── SECONDARY: 2 TB data drive ────────────────────────────────────────
-      secondary = {
-        type   = "disk";
-        device = "/dev/nvme1n1";   # ← VERIFY with lsblk before running disko
-
-        content = {
-          type = "gpt";
-
-          partitions = {
-
-            # Encrypted data partition ──────────────────────────────────────
-            luks_data = {
-              label = "data-luks";
-              size  = "100%";
-              content = {
-                type = "luks";
-                name = "cryptdata";         # becomes /dev/mapper/cryptdata
-
-                extraFormatArgs = [
-                  "--type"      "luks2"
-                  "--pbkdf"     "argon2id"
-                  "--iter-time" "3000"
-                ];
-
-                settings = {
-                  allowDiscards = true;
-                };
-
-                content = {
-                  type      = "btrfs";
-                  extraArgs = [ "-L" "data" "-f" ];
-
-                  subvolumes = {
-                    # Top-level data subvolume. You can create nested subvolumes
-                    # under /data later (e.g. btrfs subvolume create /data/media)
-                    # without repartitioning.
-                    "@data" = {
-                      mountpoint   = "/data";
-                      mountOptions = [ "compress=zstd" "noatime" "space_cache=v2" ];
-                    };
-                  };
-                };
-              };
-            };
-          };
-        };
-      };
-
     };
   };
 }

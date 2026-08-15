@@ -90,7 +90,7 @@
       # After enrolling Secure Boot keys (Phase 7 of INSTALL.md),
       # you will disable this and enable lanzaboote below.
       systemd-boot = {
-        enable        = lib.mkDefault true;
+        enable        = lib.mkDefault false;
         configurationLimit = 10;    # keep 10 boot entries on the ESP
         editor         = false;     # disables boot-time kernel param editing (security)
       };
@@ -112,8 +112,8 @@
     #   5. Reboot and verify: sbctl verify && sbctl status
     #
      lanzaboote = {
-       enable    = false;
-       pkiBundle = "/var/lib/sbctl";  # symlinked to /persist, survives future impermanence wipe
+       enable    = true;
+       pkiBundle = "/var/lib/sbctl";  # (not yet) symlinked to /persist, survives future impermanence wipe
      };
 
   };
