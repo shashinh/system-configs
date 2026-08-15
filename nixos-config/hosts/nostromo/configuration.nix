@@ -248,6 +248,10 @@
     memoryPercent = 50;
   };
 
+  # zram is RAM-backed and fast, so the kernel should reach for it much more
+  # eagerly than it would for disk-backed swap (default swappiness = 60).
+  boot.kernel.sysctl."vm.swappiness" = 150;
+
   # ===========================================================================
   # FINGERPRINT READER
   # ===========================================================================
