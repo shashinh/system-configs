@@ -178,16 +178,6 @@
     firewall.enable = true;
   };
 
-  # tailscaled otherwise waits on NetworkManager-wait-online.service, which stalls
-  # 5-7s on WiFi association/DHCP and blocks multi-user.target -> graphical.target,
-  # delaying the login screen on cold boot. It doesn't need network confirmed-up
-  # to start; it reconnects on its own once the link is ready.
-  systemd.services.tailscaled.after = lib.mkForce [
-    "network-pre.target"
-    "NetworkManager.service"
-    "systemd-resolved.service"
-  ];
-
   # ===========================================================================
   # TIME AND LOCALE
   # ===========================================================================
@@ -272,15 +262,13 @@
 
   services.fprintd.enable = true;
 
-  # Wire fingerprint into PAM so you can use it instead of a password for
-  # sudo and login. SDDM fingerprint support is limited on Wayland;
-  # see INSTALL.md notes on enrolling prints after first boot.
-#   security.pam.services = {
-#     login.fprintAuth = true;
-#     sudo.fprintAuth  = true;
-#     # Uncomment once you have confirmed fprintd detects your reader:
-#     # polkit-1.fprintAuth = true;
-#   };
+  # security.pam.services.*.fprintAuth defaults to services.fprintd.enable for
+  # every PAM service, which wires the reader into "login" (and therefore
+  # plasmalogin, which substacks login) even though KDE's own Settings says
+  # fingerprint login isn't supported. In practice the reader never matches at
+  # the greeter and each boot eats a flat 30s PAM timeout before falling back
+  # to password. Disable it there; sudo keeps the default (true).
+  security.pam.services.login.fprintAuth = false;
 
   # ===========================================================================
   # MULLVAD VPN
