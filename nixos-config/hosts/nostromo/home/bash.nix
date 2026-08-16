@@ -10,7 +10,7 @@
     
     #git
     gst = "git status";
-    glo = "git log";
+    glo = "git log --graph";
     gad = "git add -A";
     gco = "git commit -m";
     gpub = "git push --set-upstream origin $(git branch --show-current)";

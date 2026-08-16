@@ -15,8 +15,8 @@
       };
 
       # bare `git log` defaults to a colorized one-line-per-commit format:
-      # <hash> <subject> (<relative date>) <author>
-      format.pretty = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit";
+      # <hash> -<ref names> <subject> (<relative date>) <author>
+      format.pretty = "format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset";
     };
   };
 }
