@@ -11,6 +11,8 @@
     ./home/bash.nix
     ./home/btop.nix
     ./home/neovim.nix
+    ./home/tmux.nix
+    ./home/vscode.nix
   ];
 
   home.packages = with pkgs; [
@@ -23,11 +25,7 @@
     # Editors
     vim
 
-    # IDEs
-    vscode
-
     # Productivity
-    tmux
     zotero
     obsidian
     claude-code

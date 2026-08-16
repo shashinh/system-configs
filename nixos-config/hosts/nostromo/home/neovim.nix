@@ -106,7 +106,7 @@
                 if bufname:match("neo%-tree") ~= nil then
                   table.insert(tree_wins, w)
                 end
-                if vim.api.nvim_win_get_config(w).relative ~= '' then
+                if vim.api.nvim_win_get_config(w).relative ~= "" then
                   table.insert(floating_wins, w)
                 end
               end
