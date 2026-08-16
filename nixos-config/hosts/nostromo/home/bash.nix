@@ -13,7 +13,7 @@
     glo = "git log";
     gad = "git add -A";
     gco = "git commit -m";
-    gpub = "git push --set-upstream origin $(git_current_branch)";
+    gpub = "git push --set-upstream origin $(git branch --show-current)";
     gs = "git stash";
   };
 
