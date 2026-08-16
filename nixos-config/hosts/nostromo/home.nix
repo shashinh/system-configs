@@ -8,7 +8,9 @@
   programs.home-manager.enable = true;
 
   imports = [
-    ./home/htop.nix
+    ./home/bash.nix
+    ./home/btop.nix
+    ./home/neovim.nix
   ];
 
   home.packages = with pkgs; [
@@ -20,7 +22,6 @@
 
     # Editors
     vim
-    neovim
 
     # IDEs
     vscode
@@ -43,8 +44,6 @@
 
     # Basic utilities
     gdu
-    #htop
-    (btop.override { rocmSupport = true; })
     stow
     unrar
     tldr
