@@ -4,7 +4,17 @@
   programs.bash.enable = true;
 
   home.shellAliases = {
-    nv = "nvim .";
+    nv = "nvim";
+    cc = "claude";
+    vsc = "code";
+    
+    #git
+    gst = "git status";
+    glo = "git log";
+    gad = "git add -A";
+    gco = "git commit -m";
+    gpub = "git push --set-upstream origin $(git_current_branch)";
+    gs = "git stash";
   };
 
   programs.bash.initExtra = ''

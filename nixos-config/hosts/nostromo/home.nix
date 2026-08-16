@@ -10,6 +10,7 @@
   imports = [
     ./home/bash.nix
     ./home/btop.nix
+    ./home/git.nix
     ./home/neovim.nix
     ./home/tmux.nix
     ./home/vscode.nix
