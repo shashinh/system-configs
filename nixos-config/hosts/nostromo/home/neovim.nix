@@ -39,7 +39,10 @@
   #
   # Also requires enabling Settings -> Color Scheme -> Templates -> Advanced
   # -> "Enable User Templates" in Noctalia itself (that toggle lives in
-  # Noctalia's own self-managed settings.toml, not here).
+  # Noctalia's own self-managed settings.toml, not here). Without it (e.g.
+  # before Noctalia has ever run the template), nvim just falls back to
+  # base16-colorscheme's built-in 'schemer-dark' default — see the
+  # base16-nvim plugin entry below.
   xdg.configFile."nvim/lua/matugen-template.lua".text = ''
     local M = {}
 
@@ -66,12 +69,11 @@
         base0F = '{{colors.error_container.default.hex}}',
       })
 
-      -- lualine's own 'base16' theme reads colors live off
-      -- base16-colorscheme's table above, but only at setup() time and
-      -- only if explicitly selected — 'auto' keys off vim.g.colors_name,
-      -- which base16-colorscheme.setup() never sets, so it'd otherwise
-      -- stay pinned to whatever theme lualine picked at its first setup
-      -- (catppuccin) and never follow live color updates.
+      -- lualine bakes resolved colors into its own highlight groups at
+      -- setup() time rather than linking to base16-colorscheme's live, so
+      -- it has to be re-invoked here on every reload to pick up new colors
+      -- (see the matching lualine-nvim entry in neovim.nix for the
+      -- corresponding initial setup() call).
       local lualine_ok, lualine = pcall(require, 'lualine')
       if lualine_ok then
         lualine.setup({ options = { theme = 'base16' } })
@@ -130,19 +132,20 @@
 
     plugins = with pkgs.vimPlugins; [
       {
-        plugin = catppuccin-nvim;
+        plugin = base16-nvim;
         type = "lua";
         config = ''
-          require("catppuccin").setup({
-            color_overrides = {
-              mocha = {
-                base = "#000000",
-                mantle = "#000000",
-                crust = "#000000",
-              },
-            },
-          })
-          vim.cmd.colorscheme("catppuccin-mocha")
+          -- Listed first so base16-colorscheme's groups (Normal, Directory,
+          -- etc.) are already resolved by the time later plugins in this
+          -- list (lualine, neo-tree) initialize their own theming off them.
+          -- Bare setup() with no args defaults to the 'schemer-dark'
+          -- built-in palette, so there's always a sane look even before
+          -- Noctalia has ever generated real colors; matugen's setup (if
+          -- available) immediately overrides it with the live palette.
+          require('base16-colorscheme').setup()
+
+          local ok, matugen = pcall(require, 'matugen')
+          if ok then pcall(matugen.setup) end
         '';
       }
 
@@ -152,7 +155,14 @@
         plugin = lualine-nvim;
         type = "lua";
         config = ''
-          require('lualine').setup({})
+          -- 'base16' is lualine's bundled theme that reads colors off
+          -- base16-colorscheme's table (see the base16-nvim entry above,
+          -- which runs first). It resolves once here at setup() time —
+          -- matugen re-invokes this same call on every live color reload
+          -- (see matugen-template.lua below) so lualine keeps following
+          -- along; it doesn't update on its own the way a normal highlight
+          -- link would.
+          require('lualine').setup({ options = { theme = 'base16' } })
         '';
       }
 
@@ -274,19 +284,6 @@
           -- the window (unlike :bw, which hands the freed space to whatever
           -- window is left — e.g. neo-tree filling the screen).
           vim.keymap.set('n', '<leader>bd', ':Bdelete<CR>', { desc = 'Delete buffer, keep window' })
-        '';
-      }
-
-      {
-        plugin = base16-nvim;
-        type = "lua";
-        config = ''
-          -- Listed last so it overrides the catppuccin colorscheme set
-          -- above, once Noctalia has generated lua/matugen.lua (see
-          -- xdg.configFile entries below). Falls back to catppuccin
-          -- silently if Noctalia hasn't run the template yet.
-          local ok, matugen = pcall(require, 'matugen')
-          if ok then pcall(matugen.setup) end
         '';
       }
     ];

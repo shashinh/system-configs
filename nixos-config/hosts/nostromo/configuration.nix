@@ -1,7 +1,7 @@
 # ─── NOSTROMO — SYSTEM CONFIGURATION ────────────────────────────────────────
 # Framework 13 AMD 7840
 # NixOS with KDE Plasma 6
-# Plasma Login Manager, lanzaboote secure boot, TPM2+PIN LUKS unlock
+# greetd + tuigreet, lanzaboote secure boot, TPM2+PIN LUKS unlock
 # ─────────────────────────────────────────────────────────────────────────────
 
 { config, lib, pkgs, inputs, ... }:
@@ -10,7 +10,7 @@
   imports = [
     ./plasma-xdg-fix.nix
     ./niri.nix
-    ./power-profile.nix
+    # ./power-profile.nix
   ];
 
   # ===========================================================================
@@ -330,6 +330,7 @@
     # Wayland utilities
     wl-clipboard         # wl-copy / wl-paste
     xdg-utils            # xdg-open etc.
+    evtest
   ];
 
   # ===========================================================================

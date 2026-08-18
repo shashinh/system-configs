@@ -20,6 +20,19 @@
     extraConfig = ''
       set -g default-command "''${SHELL}"
 
+      # Kitty reports Shift+Enter (and other modified keys) via its own
+      # keyboard protocol, but tmux only forwards it to the running app if
+      # extended-keys is enabled; "always" forwards even when the app
+      # never requests the protocol itself. Required to play nice with
+      # certain TUI apps like Claude Code.
+      set -g extended-keys always
+      set -g allow-passthrough on
+      # -a appends to tmux's built-in terminal-features table instead of
+      # replacing it; without -a this line wipes out the compiled-in
+      # xterm/screen/rxvt entries (clipboard, focus-events, cursor-style,
+      # title-setting), breaking those features for every terminal.
+      set -a terminal-features 'xterm*:extkeys'
+
       # customize status bar colors
       ## status bar bg/fg
       set -g status-style bg=default

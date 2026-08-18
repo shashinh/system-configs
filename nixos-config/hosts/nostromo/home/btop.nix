@@ -6,7 +6,7 @@
     package = pkgs.btop.override { rocmSupport = true; };
     settings = {
       # Theme
-      color_theme = "Default";
+      color_theme = "noctalia";
       theme_background = true;
       truecolor = true;
       force_tty = false;
