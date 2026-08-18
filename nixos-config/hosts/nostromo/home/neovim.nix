@@ -31,6 +31,76 @@
 #   Nix's error message reports the correct hash to paste in. `nix-prefetch-github
 #   owner repo --rev <rev>` gets you the same hash without the fail-first step.
 {
+  # Noctalia community template: it writes the generated colors to
+  # ~/.config/nvim/lua/matugen.lua (left unmanaged here, since Noctalia
+  # overwrites it at runtime whenever the color scheme changes) using this
+  # template as input, then signals nvim to reload. See
+  # https://docs.noctalia.dev/noctalia/templates/community/neovim/
+  #
+  # Also requires enabling Settings -> Color Scheme -> Templates -> Advanced
+  # -> "Enable User Templates" in Noctalia itself (that toggle lives in
+  # Noctalia's own self-managed settings.toml, not here).
+  xdg.configFile."nvim/lua/matugen-template.lua".text = ''
+    local M = {}
+
+    function M.setup()
+      require('base16-colorscheme').setup({
+        -- Background tones
+        base00 = '{{colors.surface.default.hex}}',
+        base01 = '{{colors.surface_container.default.hex}}',
+        base02 = '{{colors.surface_container_high.default.hex}}',
+        base03 = '{{colors.outline.default.hex}}',
+        -- Foreground tones
+        base04 = '{{colors.on_surface_variant.default.hex}}',
+        base05 = '{{colors.on_surface.default.hex}}',
+        base06 = '{{colors.on_surface.default.hex}}',
+        base07 = '{{colors.on_background.default.hex}}',
+        -- Accent colors
+        base08 = '{{colors.error.default.hex}}',
+        base09 = '{{colors.tertiary.default.hex}}',
+        base0A = '{{colors.secondary.default.hex}}',
+        base0B = '{{colors.primary.default.hex}}',
+        base0C = '{{colors.tertiary_fixed_dim.default.hex}}',
+        base0D = '{{colors.primary_fixed_dim.default.hex}}',
+        base0E = '{{colors.secondary_fixed_dim.default.hex}}',
+        base0F = '{{colors.error_container.default.hex}}',
+      })
+
+      -- lualine's own 'base16' theme reads colors live off
+      -- base16-colorscheme's table above, but only at setup() time and
+      -- only if explicitly selected — 'auto' keys off vim.g.colors_name,
+      -- which base16-colorscheme.setup() never sets, so it'd otherwise
+      -- stay pinned to whatever theme lualine picked at its first setup
+      -- (catppuccin) and never follow live color updates.
+      local lualine_ok, lualine = pcall(require, 'lualine')
+      if lualine_ok then
+        lualine.setup({ options = { theme = 'base16' } })
+      end
+    end
+
+    -- Register a signal handler for SIGUSR1 (matugen updates)
+    local signal = vim.uv.new_signal()
+    signal:start(
+      'sigusr1',
+      vim.schedule_wrap(function()
+        package.loaded['matugen'] = nil
+        require('matugen').setup()
+      end)
+    )
+
+    return M
+  '';
+
+  # Noctalia v5 nests user templates under theme.templates.user.<id> (v4 used
+  # a bare [templates.<id>] table at the file root, which this version's
+  # parser rejects with a "templates: unknown section" warning).
+  xdg.configFile."noctalia/user-templates.toml".text = ''
+    [theme.templates.user.nvim-base16]
+    input_path = "~/.config/nvim/lua/matugen-template.lua"
+    output_path = "~/.config/nvim/lua/matugen.lua"
+    post_hook = 'pkill -SIGUSR1 nvim'
+  '';
+
   programs.neovim = {
     enable = true;
 
@@ -52,6 +122,7 @@
       vim.cmd("set incsearch")
       vim.cmd("set wildmode=longest,list")
       vim.cmd("set cc=80")
+      vim.cmd("set autoread")
 
       vim.g.mapleader = " "
       vim.g.maplocalleader = "\\"
@@ -203,6 +274,19 @@
           -- the window (unlike :bw, which hands the freed space to whatever
           -- window is left — e.g. neo-tree filling the screen).
           vim.keymap.set('n', '<leader>bd', ':Bdelete<CR>', { desc = 'Delete buffer, keep window' })
+        '';
+      }
+
+      {
+        plugin = base16-nvim;
+        type = "lua";
+        config = ''
+          -- Listed last so it overrides the catppuccin colorscheme set
+          -- above, once Noctalia has generated lua/matugen.lua (see
+          -- xdg.configFile entries below). Falls back to catppuccin
+          -- silently if Noctalia hasn't run the template yet.
+          local ok, matugen = pcall(require, 'matugen')
+          if ok then pcall(matugen.setup) end
         '';
       }
     ];

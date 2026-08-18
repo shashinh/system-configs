@@ -7,6 +7,8 @@
     nv = "nvim";
     cc = "claude";
     vsc = "code";
+    man = "tldr";
+    top = "btop";
     
     #git
     gst = "git status";

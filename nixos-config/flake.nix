@@ -40,6 +40,12 @@
       url = "github:shashinh/claude-code-statusline";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Noctalia — Quickshell-based desktop shell (bar, launcher, notifications, etc).
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # ─── OUTPUTS ────────────────────────────────────────────────────────────────
@@ -106,6 +112,10 @@
           # ── Impermanence ──────────────────────────────────────────────────────
           # Module imported now; activated later when you enable impermanence.
           impermanence.nixosModules.impermanence
+
+          # ── Noctalia ──────────────────────────────────────────────────────────
+          # System-level module; enabled in hosts/nostromo/configuration.nix.
+          inputs.noctalia.nixosModules.default
 
           # ── Host-specific config ───────────────────────────────────────────────
           ./hosts/nostromo/disko.nix

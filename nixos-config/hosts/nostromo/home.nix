@@ -10,7 +10,9 @@
   imports = [
     ./home/bash.nix
     ./home/btop.nix
+    ./home/default-apps.nix
     ./home/git.nix
+    ./home/kitty.nix
     ./home/neovim.nix
     ./home/tmux.nix
     ./home/vscode.nix
@@ -34,12 +36,12 @@
     opencode
     onedrivegui
     libreoffice-qt
+    thunar
 
     # Communicators
     signal-desktop
     slack
     zoom-us
-    #bitwarden-desktop
 
     # Basic utilities
     gdu
@@ -64,5 +66,6 @@
     spotify
     stremio-linux-shell
     picard
+    playerctl
   ];
 }

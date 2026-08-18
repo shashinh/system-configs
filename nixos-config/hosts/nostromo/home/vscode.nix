@@ -33,7 +33,7 @@
         "dev.containers.dockerPath" = "podman";
         "workbench.startupEditor" = "none";
         "workbench.tree.indent" = 17;
-        "workbench.colorTheme" = "Minimal Mist Dark";
+        "workbench.colorTheme" = "NoctaliaTheme";
         "workbench.colorCustomizations" = { };
         "github.copilot.nextEditSuggestions.enabled" = true;
 

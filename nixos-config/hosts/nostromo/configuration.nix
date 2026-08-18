@@ -9,6 +9,8 @@
 {
   imports = [
     ./plasma-xdg-fix.nix
+    ./niri.nix
+    ./power-profile.nix
   ];
 
   # ===========================================================================
@@ -220,6 +222,19 @@
   };
 
   services.desktopManager.plasma6.enable = true;
+
+  # ===========================================================================
+  # NOCTALIA
+  # ===========================================================================
+  # Quickshell-based desktop shell (bar, launcher, notifications, control
+  # center). Required services (NetworkManager, Bluetooth, UPower,
+  # power-profiles-daemon) are already enabled above / in pc-common.nix, so
+  # recommendedServices is left off rather than re-asserting them opaquely.
+
+  programs.noctalia.enable = true;
+
+  # Xfconf: lets Thunar persist per-folder view settings (list/icon/compact).
+  programs.xfconf.enable = true;
 
   # ===========================================================================
   # AUDIO (PipeWire)
