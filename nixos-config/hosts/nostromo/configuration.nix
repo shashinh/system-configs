@@ -1,7 +1,7 @@
 # ─── NOSTROMO — SYSTEM CONFIGURATION ────────────────────────────────────────
 # Framework 13 AMD 7840
 # NixOS with KDE Plasma 6
-# Plasma Login Manager, lanzaboote secure boot, TPM2+PIN LUKS unlock
+# greetd + tuigreet, lanzaboote secure boot, TPM2+PIN LUKS unlock
 # ─────────────────────────────────────────────────────────────────────────────
 
 { config, lib, pkgs, inputs, ... }:
@@ -9,6 +9,8 @@
 {
   imports = [
     ./plasma-xdg-fix.nix
+    ./niri.nix
+    # ./power-profile.nix
   ];
 
   # ===========================================================================
@@ -206,9 +208,27 @@
   # DISPLAY MANAGER
   # ===========================================================================
 
-  services.displayManager.plasma-login-manager = {
+  # tuigreet as greeter
+  environment.etc."tuigreet/config.toml".source =
+    (pkgs.formats.toml { }).generate "tuigreet-config.toml" {
+      display.show_time = true;
+      # display.greeting = "";
+      # display.align_greeting = "center";
+      remember = {
+        username = true;
+        session = true;
+      };
+      session = {
+        # only list the Wayland sessions, edit if X11 is required
+        sessions_dirs = [ "${config.services.displayManager.sessionData.desktops}/share/wayland-sessions" ];
+        xsessions_dirs = [ ];
+      };
+    };
+
+  services.greetd = {
     enable = true;
-    package = pkgs.kdePackages.plasma-login-manager;
+    useTextGreeter = true;
+    settings.default_session.command = "${lib.getExe pkgs.tuigreet} --config /etc/tuigreet/config.toml";
   };
   
   # ===========================================================================
@@ -220,6 +240,19 @@
   };
 
   services.desktopManager.plasma6.enable = true;
+
+  # ===========================================================================
+  # NOCTALIA
+  # ===========================================================================
+  # Quickshell-based desktop shell (bar, launcher, notifications, control
+  # center). Required services (NetworkManager, Bluetooth, UPower,
+  # power-profiles-daemon) are already enabled above / in pc-common.nix, so
+  # recommendedServices is left off rather than re-asserting them opaquely.
+
+  programs.noctalia.enable = true;
+
+  # Xfconf: lets Thunar persist per-folder view settings (list/icon/compact).
+  programs.xfconf.enable = true;
 
   # ===========================================================================
   # AUDIO (PipeWire)
@@ -315,6 +348,7 @@
     # Wayland utilities
     wl-clipboard         # wl-copy / wl-paste
     xdg-utils            # xdg-open etc.
+    evtest
   ];
 
   # ===========================================================================

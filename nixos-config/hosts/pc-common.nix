@@ -97,6 +97,11 @@
     # Power management.
     power-profiles-daemon.enable = true;
 
+    # Battery/AC state over D-Bus (upowerd). Currently on only as a side
+    # effect of plasma6.enable; set explicitly so it doesn't depend on
+    # Plasma staying enabled.
+    upower.enable = true;
+
     # tailscale
     tailscale.enable = true;
 
