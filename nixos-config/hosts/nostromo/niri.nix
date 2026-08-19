@@ -9,8 +9,10 @@
 
   # niri.nix and plasma6.nix both use mkDefault to pin their own session as
   # the default, which conflicts since neither wins at equal priority.
-  # This just sets which one is pre-selected at the greeter — both Plasma
-  # and Niri sessions remain selectable either way, since each module
-  # registers its own session package independently.
+  # NOTE: since switching to greetd/tuigreet (configuration.nix), tuigreet
+  # doesn't read this option — it just remembers whichever session you last
+  # picked (--remember-session). This is left set as a harmless default for
+  # any other display-manager tooling that does honor it; both Plasma and
+  # Niri sessions remain selectable at the tuigreet menu either way.
   services.displayManager.defaultSession = lib.mkForce "niri";
 }
