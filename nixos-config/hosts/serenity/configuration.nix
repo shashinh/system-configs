@@ -138,6 +138,21 @@
 
   };
 
+  # LVFS/fwupd firmware updates and this Secure Boot + TPM setup:
+  # - Secure Boot itself (PK/KEK/db in NVRAM) is normally untouched by a BIOS
+  #   update — lanzaboote's signing key stays enrolled. Rare exception: some
+  #   vendor updates reset Secure Boot to Setup Mode / factory keys, and LVFS
+  #   also ships UEFI dbx (revocation list) updates that intentionally modify
+  #   the Secure Boot database. Run `sbctl status` after any fwupd update.
+  # - TPM+PIN LUKS unlock (see INSTALL.md Phase 7, `--tpm2-pcrs=0+7`) WILL
+  #   break on a firmware update: PCR 0 measures firmware code, so it changes
+  #   on every flash. Expect "cryptroot: No key available" on next boot —
+  #   unlock with the LUKS passphrase, then re-enroll TPM on both drives (see
+  #   INSTALL.md Troubleshooting). Consider dropping PCR 0 (use `--tpm2-pcrs=7`
+  #   only) to avoid this churn, at the cost of no longer detecting firmware
+  #   tampering via PCR — PCR 7 alone still catches Secure Boot being
+  #   disabled or the key database changing, which is the main threat model.
+
   # ===========================================================================
   # FILESYSTEMS (extra options not covered by disko)
   # ===========================================================================

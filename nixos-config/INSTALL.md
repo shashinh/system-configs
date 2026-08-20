@@ -639,6 +639,14 @@ Using PCR 7 means: if someone disables Secure Boot, the TPM refuses to release
 the key. This is the minimum recommended set. You can add PCR 2 (driver/ROM
 code) for more coverage.
 
+> **Tradeoff:** because PCR 0 is included, every BIOS/firmware update (e.g.
+> via `fwupdmgr`/LVFS) changes PCR 0 and breaks TPM auto-unlock on both
+> drives until you re-enroll (see Troubleshooting below). If that churn is
+> more annoying than useful to you, drop PCR 0 and enroll with
+> `--tpm2-pcrs=7` only — PCR 7 alone still detects Secure Boot being
+> disabled or the key database changing, which is the actual threat model
+> (evil-maid attacks), without tying the seal to the exact firmware binary.
+
 > **What you see:**
 > ```
 > Please enter current passphrase for disk /dev/nvme0n1p2:
@@ -886,10 +894,20 @@ nix search nixpkgs firefox
 ### Boot fails: "cryptroot: No key available"
 The TPM could not release the LUKS key. Causes:
 - Secure Boot state changed (e.g. firmware update changed PCR 7)
+- **A BIOS/firmware update was applied (e.g. via `fwupdmgr`/LVFS)** — this
+  changes PCR 0, which is expected and will happen on every firmware flash
+  as long as PCR 0 is part of the enrollment. Not a sign anything is wrong.
 - TPM PIN entered incorrectly
 
 At the prompt, type your **LUKS passphrase** (not the TPM PIN) to get in.
-Then re-enroll the TPM: `sudo systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7 --tpm2-with-pin=yes /dev/nvme0n1p2`
+Then re-enroll the TPM **on both drives** (they were both enrolled with the
+same PCR set):
+```
+sudo systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7 --tpm2-with-pin=yes /dev/nvme0n1p2
+sudo systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7 --tpm2-with-pin=yes /dev/nvme1n1p1
+```
+If this happens often enough to be annoying, see the tradeoff note in
+Phase 7.2 about dropping PCR 0 from the enrollment.
 
 ### Plasma Login Manager shows a blank screen
 Check the PLM/greeter logs: `journalctl -u plasmalogin` (unit name may vary —
@@ -900,6 +918,21 @@ start, you can drop to a TTY (Ctrl+Alt+F2) and check
 ### Secure Boot verification fails after a nixos-rebuild
 Lanzaboote signs new generations automatically during `nixos-rebuild switch`.
 If you see unsigned entries: `sudo sbctl sign-all` signs everything manually.
+
+### After applying a firmware update via fwupd/LVFS
+Firmware updates are normally safe for Secure Boot itself — your enrolled
+keys (PK/KEK/db) live in NVRAM and aren't touched by a routine BIOS flash.
+Two things to check afterward anyway:
+1. `sbctl status` — confirms Secure Boot is still enabled and not reset to
+   Setup Mode (rare, but some vendor updates do this).
+2. If the machine drops to a LUKS passphrase prompt instead of auto-unlocking
+   with the TPM+PIN, that's expected (see "cryptroot: No key available"
+   above) — it means PCR 0 changed, not that something broke.
+
+LVFS also distributes UEFI dbx (revocation list) updates as their own
+category, separate from BIOS updates — these intentionally modify the
+Secure Boot database and will also change PCR 7, triggering the same
+re-enrollment need.
 
 ### Fingerprint not detected (nostromo only)
 Framework ships firmware updates via fwupd. Run: `sudo fwupdmgr update`
