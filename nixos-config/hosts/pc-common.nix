@@ -28,7 +28,7 @@
     inputs.claude-code-statusline.packages.${pkgs.system}.default
     opencode
     onedrivegui
-    libreoffice-qt
+    libreoffice
 
     # Communicators
     signal-desktop

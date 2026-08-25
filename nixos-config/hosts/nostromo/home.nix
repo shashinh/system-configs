@@ -67,7 +67,7 @@ in
     inputs.claude-code-statusline.packages.${pkgs.system}.default
     opencode
     onedrivegui
-    libreoffice-qt
+    libreoffice
     thunar
     tumbler # thumbnailer daemon Thunar talks to over D-Bus; registers its
             # own dbus-activated service, so no extra wiring needed here
