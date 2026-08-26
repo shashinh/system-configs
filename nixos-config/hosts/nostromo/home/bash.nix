@@ -7,6 +7,7 @@
     nv = "nvim";
     cc = "claude";
     vsc = "code";
+    # crisp man summaries
     man = "tldr";
     top = "btop";
     

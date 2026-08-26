@@ -184,6 +184,7 @@
     tctiEnvironment.enable = true; # sets TCTI env vars for TPM tools
   };
 
+  hardware.i2c.enable = true;
   # ===========================================================================
   # NETWORKING
   # ===========================================================================
@@ -348,6 +349,7 @@
       "audio"           # audio devices
       "input"           # input devices (needed by some Wayland compositors)
       "tss"             # TPM access (tpm2-tools)
+      "i2c"
     ];
     # Shell defaults to bash. Change to pkgs.fish or pkgs.zsh here if you prefer.
     shell = pkgs.bash;
@@ -364,6 +366,8 @@
     wl-clipboard         # wl-copy / wl-paste
     xdg-utils            # xdg-open etc.
     evtest
+
+    ddcutil
   ];
 
   # ===========================================================================

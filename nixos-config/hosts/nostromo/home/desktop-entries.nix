@@ -10,15 +10,17 @@
 # needed. Noctalia may need a restart to pick up a newly-added entry.
 {
   xdg.desktopEntries = {
-    firefox-private = {
-      name = "Firefox (Private Window)";
-      genericName = "Private Web Browser";
-      exec = "firefox --private-window %U";
-      icon = "firefox";
-      categories = [ "Network" "WebBrowser" ];
-      terminal = false;
-    };
+    # not needed with the Noctalia V5 application launcher
+    # firefox-private = {
+    #   name = "Firefox (Private Window)";
+    #   genericName = "Private Web Browser";
+    #   exec = "firefox --private-window %U";
+    #   icon = "firefox";
+    #   categories = [ "Network" "WebBrowser" ];
+    #   terminal = false;
+    # };
 
+    # still needed, VLC does not have a new instance option out the box
     vlc-new-instance = {
       name = "VLC (New Instance)";
       genericName = "Media Player";

@@ -41,7 +41,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Noctalia — Quickshell-based desktop shell (bar, launcher, notifications, etc).
+    # Noctalia — Quickshell-based desktop shell.
     noctalia = {
       url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
