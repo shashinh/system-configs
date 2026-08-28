@@ -486,7 +486,7 @@
 
     script =
       let
-        printer = "pr5"; # e.g. "sequoia-color" -- printer name on printserv-auth.cs.utexas.edu
+        printer = "pr-5s"; # e.g. "sequoia-color" -- printer name on printserv-auth.cs.utexas.edu
         user    = "shashin"; # your CS username (see printing workflow note above)
       in ''
         ${pkgs.cups}/bin/lpadmin -p ${printer} -U ${user} \
