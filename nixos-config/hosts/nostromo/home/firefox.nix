@@ -30,12 +30,11 @@
 
     # Extra native messaging host packages, made available to extensions
     # that talk to a local helper binary (e.g. a password manager's native
-    # app, or KDE's browser integration). The NixOS system module currently
-    # supplies kdePackages.plasma-browser-integration via
-    # hosts/pc-common.nix's `programs.firefox.nativeMessagingHosts.packages`.
-    # If this module ever replaces the system one, that package would need
-    # to move here:
-    # nativeMessagingHosts = [ pkgs.kdePackages.plasma-browser-integration ];
+    # app). Not needed on nostromo since KDE (and its browser-integration
+    # native host) was removed; pc-common.nix's
+    # `programs.firefox.nativeMessagingHosts.packages` still supplies it for
+    # serenity, which keeps Plasma.
+    # nativeMessagingHosts = [ ];
 
     # Firefox language packs to install (locale UI translations). This
     # profile is en-US only, so nothing is needed.
@@ -264,7 +263,6 @@
           joplin-web-clipper # Joplin Web Clipper
           downthemall # DownThemAll!
           tranquility-1 # Tranquility Reader
-          plasma-integration # Plasma Browser Integration
           # Two currently-installed extensions have NO match in NUR's
           # firefox-addons repo (checked by addonId, not just by name):
           #   - "Capital One Shopping" ({aff8af88-06a9-4eee-b383-3af08c47b8c8})

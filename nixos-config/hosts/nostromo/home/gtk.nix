@@ -21,10 +21,29 @@
 # palette actually takes effect. GTK4 apps render with libadwaita's own
 # built-in style already, so no separate GTK4 theme package is needed.
 #
-# Icon/cursor theme are left as breeze-dark/breeze_cursors (from Plasma 6,
-# installed system-wide via services.desktopManager.plasma6.enable in
-# configuration.nix) — only the widget theme needed to change.
+# Icon/cursor theme: previously breeze-dark/breeze_cursors, installed
+# system-wide as a side effect of KDE Plasma. Now that KDE is removed,
+# explicitly pull in Adwaita (icons + cursors both ship in the one
+# adwaita-icon-theme package) instead.
+#
+# The actual system pointer (what niri/Wayland clients like Firefox draw
+# for the mouse cursor, as opposed to widget-internal GTK rendering) reads
+# XCURSOR_THEME from the session environment, not gtk-3.0/settings.ini.
+# With nothing setting that var it fell back to GDK's own hardcoded
+# "default" theme name — the classic ugly X cursor. home.pointerCursor
+# (below) sets XCURSOR_THEME/SIZE via home.sessionVariables (session-wide,
+# inherited by every spawned app) and, via gtk.enable, also supplies
+# gtk.cursorTheme itself — so the manual cursorTheme block was dropped
+# here to avoid a redundant second source of truth.
 {
+  home.pointerCursor = {
+    enable = true;
+    package = pkgs.adwaita-icon-theme;
+    name = "Adwaita";
+    size = 24;
+    gtk.enable = true;
+  };
+
   gtk = {
     enable = true;
     colorScheme = "dark";
@@ -39,11 +58,9 @@
       package = pkgs.adw-gtk3;
     };
 
-    iconTheme.name = "breeze-dark";
-
-    cursorTheme = {
-      name = "breeze_cursors";
-      size = 24;
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
     };
 
     gtk3.extraConfig = {

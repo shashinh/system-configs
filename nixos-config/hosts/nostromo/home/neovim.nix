@@ -76,7 +76,10 @@
       -- corresponding initial setup() call).
       local lualine_ok, lualine = pcall(require, 'lualine')
       if lualine_ok then
-        lualine.setup({ options = { theme = 'base16' } })
+        lualine.setup({
+          options = { theme = 'base16' },
+          sections = { lualine_c = { { 'filename', path = 1 } } },
+        })
       end
     end
 
@@ -162,7 +165,10 @@
           -- (see matugen-template.lua below) so lualine keeps following
           -- along; it doesn't update on its own the way a normal highlight
           -- link would.
-          require('lualine').setup({ options = { theme = 'base16' } })
+          require('lualine').setup({
+            options = { theme = 'base16' },
+            sections = { lualine_c = { { 'filename', path = 1 } } },
+          })
         '';
       }
 
@@ -174,6 +180,28 @@
         type = "lua";
         config = ''
           vim.keymap.set('n', '<C-n>', ':Neotree filesystem toggle left<CR>')
+
+          require('neo-tree').setup({
+            commands = {
+              -- Same as the default "open" command, but returns focus to the
+              -- neo-tree window afterward instead of following the cursor
+              -- into the newly opened buffer -- for skimming down the tree
+              -- and peeking at each file's contents without a manual <C-w>h
+              -- round trip after every file.
+              open_and_stay = function(state)
+                local tree_winid = state.winid
+                require('neo-tree.sources.' .. state.name .. '.commands').open(state)
+                if tree_winid and vim.api.nvim_win_is_valid(tree_winid) then
+                  vim.api.nvim_set_current_win(tree_winid)
+                end
+              end,
+            },
+            window = {
+              mappings = {
+                ['<S-CR>'] = 'open_and_stay',
+              },
+            },
+          })
 
           -- Quit nvim if neo-tree is the last window left open, instead of
           -- leaving a sidebar-only session behind after closing the last file.

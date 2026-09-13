@@ -32,5 +32,46 @@
       categories = [ "AudioVideo" "Player" ];
       terminal = false;
     };
+
+    # Overrides Loupe's own packaged .desktop entry (attribute name here
+    # must match its filename exactly — home-manager marks entries defined
+    # here hiPrio so they win the profile-merge collision). Loupe ships
+    # DBusActivatable=true, which per the desktop-entry spec tells a
+    # compliant launcher to ignore Exec= entirely and activate over D-Bus
+    # instead (see https://wiki.gnome.org/HowDoI/DBusApplicationLaunching).
+    # Noctalia's launcher does that half but drops the file argument along
+    # the way, so "open with" just opened a blank Loupe window — confirmed
+    # by testing `loupe <file>` directly (works) vs. through the launcher
+    # (doesn't). Dropping DBusActivatable forces Exec=loupe %U instead,
+    # which every launcher handles correctly. Same category of bug as
+    # https://github.com/void-linux/void-packages/issues/48242 (Nautilus).
+    "org.gnome.Loupe" = {
+      name = "Image Viewer";
+      comment = "View and edit images";
+      exec = "loupe %U";
+      icon = "org.gnome.Loupe";
+      terminal = false;
+      categories = [ "GNOME" "GTK" "Graphics" "2DGraphics" "RasterGraphics" "Viewer" ];
+      mimeType = [
+        "image/apng" "image/bmp" "image/gif" "image/jp2" "image/jpeg"
+        "image/png" "image/qoi" "image/tiff" "image/vnd.microsoft.icon"
+        "image/webp" "image/x-dds" "image/x-exr" "image/x-portable-anymap"
+        "image/x-portable-bitmap" "image/x-portable-graymap"
+        "image/x-portable-pixmap" "image/x-qoi" "image/x-tga"
+        "image/x-win-bitmap" "image/x-xbitmap" "image/x-xpixmap"
+        "image/svg+xml" "image/svg+xml-compressed" "image/avif"
+        "image/heic" "image/jxl"
+      ];
+      settings.DBusActivatable = "false";
+    };
+
+    brain-fm = {
+      name = "Brain.fm";
+      genericName = "Focus Music";
+      exec = "firefox --new-window https://my.brain.fm";
+      icon = "firefox";
+      categories = [ "Network" "Audio" ];
+      terminal = false;
+    };
   };
 }

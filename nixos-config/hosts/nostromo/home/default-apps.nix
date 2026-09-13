@@ -2,7 +2,8 @@
 
 # Ports the mime associations KDE had set up imperatively in
 # ~/.config/mimeapps.list into home-manager, plus Thunar as the default file
-# manager (inode/directory). Dolphin stays installed via plasma6.
+# manager (inode/directory).
+#
 let
   associations = {
     "application/x-extension-htm" = "firefox.desktop";
@@ -50,12 +51,12 @@ let
     "video/x-theora" = "vlc.desktop";
     "video/x-theora+ogg" = "vlc.desktop";
 
-    "image/avif" = "org.kde.koko.desktop";
-    "image/bmp" = "org.kde.koko.desktop";
-    "image/heif" = "org.kde.koko.desktop";
-    "image/jpeg" = "org.kde.koko.desktop";
-    "image/png" = "org.kde.koko.desktop";
-    "image/webp" = "org.kde.koko.desktop";
+    "image/avif" = "org.gnome.Loupe.desktop";
+    "image/bmp" = "org.gnome.Loupe.desktop";
+    "image/heif" = "org.gnome.Loupe.desktop";
+    "image/jpeg" = "org.gnome.Loupe.desktop";
+    "image/png" = "org.gnome.Loupe.desktop";
+    "image/webp" = "org.gnome.Loupe.desktop";
 
     "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
     "x-scheme-handler/geo" = "google-maps-geo-handler.desktop";
@@ -69,6 +70,8 @@ in
     associations.added = associations;
     defaultApplications = associations // {
       "inode/directory" = "thunar.desktop";
+      # TODO, here, or in associations?
+      "application/pdf" = "org.kde.okular.desktop";
     };
   };
 }

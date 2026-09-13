@@ -31,7 +31,7 @@
     libreoffice
 
     # Communicators
-    signal-desktop
+    #signal-desktop
     slack
     zoom-us
 

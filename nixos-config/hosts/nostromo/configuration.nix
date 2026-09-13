@@ -1,6 +1,6 @@
 # ─── NOSTROMO — SYSTEM CONFIGURATION ────────────────────────────────────────
 # Framework 13 AMD 7840
-# NixOS with KDE Plasma 6
+# NixOS with niri + Noctalia (KDE Plasma removed 2026-08-27)
 # greetd + tuigreet, lanzaboote secure boot, TPM2+PIN LUKS unlock
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -8,8 +8,8 @@
 
 {
   imports = [
-    ./plasma-xdg-fix.nix
     ./niri.nix
+    ./kanata.nix
     # ./power-profile.nix
   ];
 
@@ -185,6 +185,9 @@
   };
 
   hardware.i2c.enable = true;
+
+  #QMK support
+  hardware.keyboard.qmk.enable = true;
   # ===========================================================================
   # NETWORKING
   # ===========================================================================
@@ -255,8 +258,6 @@
     enable = true;
   };
 
-  services.desktopManager.plasma6.enable = true;
-
   # ===========================================================================
   # NOCTALIA
   # ===========================================================================
@@ -269,6 +270,29 @@
 
   # Xfconf: lets Thunar persist per-folder view settings (list/icon/compact).
   programs.xfconf.enable = true;
+
+  # ===========================================================================
+  # REMOVABLE MEDIA / TRASH
+  # ===========================================================================
+  # Thunar (GTK/gio-based) needs gvfs for the trash:// backend — without it,
+  # deletes bypass Trash entirely and are permanent. Plasma pulled this in
+  # transitively via services.desktopManager.plasma6.enable; removing Plasma
+  # dropped it silently, same as the fonts.packages gap noted above.
+  #
+  # udisks2 is already forced on by services.fwupd.enable (pc-common.nix,
+  # needed for disk firmware updates), but it's enabled explicitly here too
+  # so the desktop's dependency on it isn't implicit.
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
+
+  # ===========================================================================
+  # SECRETS
+  # ===========================================================================
+  # Standalone GNOME Keyring (Secret Service D-Bus API), for Chromium/
+  # Electron apps' libsecret backend now that KDE's kwalletd6 is gone. Just
+  # the daemon + PAM auto-unlock wiring; no GNOME desktop required.
+  # Consumer: home.nix's signal-desktop-libsecret wrapper.
+  services.gnome.gnome-keyring.enable = true;
 
   # ===========================================================================
   # AUDIO (PipeWire)
@@ -313,9 +337,8 @@
 
   # security.pam.services.*.fprintAuth defaults to services.fprintd.enable for
   # every PAM service, which wires the reader into "login" (and therefore
-  # plasmalogin, which substacks login) even though KDE's own Settings says
-  # fingerprint login isn't supported. In practice the reader never matches at
-  # the greeter and each boot eats a flat 30s PAM timeout before falling back
+  # greetd, which substacks login) even though the reader never matches at
+  # the greeter — each boot ate a flat 30s PAM timeout before falling back
   # to password. Disable it there; sudo keeps the default (true).
   security.pam.services.login.fprintAuth = false;
 
@@ -356,6 +379,12 @@
   };
 
   # ===========================================================================
+  # VIRTUALISATION / CONTAINERS
+  # ===========================================================================
+  # Rootless Podman (no persistent root daemon, unlike Docker).
+  virtualisation.podman.enable = true;
+
+  # ===========================================================================
   # SYSTEM PACKAGES
   # ===========================================================================
   # Only system-wide tools go here. Per-user packages belong in Home Manager
@@ -368,16 +397,31 @@
     evtest
 
     ddcutil
+    nwg-look
+    adw-gtk3
+    papirus-icon-theme
+    udiskie
+
+    kdePackages.okular
   ];
 
   # ===========================================================================
   # FONTS
   # ===========================================================================
 
+  # noto-fonts/-color-emoji and nerd-fonts.jetbrains-mono used to arrive
+  # transitively via services.desktopManager.plasma6.enable (its module
+  # adds fonts.packages = [ cfg.notoPackage pkgs.hack-font ]), so the
+  # fontconfig defaultFonts below silently resolved even though nothing
+  # here installed them explicitly. Removing KDE dropped that and every
+  # default fell back to DejaVu — now installed explicitly instead.
   fonts.packages =  with pkgs; [
   	font-awesome
   	nerd-fonts.fira-code
 	  nerd-fonts.droid-sans-mono
+  	nerd-fonts.jetbrains-mono
+  	noto-fonts
+  	noto-fonts-color-emoji
   ];
 
   fonts.fontconfig = {

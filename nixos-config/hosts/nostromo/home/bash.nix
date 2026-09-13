@@ -3,6 +3,10 @@
 {
   programs.bash.enable = true;
 
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
+
   home.shellAliases = {
     nv = "nvim";
     cc = "claude";
@@ -23,6 +27,10 @@
   programs.bash.initExtra = ''
     mkcd() {
       mkdir -p "$1" && cd "$1"
+    }
+
+    stress-cores() {
+      nix-shell -p stress-ng --run 'stress-ng --cpu $(nproc) --cpu-load 20 --timeout 5s && stress-ng --cpu $(nproc) --cpu-load 60 --timeout 5s'
     }
 
     # Prompt: [\u@\h:\w] shape and title-bar behavior as NixOS's default

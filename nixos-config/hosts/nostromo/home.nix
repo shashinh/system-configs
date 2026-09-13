@@ -1,30 +1,24 @@
 { config, pkgs, inputs, ... } :
 
 let
-  # Chromium's (and so Signal's) keyring backend auto-detection keys off
-  # XDG_CURRENT_DESKTOP, which is "niri" here, not KDE — so it silently
-  # falls back to the weak "basic" store and can't decrypt data that was
-  # encrypted under kwalletd6 while logged in under Plasma. Forcing the
-  # backend explicitly makes it consistent across both sessions; kwalletd6
-  # itself is DE-agnostic (a D-Bus-activatable service, already present
-  # from services.desktopManager.plasma6.enable in configuration.nix) so it
-  # unlocks the same way (via kwallet-pam at login) under niri too.
-  #
-  # This ties Signal's local database encryption to KDE staying installed
-  # (kwalletd6 comes from Plasma). If KDE is ever fully removed from this
-  # machine, switch --password-store here to "gnome-libsecret" (backed by
-  # the standalone gnome-keyring package + its PAM module — no GNOME
-  # desktop required) instead of falling back to "basic", which is
-  # unencrypted in practice (Chromium's basic backend uses a fixed,
-  # publicly-known key on Linux). Either backend switch requires Signal to
-  # be re-linked as a new device, since the existing key doesn't migrate
-  # between backends.
-  signal-desktop-kwallet = pkgs.symlinkJoin {
+  # signal-desktop's .desktop file just execs `signal-desktop %U`, so any
+  # app launcher (Noctalia's included) runs it with no flags — Chromium's
+  # desktop-environment auto-detection for its libsecret backend then
+  # depends on XDG_CURRENT_DESKTOP being propagated to the child process,
+  # which isn't reliable across launchers. Forcing
+  # --password-store=gnome-libsecret sidesteps auto-detection entirely, so
+  # Signal always talks to the standalone GNOME Keyring daemon
+  # (services.gnome.gnome-keyring.enable in configuration.nix; no GNOME
+  # desktop required — it implements the same Secret Service D-Bus API).
+  # Confirmed via ~/.config/Signal/config.json: without the flag, Signal
+  # falls back to storing its SQLCipher key in plaintext ("key"); with it,
+  # the key is wrapped by the keyring ("encryptedKey").
+  signal-desktop-libsecret = pkgs.symlinkJoin {
     name = "signal-desktop";
     paths = [ pkgs.signal-desktop ];
     nativeBuildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
-      wrapProgram $out/bin/signal-desktop --add-flags "--password-store=kwallet6"
+      wrapProgram $out/bin/signal-desktop --add-flags "--password-store=gnome-libsecret"
     '';
   };
 in
@@ -71,9 +65,14 @@ in
     thunar
     tumbler # thumbnailer daemon Thunar talks to over D-Bus; registers its
             # own dbus-activated service, so no extra wiring needed here
+    xfce.thunar-archive-plugin # adds "Compress..."/"Extract..." to Thunar's
+                                # context menu; shells out to an archive
+                                # manager below rather than doing it itself
+    xarchiver # lightweight archive manager the plugin above drives; uses
+              # zip/unrar (already installed) as backends
 
     # Communicators
-    signal-desktop-kwallet
+    signal-desktop-libsecret
     slack
     zoom-us
 
@@ -85,12 +84,6 @@ in
     zip
     jq
 
-    kdePackages.koko
-    kdePackages.kcalc
-    kdePackages.kdenlive
-    kdePackages.plasma-vault
-    kdePackages.keditbookmarks
-
     qbittorrent
 
     # Media
@@ -101,5 +94,8 @@ in
     stremio-linux-shell
     picard
     playerctl
+    loupe # image viewer — GTK4/libadwaita handles niri's fractional
+          # output scaling correctly, unlike imv which drew its own
+          # cursor at nominal size and looked tiny under scale != 1
   ];
 }

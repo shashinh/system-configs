@@ -7,7 +7,7 @@
     settings = {
       # Theme
       color_theme = "noctalia";
-      theme_background = true;
+      theme_background = false;
       truecolor = true;
       force_tty = false;
       rounded_corners = true;
@@ -59,13 +59,13 @@
       show_uptime = true;
       show_cpu_watts = true;
       check_temp = true;
-      cpu_sensor = "Auto";
+      cpu_sensor = "k10temp/Tctl";
       show_coretemp = true;
       cpu_core_map = "";
       temp_scale = "celsius";
       base_10_sizes = false;
       show_cpu_freq = true;
-      freq_mode = "first";
+      freq_mode = "range";
       clock_format = "%X";
       background_update = true;
       custom_cpu_name = "";
