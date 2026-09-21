@@ -43,6 +43,7 @@
 )
 
 ;; home row mods + HHKB-styled backspace
+;; the mod tap delay possibly needs tweaking to avoid rollover issues.
 (deflayer base
   grv  1    2    3    4    5    6    7    8    9    0    -    =    \
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    @bspc-del

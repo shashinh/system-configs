@@ -42,6 +42,9 @@
       ## active
       set -g window-status-current-style bg=brightgreen,fg=black
 
+      # renumber windows when you close one. 
+      set-option -g renumber-windows on
+
       # use backtick to switch to marked pane
       bind ` switch-client -t'{marked}'
 
