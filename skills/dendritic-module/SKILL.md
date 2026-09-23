@@ -68,6 +68,31 @@ fingerprint, printing, lact, nas, llama-swap, open-webui, searxng
 (llama-swap depends on lact's group; plasma and greetd are mutually
 exclusive — both claim the display manager).
 
+### Configure a feature differently per host
+
+Per-host deltas never go inside the feature file (and never branch on
+`networking.hostName`). Create a host-side fragment,
+`modules/hosts/<host>/<feature>.nix`, merging into the HOST's name:
+
+```nix
+{
+  flake.modules.nixos.serenity =
+    { lib, ... }:
+    {
+      programs.noctalia.settings.something = "…";      # attrsets/lists merge additively
+      services.foo.scalar = lib.mkForce "…";           # scalars the feature sets need mkForce
+    };
+}
+```
+
+Escalation ladder: (1) additive merge — covers most cases for free;
+(2) `lib.mkForce` host-side, or change the feature's value to
+`lib.mkDefault` when it is genuinely a tunable default (eval-neutral while
+only one definition exists — verify with the drvPath ritual); (3) declare
+a proper option inside the feature's deferred module
+(`options.features.<name>.<knob> = lib.mkOption { … }`) and have hosts set
+it — use this when the knob has no existing NixOS option.
+
 ### Hardware-bound config
 
 Create `modules/hosts/<host>/<file>.nix` merging into

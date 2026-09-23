@@ -110,6 +110,55 @@ INSTALL.md                 from-blank-machine install runbook
 Unwired modules are defined but imported by nothing; they evaluate to
 nothing and cost nothing until a host or user imports them.
 
+## Configuring a feature per host
+
+A feature file defines the *shared* shape of a feature; per-host deltas
+live host-side, in a fragment under `modules/hosts/<host>/` that merges
+into the host's name. The NixOS module system does the composition:
+
+```nix
+# modules/hosts/serenity/noctalia.nix — serenity's take on the noctalia feature
+{
+  flake.modules.nixos.serenity =
+    { lib, ... }:
+    {
+      # Attrset/list options merge additively with the feature's config:
+      # this key lands next to whatever the feature already set.
+      services.greetd.settings.default_session.user = "greeter";
+
+      # A scalar the feature already sets needs a higher priority.
+      services.greetd.settings.default_session.command = lib.mkForce "…";
+    };
+}
+```
+
+Three tiers, in order of preference:
+
+1. **Additive merging** — most options are attrsets or lists; a host
+   fragment just defines more of them. No ceremony.
+2. **Priority override** — for a scalar the feature sets: `lib.mkForce`
+   host-side, or `lib.mkDefault` feature-side when the value is meant to
+   be a host-tunable default (then hosts override it plainly).
+3. **Feature-declared options** — when a feature has a real knob with no
+   existing NixOS option, declare one inside the deferred module and
+   consume it there; hosts set it like any other option:
+
+   ```nix
+   # modules/features/noctalia.nix
+   flake.modules.nixos.noctalia = { lib, config, ... }: {
+     options.features.noctalia.barPosition = lib.mkOption {
+       type = lib.types.str;
+       default = "top";
+     };
+     config.programs.noctalia = { /* uses config.features.noctalia.barPosition */ };
+   };
+   # modules/hosts/serenity/noctalia.nix
+   flake.modules.nixos.serenity.features.noctalia.barPosition = "bottom";
+   ```
+
+Never branch on `networking.hostName` inside a feature — the host
+fragment IS the per-host branch.
+
 ## Do
 
 - **Add a baseline feature** (every host, always): create one file under
