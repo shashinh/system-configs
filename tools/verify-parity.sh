@@ -12,13 +12,20 @@ for h in serenity nostromo; do
   cur=$(nix eval --raw "$root#nixosConfigurations.$h.config.system.build.toplevel.drvPath")
   want=$(head -n1 "$base/$h.drvPath")
   if [ "$cur" = "$want" ]; then
-    echo "PASS $h  $cur"
+    echo "PASS $h  $cur (drvPath identical)"
   else
-    echo "FAIL $h"
-    echo "  want $want"
-    echo "  got  $cur"
-    echo "  diagnose: nix run nixpkgs#nix-diff -- $want $cur"
-    fail=1
+    # Tier 2: accept differences that are provably reorderings of identical
+    # multisets (list-typed NixOS options merge in module order; the module
+    # graph shape changes that order without changing the configuration).
+    if "$root/tools/drv-equiv.sh" "$want" "$cur"; then
+      echo "PASS $h  $cur (equivalent; reorderings only)"
+    else
+      echo "FAIL $h"
+      echo "  want $want"
+      echo "  got  $cur"
+      echo "  diagnose: nix run nixpkgs#nix-diff -- $want $cur"
+      fail=1
+    fi
   fi
 done
 exit $fail

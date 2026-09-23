@@ -13,7 +13,7 @@
       inputs.noctalia.nixosModules.default
       ../../_legacy/nostromo/disko.nix
       ../../_legacy/nostromo/hardware-configuration.nix
-      ../../_legacy/pc-common.nix
+      inputs.self.modules.nixos.pc
       ../../_legacy/nostromo/configuration.nix
       inputs.home-manager.nixosModules.home-manager
       {

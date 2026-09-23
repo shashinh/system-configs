@@ -12,7 +12,7 @@
       inputs.impermanence.nixosModules.impermanence
       ../../_legacy/serenity/disko.nix
       ../../_legacy/serenity/hardware-configuration.nix
-      ../../_legacy/pc-common.nix
+      inputs.self.modules.nixos.pc
       ../../_legacy/serenity/configuration.nix
     ];
   };
