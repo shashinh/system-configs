@@ -1,20 +1,22 @@
 # NixOS Install Guide — serenity & nostromo
 
 This guide takes you from a blank machine to a fully running NixOS system with:
-- BTRFS on LUKS2 (two independent encrypted pools)
-- KDE Plasma 6, using Plasma Login Manager (PLM) as the display manager
+- BTRFS on LUKS2
 - Lanzaboote secure boot
 - TPM2 + PIN LUKS unlock
 - zram swap
 - All subvolumes pre-staged for future impermanence
 
 This guide covers **both hosts** in the flake:
-- **serenity** — Framework Desktop AI Max+ 395
-- **nostromo** — Framework 13 Ryzen 7840U
+- **serenity** — Framework Desktop AI Max+ 395; two encrypted drives;
+  KDE Plasma 6 with Plasma Login Manager (PLM)
+- **nostromo** — Framework 13 Ryzen 7840U; one encrypted drive;
+  niri + Noctalia with greetd/tuigreet as the greeter
 
 Anywhere you see `$HOST`, substitute `serenity` or `nostromo` depending on which
 machine you're installing. A few phases are called out as host-specific where
-the two machines genuinely differ (fingerprint reader hardware, disk layout).
+the two machines genuinely differ (desktop stack, fingerprint reader hardware,
+disk layout).
 
 **Phases at a glance**
 
@@ -47,15 +49,27 @@ all inputs (downloading them), and builds your system. The resolved versions are
 locked in `flake.lock` — a file you commit to git. This means you can reproduce
 the exact same system months later.
 
-Key commands you will use:
+**This repo's architecture (dendritic — read the README for the full story):**
+
+- `flake.nix` is **generated** by flake-file. Never edit it by hand; inputs
+  are declared next to the modules that use them, and
+  `nix run .#write-flake` regenerates the file.
+- Every `.nix` file under `modules/` is auto-imported. Configuration lives
+  in `modules/pc/` (baseline on every host), `modules/features/` (opt-in,
+  composed per host in `modules/hosts/$HOST/host.nix`), `modules/hosts/`
+  (hardware-bound: disk layout, hardware scan), and `modules/users/`.
+- There is no `configuration.nix`. When this guide says to edit a setting,
+  it names the module file that owns it.
+
+Key commands you will use after the install:
 ```
-nix flake update           # update all inputs to latest (like npm update)
-nix flake update nixpkgs   # update only nixpkgs
 nixos-rebuild switch       # rebuild and activate the running system
-nixos-rebuild switch --upgrade  # rebuild after updating flake.lock
+nix flake update           # update ALL inputs — do this deliberately, then rebuild-test
+nix flake update nixpkgs   # update only nixpkgs
+nix run .#write-flake      # regenerate flake.nix after declaring a new input
 ```
 
-You only need these after the install. During install you use `nixos-install`.
+During install you use `nixos-install`.
 
 ---
 
@@ -140,12 +154,13 @@ export NIX_CONFIG="experimental-features = nix-command flakes"
 
 ### 2.2 Get the configuration files
 
-**Option A — clone from GitHub** (if you pushed the files first):
+**Option A — clone from GitHub:**
 ```bash
-cd /mnt   # we'll install to /mnt, but we haven't mounted yet — use /tmp for now
 cd /tmp
-git clone https://github.com/YOUR_USERNAME/nixos-setups.git
-cd nixos-setups
+git clone https://github.com/shashinh/system-configs.git
+cd system-configs
+# If the branch you want isn't the default one, check it out now:
+# git checkout <branch>
 ```
 
 **Option B — copy from USB** (if you put the files on the USB):
@@ -153,12 +168,14 @@ cd nixos-setups
 # Mount the USB data partition (adjust /dev/sdX1 to your USB partition):
 mkdir -p /tmp/usb
 mount /dev/sdX1 /tmp/usb
-cp -r /tmp/usb/nixos-setups /tmp/nixos-setups
-cd /tmp/nixos-setups
+cp -r /tmp/usb/system-configs /tmp/system-configs
+cd /tmp/system-configs
 ```
 
-**Option C — type it (last resort):**
-The files are short enough to recreate by hand using `nano`. Not recommended.
+> The flake lives at the **repo root** (`flake.nix` next to `modules/`).
+> Nix reads a git repo's *tracked* files: if you copied from USB without
+> `.git`, run `git init && git add -A` first, and after editing any file
+> during the install, `git add` it so the flake sees the change.
 
 ### 2.3 Identify your disk devices
 
@@ -181,7 +198,7 @@ lsblk -d -o NAME,SIZE,MODEL
 Compare against what `lsblk` actually shows on your machine and correct the
 `device` fields in `modules/hosts/$HOST/disko.nix` if they don't match:
 ```bash
-nano /tmp/nixos-setups/modules/hosts/$HOST/disko.nix
+nano /tmp/system-configs/modules/hosts/$HOST/disko.nix
 ```
 Save with **Ctrl+O**, exit with **Ctrl+X**.
 
@@ -194,24 +211,34 @@ Save with **Ctrl+O**, exit with **Ctrl+X**.
 
 ### 3.1 Run disko
 
-Disko reads your `disko.nix`, creates GPT partition tables, LUKS containers,
-BTRFS pools, and subvolumes — all in one command.
+Disko reads the host's disk layout, creates GPT partition tables, LUKS
+containers, BTRFS pools, and subvolumes — all in one command.
+
+`modules/hosts/$HOST/disko.nix` is a flake-parts module, **not** a
+standalone disko file — do not pass the file path to disko directly (it
+will fail to parse). Point disko at the flake and host instead; it reads
+`nixosConfigurations.$HOST.config.disko.devices`:
 
 ```bash
 sudo nix --extra-experimental-features "nix-command flakes" \
   run github:nix-community/disko -- \
   --mode disko \
-  /tmp/nixos-setups/modules/hosts/$HOST/disko.nix
+  --flake /tmp/system-configs#$HOST
 ```
 
-> **What you see:** Disko will print partition creation steps. At two points it
-> will pause and prompt:
+> If you edited `disko.nix` in step 2.3, make sure the change is visible to
+> the flake (`git add` any edited file — see the note in 2.2), or disko
+> will format the devices the *committed* file names.
+
+> **What you see:** Disko will print partition creation steps. It pauses to
+> prompt for a passphrase per encrypted disk — once on nostromo, twice on
+> serenity:
 >
 > ```
 > Enter passphrase for /dev/nvme0n1p2:
 > Verify passphrase:
 > ```
-> Then again for the secondary disk:
+> On serenity, again for the secondary disk:
 > ```
 > Enter passphrase for /dev/nvme1n1p1:
 > Verify passphrase:
@@ -296,7 +323,7 @@ Compare the generated output against that file and update the
 
 ```bash
 mkdir -p /mnt/etc/nixos
-cp -r /tmp/nixos-setups/. /mnt/etc/nixos/
+cp -r /tmp/system-configs/. /mnt/etc/nixos/
 ```
 
 > This puts your flake config where `nixos-install` will find it.
@@ -315,7 +342,23 @@ nix flake check --no-build
 > - Hardware modules out of date (check `modules/hosts/$HOST/hardware.nix`
 >   against the generated scan from 4.1)
 
-### 4.4 Run nixos-install
+### 4.4 Fresh machine only: temporarily boot with systemd-boot
+
+The committed config has lanzaboote **enabled** (`modules/pc/boot.nix`) —
+the steady state of both live machines. A fresh machine has no Secure Boot
+signing keys yet (`/var/lib/sbctl` doesn't exist until Phase 6), so an
+install with lanzaboote on will fail at the bootloader step. Edit
+`modules/pc/boot.nix` under `/mnt/etc/nixos` and, inside the `boot` block:
+
+```nix
+loader.systemd-boot.enable = lib.mkForce true;   # was: lib.mkDefault false
+lanzaboote.enable = false;                        # was: true
+```
+
+(`git add` the edit — see 2.2.) You will revert this in Phase 6.6 after
+enrolling keys. Do **not** commit/push this temporary state.
+
+### 4.5 Run nixos-install
 
 ```bash
 nixos-install --flake /mnt/etc/nixos#$HOST --no-root-passwd
@@ -336,7 +379,7 @@ nixos-install --flake /mnt/etc/nixos#$HOST --no-root-passwd
 The `--no-root-passwd` flag skips setting a root password. You will use your
 user account with sudo instead.
 
-### 4.5 Set your user password
+### 4.6 Set your user password
 
 **Important:** Do this before rebooting, or you will not be able to log in.
 
@@ -347,7 +390,7 @@ nixos-enter --root /mnt -- passwd shashin
 > **What you see:** A prompt for a new password. Type it twice. No characters
 > are displayed while typing — that is normal.
 
-### 4.6 Reboot
+### 4.7 Reboot
 
 ```bash
 reboot
@@ -362,12 +405,13 @@ Remove the USB when the screen goes dark. The machine will boot from the NVMe.
 > ```
 > Please enter passphrase for disk cryptroot:
 > ```
-> Enter the LUKS passphrase you chose in Phase 3. You will then see a second
-> prompt for cryptdata (the 2 TB drive). Enter the same (or your chosen)
-> passphrase.
+> Enter the LUKS passphrase you chose in Phase 3. On serenity you will then
+> see a second prompt for cryptdata (the 2 TB drive) — enter the same (or
+> your chosen) passphrase.
 >
-> **After both prompts:** systemd finishes booting, the Plasma Login Manager
-> (PLM) screen appears.
+> **After the prompt(s):** systemd finishes booting and the greeter appears —
+> the Plasma Login Manager (PLM) screen on serenity, the tuigreet text
+> greeter on nostromo.
 
 ---
 
@@ -375,14 +419,22 @@ Remove the USB when the screen goes dark. The machine will boot from the NVMe.
 
 ### 5.1 Log in
 
-At the PLM login screen, click on your username (shashin), enter your password.
+**serenity:** at the PLM login screen, click your username (shashin) and
+enter your password.
 
 > **What you see:** KDE Plasma (Wayland). PLM is KDE-specific by design — there's
 > no session picker for alternate window managers the way SDDM had one.
 
+**nostromo:** at the tuigreet text greeter, type your username and password.
+tuigreet remembers the last-picked session (`--remember-session`); on the
+very first boot pick the **niri** session if prompted.
+
+> **What you see:** the niri compositor with the Noctalia bar/shell.
+
 ### 5.2 Basic checks
 
-Press **SUPER** and search for "Konsole" to open a terminal.
+Open a terminal — Konsole on serenity (press **SUPER** and search for it),
+kitty on nostromo (launch it from Noctalia's launcher).
 
 Run these checks:
 ```bash
@@ -412,22 +464,27 @@ ls /dev/tpm*
 # Expected: /dev/tpm0 and /dev/tpmrm0
 ```
 
-### 5.3 Push to GitHub (now or later)
+### 5.3 Set up the working checkout
 
-If you have not yet pushed the config to GitHub, now is a good time:
+The copy at `/etc/nixos` got the machine installed; day-to-day you work
+from a normal clone in your home directory:
+
 ```bash
-cd /etc/nixos
-git init
-git add .
-git commit -m "Initial NixOS configuration for $HOST"
-git remote add origin https://github.com/YOUR_USERNAME/nixos-setups.git
-git push -u origin main
+git clone git@github.com:shashinh/system-configs.git ~/system-configs
+cd ~/system-configs
+# Bring over any machine-specific edits made during the install
+# (device paths in modules/hosts/$HOST/disko.nix, hardware.nix deltas) —
+# but NOT the temporary bootloader flip from 4.4.
+git add -A && git commit -m "install: $HOST hardware/disk adjustments" && git push
 ```
 
 From this point on, the workflow is:
-1. Edit files in `/etc/nixos/`
-2. `sudo nixos-rebuild switch` to apply changes
+1. Edit files in the checkout
+2. `sudo nixos-rebuild switch --flake ~/system-configs#$HOST` to apply
 3. `git add -A && git commit && git push` to back up
+
+(Plain `sudo nixos-rebuild switch` keeps using `/etc/nixos` — either keep
+that copy in sync, or remove it and always pass `--flake`.)
 
 ---
 
@@ -517,23 +574,21 @@ directories list (see Phase 9) or your keys will vanish on the next boot and
 lanzaboote will stop being able to sign new generations. This guide's Phase 9
 example already includes it.
 
-### 6.6 Enable Lanzaboote
+### 6.6 Re-enable Lanzaboote
 
-Edit the shared boot module (both hosts use the same boot chain):
+The committed config already has lanzaboote enabled — you only need to
+**revert the temporary edit from step 4.4**. In your working checkout,
+restore `modules/pc/boot.nix` to its committed state:
+
 ```bash
-sudo nano /etc/nixos/modules/pc/boot.nix
+cd ~/system-configs
+git checkout -- modules/pc/boot.nix   # if the flip was made in this clone
+# or simply confirm the file matches git: git diff modules/pc/boot.nix
 ```
 
-Find the `lanzaboote` block inside `boot.loader` — it's already there, just
-disabled:
+The steady state in that file is:
 ```nix
-lanzaboote = {
-  enable    = false;
-  pkiBundle = "/var/lib/sbctl";
-};
-```
-Flip `enable` to `true`:
-```nix
+loader.systemd-boot.enable = lib.mkDefault false;
 lanzaboote = {
   enable    = true;
   pkiBundle = "/var/lib/sbctl";
@@ -542,12 +597,10 @@ lanzaboote = {
 You do **not** need to touch `boot.loader.systemd-boot.enable` — lanzaboote's
 module automatically forces it off when `lanzaboote.enable = true`.
 
-Save and exit.
-
 ### 6.7 Rebuild and activate
 
 ```bash
-sudo nixos-rebuild switch
+sudo nixos-rebuild switch --flake ~/system-configs#$HOST
 ```
 
 > **What you see during the build:** Normal NixOS build output. At the end you
@@ -726,23 +779,20 @@ disable Secure Boot), you can unlock using the passphrase at the prompt.
 
 The Framework 13's power button doubles as a fingerprint reader, supported by
 `fprintd`. **This applies to nostromo only** — serenity is a desktop with no
-fingerprint hardware, and its `modules/hosts/serenity/desktop-plasma.nix`
-correctly sets `services.fprintd.enable = false;`.
+fingerprint hardware; its `host.nix` sets `services.fprintd.enable = false;`
+explicitly, and it does not import the fingerprint feature.
 
-**Current status:** this phase is not active yet. `services.fprintd.enable`
-is `true` on nostromo, but the PAM wiring (`security.pam.services.*.fprintAuth`)
-is still commented out from earlier work-in-progress, so nothing will actually
-prompt for a fingerprint yet. Treat this whole phase as optional future work —
-skip it for now and come back once you're ready to wire it up. When you do:
-
-- Adjust the `security.pam.services` settings in
-  `modules/hosts/nostromo/fingerprint.nix`.
-- Since nostromo uses Plasma Login Manager rather than SDDM, PLM already
-  prompts for a fingerprint automatically at the login screen once
-  `fprintd.enable = true` — you don't need a PAM change for the *login screen*
-  itself, only for `sudo` (`security.pam.services.sudo.fprintAuth = true;`).
-  Check the current [Plasma Login Manager wiki page](https://wiki.nixos.org/wiki/Plasma_Login_Manager)
-  for the latest details, since this module is still actively changing.
+The fingerprint feature (`modules/features/fingerprint.nix`, imported by
+nostromo's `host.nix`) enables fprintd. NixOS defaults
+`security.pam.services.*.fprintAuth` to `services.fprintd.enable` for every
+PAM service, so **sudo fingerprint auth works as soon as you enroll a
+finger** — no extra wiring. The one deliberate exception in that module is
+`security.pam.services.login.fprintAuth = false;`: greetd substacks the
+`login` PAM service, and the reader never matches at the greeter, so leaving
+it on cost a flat 30-second PAM timeout on every boot. Log in with your
+password; use the fingerprint for sudo (and anything else that isn't
+`login`). Don't re-enable `login.fprintAuth` unless you also move off
+greetd.
 
 ### 8.1 Verify fprintd sees the reader
 
@@ -793,8 +843,10 @@ sudo echo "Fingerprint sudo works"
 > **What you see:** A fingerprint scan prompt (the terminal will pause).
 > Touch the reader.
 >
-> **If it falls back to password:** Check that PAM fprintAuth is set to true
-> in `modules/hosts/nostromo/fingerprint.nix` and rebuild: `sudo nixos-rebuild switch`.
+> **If it falls back to password:** Confirm the finger enrolled
+> (`fprintd-list shashin`) and that nothing overrode
+> `security.pam.services.sudo.fprintAuth` (the default is true while
+> fprintd is enabled — see `modules/features/fingerprint.nix`).
 
 ---
 
@@ -849,7 +901,7 @@ To activate the root wipe-on-boot:
      ];
    };
    ```
-6. `sudo nixos-rebuild switch`
+6. `sudo nixos-rebuild switch --flake ~/system-configs#$HOST`
 7. Reboot and verify the system comes up cleanly.
 
 > **Before enabling impermanence**, verify your system is stable and you
@@ -862,11 +914,11 @@ To activate the root wipe-on-boot:
 ## Flakes workflow quick reference
 
 ```bash
-# Apply a config change
-sudo nixos-rebuild switch
+# Apply a config change (from your working checkout)
+sudo nixos-rebuild switch --flake ~/system-configs#$HOST
 
-# Apply a config change AND update all inputs first
-sudo nix flake update /etc/nixos && sudo nixos-rebuild switch
+# Update all inputs, then rebuild — deliberate act, rebuild-test after
+nix flake update && sudo nixos-rebuild switch --flake ~/system-configs#$HOST
 
 # Roll back to the previous generation (if something broke)
 sudo nixos-rebuild switch --rollback
@@ -883,8 +935,17 @@ nix store diff-closures \
   /nix/var/nix/profiles/system-N-link \
   /nix/var/nix/profiles/system-M-link
 
-# Add a new package system-wide (add to environment.systemPackages, then):
-sudo nixos-rebuild switch
+# Add a package everywhere: modules/pc/packages.nix.  One host only:
+# modules/hosts/$HOST/packages.nix.  User (home-manager):
+# modules/users/shashin/home/essentials.nix.  Then rebuild.
+
+# Add a flake input: declare flake-file.inputs.<name> in the module that
+# uses it, then regenerate flake.nix and lock it:
+nix run .#write-flake && nix flake lock
+# (git diff flake.lock must only ADD nodes)
+
+# Verify a refactor changed nothing (see also skills/dendritic-module):
+nix eval .#nixosConfigurations.$HOST.config.system.build.toplevel.drvPath
 
 # Search for a package
 nix search nixpkgs firefox
@@ -912,11 +973,18 @@ sudo systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7 --t
 If this happens often enough to be annoying, see the tradeoff note in
 Phase 7.2 about dropping PCR 0 from the enrollment.
 
-### Plasma Login Manager shows a blank screen
+### Plasma Login Manager shows a blank screen (serenity)
 Check the PLM/greeter logs: `journalctl -u plasmalogin` (unit name may vary —
 `systemctl list-units | grep -i plasma` to confirm). If PLM itself won't
 start, you can drop to a TTY (Ctrl+Alt+F2) and check
 `journalctl -b -u display-manager`.
+
+### tuigreet doesn't appear / greeter loops (nostromo)
+Check `journalctl -b -u greetd`. tuigreet's config is generated to
+`/etc/tuigreet/config.toml` by `modules/features/greetd.nix`; a bad
+session entry there (or a broken niri session) sends you back to the
+greeter after login — check `journalctl -b --user -u niri` from a TTY
+(Ctrl+Alt+F2).
 
 ### Secure Boot verification fails after a nixos-rebuild
 Lanzaboote signs new generations automatically during `nixos-rebuild switch`.
