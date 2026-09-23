@@ -4,6 +4,10 @@
 # wires the nixosConfigurations output.
 { inputs, ... }:
 {
+  # Hardware-specific tweaks (Framework Desktop AI Max+ 395). Also declared
+  # by nostromo's host.nix; identical declarations merge.
+  flake-file.inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
   flake.modules.nixos.serenity = {
     imports = [
       # Hardware profile: AMD Strix Halo quirks, firmware, kernel params.

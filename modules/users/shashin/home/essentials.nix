@@ -3,6 +3,13 @@
 # flake.modules.homeManager.shashin module.
 { inputs, ... }:
 {
+  # Custom Claude Code status line (also declared in modules/pc/packages.nix;
+  # identical declarations merge).
+  flake-file.inputs.claude-code-statusline = {
+    url = "github:shashinh/claude-code-statusline";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   flake.modules.homeManager.shashin =
     { pkgs, ... }:
     let

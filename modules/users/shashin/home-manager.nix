@@ -3,6 +3,12 @@
 # with the flake.modules.homeManager.shashin configuration.
 { inputs, ... }:
 {
+  # Home Manager
+  flake-file.inputs.home-manager = {
+    url = "github:nix-community/home-manager";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   flake.modules.nixos.home-shashin = {
     imports = [ inputs.home-manager.nixosModules.home-manager ];
 

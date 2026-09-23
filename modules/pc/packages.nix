@@ -1,6 +1,12 @@
 # Baseline package set shared by every PC.
 { inputs, ... }:
 {
+  # Custom Claude Code status line.
+  flake-file.inputs.claude-code-statusline = {
+    url = "github:shashinh/claude-code-statusline";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   flake.modules.nixos.pc =
     { pkgs, ... }:
     {

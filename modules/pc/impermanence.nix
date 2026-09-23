@@ -4,6 +4,9 @@
 # service in pc/boot.nix stays commented out until it is activated.
 { inputs, ... }:
 {
+  # Declarative opt-in persistence — used later to finish impermanence setup.
+  flake-file.inputs.impermanence.url = "github:nix-community/impermanence";
+
   flake.modules.nixos.pc = {
     imports = [ inputs.impermanence.nixosModules.impermanence ];
 

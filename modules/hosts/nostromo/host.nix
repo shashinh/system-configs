@@ -6,6 +6,16 @@
 # deliberately not imported anywhere.)
 { inputs, ... }:
 {
+  # Hardware-specific tweaks (Framework 13 AMD 7040). Also declared by
+  # serenity's host.nix; identical declarations merge.
+  flake-file.inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+  # Noctalia — Quickshell-based desktop shell.
+  flake-file.inputs.noctalia = {
+    url = "github:noctalia-dev/noctalia";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   flake.modules.nixos.nostromo = {
     imports = [
       # Hardware profile: Framework 13 AMD 7040 quirks, firmware, kernel params.

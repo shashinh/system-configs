@@ -3,6 +3,13 @@
 # Secure Boot once keys are enrolled (INSTALL.md Phase 7).
 { inputs, ... }:
 {
+  # Secure Boot via signed Unified Kernel Images.
+  # Replaces systemd-boot after keys are enrolled (see INSTALL.md Phase 7).
+  flake-file.inputs.lanzaboote = {
+    url = "github:nix-community/lanzaboote";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   flake.modules.nixos.pc =
     { lib, pkgs, ... }:
     {
