@@ -1,6 +1,6 @@
 # CIFS mount of the home NAS.
 {
-  flake.modules.nixos.serenity = {
+  flake.modules.nixos.nas = {
     # Ensure the mount point exists
     system.activationScripts.makeNasDir = "mkdir -p /mnt/nas/optiprox-share";
 

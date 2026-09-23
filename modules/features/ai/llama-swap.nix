@@ -1,5 +1,8 @@
+# DEPENDS on the lact feature: the service joins the lact-gpu-monitoring
+# group, which features/lact.nix creates. Import both, or drop the group
+# from SupplementaryGroups below.
 {
-  flake.modules.nixos.serenity =
+  flake.modules.nixos.llama-swap =
     { config, lib, pkgs, ... }:
 
 let

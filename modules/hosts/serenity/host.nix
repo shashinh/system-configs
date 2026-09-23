@@ -1,7 +1,8 @@
 # serenity — Framework Desktop (AMD AI Max+ 395), Plasma 6 desktop.
-# Sibling files in this directory (and nothing else) merge into
-# `flake.modules.nixos.serenity`; this file adds the host identity and
-# wires the nixosConfigurations output.
+# Sibling files (hardware-bound config) merge into
+# `flake.modules.nixos.serenity`; reusable behavior comes from the
+# features imported below. This file adds the host identity and wires
+# the nixosConfigurations output.
 { inputs, ... }:
 {
   # Hardware-specific tweaks (Framework Desktop AI Max+ 395). Also declared
@@ -9,14 +10,25 @@
   flake-file.inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
   flake.modules.nixos.serenity = {
-    imports = [
+    imports = with inputs.self.modules.nixos; [
       # Hardware profile: AMD Strix Halo quirks, firmware, kernel params.
       inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
-      inputs.self.modules.nixos.pc
-      inputs.self.modules.nixos.shashin
+      pc
+      shashin
+      # Features (modules/features/) — importing is what enables them.
+      plasma
+      gaming
+      lact
+      nas
+      llama-swap
+      open-webui
+      searxng
     ];
 
     networking.hostName = "serenity";
+
+    # No fingerprint hardware on this desktop.
+    services.fprintd.enable = false;
 
     # This records the NixOS release at which this system was FIRST installed.
     # It controls defaults for stateful data (file locations, DB schemas, etc.).

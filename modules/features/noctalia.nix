@@ -3,8 +3,17 @@
 # Required services (NetworkManager, Bluetooth, UPower,
 # power-profiles-daemon) are already enabled in the pc baseline, so
 # recommendedServices is left off rather than re-asserting them opaquely.
+{ inputs, ... }:
 {
-  flake.modules.nixos.nostromo = {
+  # Noctalia — Quickshell-based desktop shell.
+  flake-file.inputs.noctalia = {
+    url = "github:noctalia-dev/noctalia";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  flake.modules.nixos.noctalia = {
+    imports = [ inputs.noctalia.nixosModules.default ];
+
     programs.noctalia.enable = true;
 
     # Xfconf: lets Thunar persist per-folder view settings (list/icon/compact).

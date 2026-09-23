@@ -1,6 +1,6 @@
 # LACT — Linux GPU Config and Monitoring Tool (lactd service).
 {
-  flake.modules.nixos.serenity = {
+  flake.modules.nixos.lact = {
     users.groups.lact-gpu-monitoring = { };
     services.lact.enable = true;
     # IMPORTANT

@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.serenity =
+  flake.modules.nixos.searxng =
     { config, lib, pkgs, ... }:
 let
   searxSecretFile = "/persist/secrets/searx-env";

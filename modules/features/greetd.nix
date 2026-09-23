@@ -1,6 +1,6 @@
 # greetd + tuigreet as the display manager.
 {
-  flake.modules.nixos.nostromo =
+  flake.modules.nixos.greetd =
     { config, lib, pkgs, ... }:
     {
       # tuigreet as greeter

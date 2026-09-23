@@ -1,6 +1,6 @@
 # Fingerprint reader.
 {
-  flake.modules.nixos.nostromo = {
+  flake.modules.nixos.fingerprint = {
     services.fprintd.enable = true;
 
     # security.pam.services.*.fprintAuth defaults to services.fprintd.enable for

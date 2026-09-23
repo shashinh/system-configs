@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.nostromo =
+  flake.modules.nixos.niri =
     { lib, pkgs, ... }:
 
 {

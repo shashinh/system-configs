@@ -38,11 +38,16 @@ class is `nixos` or `homeManager`. Many files can define the same name; the
 module system merges them. Nothing happens until some host imports the name
 — importing a module is what enables it.
 
+**Features are host-agnostic.** Each file in `modules/features/` defines a
+named module (`flake.modules.nixos.plasma`, `.niri`, `.gaming`, …) that any
+host can import. Giving nostromo Plasma, or serenity the niri+Noctalia
+stack, is adding names to that host's import list — no file moves.
+
 **Hosts are names.** Every file in `modules/hosts/serenity/` merges into
-`flake.modules.nixos.serenity`. The `host.nix` file there adds host identity
-(hostname, stateVersion), imports the shared aspects
-(`inputs.self.modules.nixos.pc`, `.shashin`, …), and turns the merged module
-into the flake output:
+`flake.modules.nixos.serenity` — these siblings hold only hardware-bound
+config (disk layout, hardware scan, host quirks). The `host.nix` file there
+adds host identity (hostname, stateVersion), composes the shared aspects and
+features by name, and turns the merged module into the flake output:
 
 ```nix
 flake.nixosConfigurations.serenity = inputs.nixpkgs.lib.nixosSystem {
@@ -78,15 +83,24 @@ modules/
                             locale, audio, zram, mullvad, security, nix-settings,
                             openldap-overlay, fontconfig, xdg-portal, packages,
                             services, bluetooth, programs)
+  features/                host-agnostic features, one name per file
+    plasma.nix             KDE Plasma 6 + Plasma login manager
+    greetd.nix             greetd + tuigreet display manager
+    niri.nix  noctalia.nix the niri + Noctalia desktop stack
+    gaming.nix             Steam, emulators, controller/mouse tooling
+    fingerprint.nix        fprintd + PAM wiring (hosts with a reader)
+    printing.nix           CUPS + the UT CS department printer
+    lact.nix  nas.nix      GPU monitoring daemon; CIFS NAS mount
+    ai/                    llama-swap, open-webui, searxng (llama-swap depends on lact)
+    power-profile.nix      UNWIRED: flake.modules.nixos.power-profile
   users/shashin/
     user.nix               the OS account → flake.modules.nixos.shashin
     home-manager.nix       HM wiring for a host → flake.modules.nixos.home-shashin
     home/                  HM config → flake.modules.homeManager.shashin
     firefox.nix            UNWIRED: flake.modules.homeManager.firefox (needs a nur input)
     htop.nix               UNWIRED: flake.modules.homeManager.htop
-  hosts/serenity/          → flake.modules.nixos.serenity + output wiring in host.nix
-  hosts/nostromo/          → flake.modules.nixos.nostromo + output wiring in host.nix
-    power-profile.nix      UNWIRED: flake.modules.nixos.power-profile
+  hosts/serenity/          hardware-bound config → flake.modules.nixos.serenity; host.nix composes + wires output
+  hosts/nostromo/          hardware-bound config → flake.modules.nixos.nostromo; host.nix composes + wires output
 tools/                     verify-parity.sh / drv-equiv.sh — evaluation comparison harness
 skills/dendritic-module/   agent skill for extending this config
 dotfiles/                  GNU stow tree, applied manually — never read by Nix
@@ -98,10 +112,17 @@ nothing and cost nothing until a host or user imports them.
 
 ## Do
 
-- **Add a shared feature**: create one file under `modules/pc/` that merges
-  into `flake.modules.nixos.pc`. Both hosts get it — no other edits.
-- **Add a host-specific feature**: create a file under
-  `modules/hosts/<host>/` merging into `flake.modules.nixos.<host>`.
+- **Add a baseline feature** (every host, always): create one file under
+  `modules/pc/` that merges into `flake.modules.nixos.pc`. Both hosts get
+  it — no other edits.
+- **Add an optional feature**: create `modules/features/<name>.nix`
+  defining `flake.modules.nixos.<name>`, then add `<name>` to the import
+  list of each host that wants it.
+- **Move a feature between hosts**: edit the two `host.nix` import lists —
+  the feature file itself never moves.
+- **Add hardware-bound config**: a file under `modules/hosts/<host>/`
+  merging into `flake.modules.nixos.<host>` (disk layout, device quirks —
+  things meaningless on other machines).
 - **Add home-manager config**: create a file under
   `modules/users/shashin/home/` merging into
   `flake.modules.homeManager.shashin`.

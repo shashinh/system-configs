@@ -1,5 +1,5 @@
 {
-  flake.modules.nixos.serenity =
+  flake.modules.nixos.open-webui =
     { config, lib, pkgs, ... }:
 
 {

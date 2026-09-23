@@ -30,7 +30,7 @@ description: Use when adding or changing features, hosts, users, flake inputs, o
 
 ## Recipes
 
-### Shared PC feature (both hosts)
+### Baseline feature (every host, unconditionally)
 
 Create `modules/pc/<feature>.nix`:
 
@@ -45,10 +45,34 @@ Create `modules/pc/<feature>.nix`:
 Done — both hosts import `pc`. Omit the `{ pkgs, ... }:` function layer when
 the body needs no module args.
 
-### Host-specific feature
+### Optional feature (host chooses)
 
-Create `modules/hosts/<host>/<feature>.nix` merging into
-`flake.modules.nixos.<host>`. Same shape as above. Non-Nix assets
+Create `modules/features/<name>.nix` defining its own name:
+
+```nix
+{
+  flake.modules.nixos.<name> = { pkgs, ... }: {
+    services.foo.enable = true;
+  };
+}
+```
+
+Then add `<name>` to the `imports = with inputs.self.modules.nixos; [ … ]`
+list in each `modules/hosts/<host>/host.nix` that wants it. A feature that
+needs a flake input declares it in the same file and imports the input's
+module itself (see `modules/features/noctalia.nix`). Moving a feature
+between hosts = editing two import lists; the file never moves.
+
+Existing feature names: plasma, greetd, niri, noctalia, gaming,
+fingerprint, printing, lact, nas, llama-swap, open-webui, searxng
+(llama-swap depends on lact's group; plasma and greetd are mutually
+exclusive — both claim the display manager).
+
+### Hardware-bound config
+
+Create `modules/hosts/<host>/<file>.nix` merging into
+`flake.modules.nixos.<host>` — for things meaningless on another machine
+(disk layout, hardware scan, device-path-specific remaps). Non-Nix assets
 (keyboard layouts, notes) can sit in the same directory; reference them
 with relative paths (`builtins.readFile ./file.kbd`).
 

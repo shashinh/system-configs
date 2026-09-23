@@ -21,7 +21,7 @@
 # If `-m everywhere` fails with "Unable to create PPD: No IPP attributes.",
 # drop the `-m everywhere` line below.
 {
-  flake.modules.nixos.nostromo =
+  flake.modules.nixos.printing =
     { pkgs, ... }:
     {
       services.printing.enable = true;

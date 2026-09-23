@@ -1,29 +1,27 @@
 # nostromo — Framework 13 (AMD 7040), niri + Noctalia laptop.
-# Sibling files in this directory (and nothing else) merge into
-# `flake.modules.nixos.nostromo`; this file adds the host identity and
-# wires the nixosConfigurations output.
-# (flake.modules.nixos.power-profile is defined next to this host but
-# deliberately not imported anywhere.)
+# Sibling files (hardware-bound config) merge into
+# `flake.modules.nixos.nostromo`; reusable behavior comes from the
+# features imported below. This file adds the host identity and wires
+# the nixosConfigurations output.
 { inputs, ... }:
 {
   # Hardware-specific tweaks (Framework 13 AMD 7040). Also declared by
   # serenity's host.nix; identical declarations merge.
   flake-file.inputs.nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-  # Noctalia — Quickshell-based desktop shell.
-  flake-file.inputs.noctalia = {
-    url = "github:noctalia-dev/noctalia";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-
   flake.modules.nixos.nostromo = {
-    imports = [
+    imports = with inputs.self.modules.nixos; [
       # Hardware profile: Framework 13 AMD 7040 quirks, firmware, kernel params.
       inputs.nixos-hardware.nixosModules.framework-13-7040-amd
-      inputs.noctalia.nixosModules.default
-      inputs.self.modules.nixos.pc
-      inputs.self.modules.nixos.shashin
-      inputs.self.modules.nixos.home-shashin
+      pc
+      shashin
+      home-shashin
+      # Features (modules/features/) — importing is what enables them.
+      greetd
+      niri
+      noctalia
+      fingerprint
+      printing
     ];
 
     networking.hostName = "nostromo";

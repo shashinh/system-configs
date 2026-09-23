@@ -1,6 +1,6 @@
 # Gaming stack: Steam and friends, emulators, controller/mouse tooling.
 {
-  flake.modules.nixos.serenity =
+  flake.modules.nixos.gaming =
     { lib, pkgs, ... }:
     {
       environment.systemPackages = with pkgs; [
