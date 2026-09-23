@@ -1,4 +1,6 @@
-{ pkgs, ... }:
+{
+  flake.modules.nixos.power-profile =
+    { pkgs, ... }:
 
 # KDE's PowerDevil auto-switches the power-profiles-daemon profile on AC
 # plug/unplug; Noctalia has no equivalent (it only offers a manual toggle
@@ -37,4 +39,6 @@ in
       ExecStart = "${script}";
     };
   };
+}
+;
 }

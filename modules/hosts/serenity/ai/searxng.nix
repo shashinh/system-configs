@@ -1,4 +1,6 @@
-{ config, lib, pkgs, ... }:
+{
+  flake.modules.nixos.serenity =
+    { config, lib, pkgs, ... }:
 let
   searxSecretFile = "/persist/secrets/searx-env";
 in
@@ -54,4 +56,6 @@ in
     after = [ "searx-secret-init.service" ];
     requires = [ "searx-secret-init.service" ];
   };
+}
+;
 }

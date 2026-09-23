@@ -1,4 +1,6 @@
-{ config, lib, pkgs, ... }:
+{
+  flake.modules.nixos.serenity =
+    { config, lib, pkgs, ... }:
 
 {
   services.open-webui = {
@@ -22,4 +24,6 @@
       ENABLE_OLLAMA_API = "False";
     };
   };
+}
+;
 }

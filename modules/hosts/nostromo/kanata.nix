@@ -1,4 +1,6 @@
-{ ... }:
+{
+  flake.modules.nixos.nostromo =
+    { ... }:
 
 {
   services.kanata = {
@@ -18,4 +20,6 @@
       config = builtins.readFile ./kanata-fw13.kbd;
     };
   };
+}
+;
 }

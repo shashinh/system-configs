@@ -1,4 +1,6 @@
-{ config, lib, pkgs, ... }:
+{
+  flake.modules.nixos.serenity =
+    { config, lib, pkgs, ... }:
 
 let
   llamaCpp = pkgs.llama-cpp.override { vulkanSupport = true; };
@@ -177,4 +179,18 @@ in
 
   # DynamicUser gets no group memberships by default — needed for /dev/dri, /dev/kfd access
   systemd.services.llama-swap.serviceConfig.SupplementaryGroups = [ "render" "video" "lact-gpu-monitoring"];
+
+  environment.sessionVariables.LLM_MODELS_DIR = "/data/models";
+
+  # Inference tooling on the CLI.
+  environment.systemPackages = [
+    (pkgs.llama-cpp.override
+      {
+        # rocmSupport = true;
+        vulkanSupport = true;
+      })
+    pkgs.python3Packages.huggingface-hub
+  ];
+}
+;
 }

@@ -1,4 +1,6 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  flake.modules.nixos.nostromo =
+    { lib, pkgs, ... }:
 
 {
   programs.niri.enable = true;
@@ -14,4 +16,6 @@
   # Left set as a harmless default for any other display-manager tooling that
   # does honor it.
   services.displayManager.defaultSession = lib.mkForce "niri";
+}
+;
 }
