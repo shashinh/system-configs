@@ -162,10 +162,10 @@ The files are short enough to recreate by hand using `nano`. Not recommended.
 
 ### 2.3 Identify your disk devices
 
-**This step is critical.** `hosts/$HOST/disko.nix` has device paths hardcoded.
+**This step is critical.** `modules/hosts/$HOST/disko.nix` has device paths hardcoded.
 Verify these match your machine before doing anything else — disk layout
 specifics (sizes, single vs. dual drive) aren't covered in this guide, so
-check `hosts/$HOST/disko.nix` itself for what it expects on your machine:
+check `modules/hosts/$HOST/disko.nix` itself for what it expects on your machine:
 
 ```bash
 lsblk -d -o NAME,SIZE,MODEL
@@ -179,9 +179,9 @@ lsblk -d -o NAME,SIZE,MODEL
 > ```
 
 Compare against what `lsblk` actually shows on your machine and correct the
-`device` fields in `hosts/$HOST/disko.nix` if they don't match:
+`device` fields in `modules/hosts/$HOST/disko.nix` if they don't match:
 ```bash
-nano /tmp/nixos-setups/hosts/$HOST/disko.nix
+nano /tmp/nixos-setups/modules/hosts/$HOST/disko.nix
 ```
 Save with **Ctrl+O**, exit with **Ctrl+X**.
 
@@ -201,7 +201,7 @@ BTRFS pools, and subvolumes — all in one command.
 sudo nix --extra-experimental-features "nix-command flakes" \
   run github:nix-community/disko -- \
   --mode disko \
-  /tmp/nixos-setups/hosts/$HOST/disko.nix
+  /tmp/nixos-setups/modules/hosts/$HOST/disko.nix
 ```
 
 > **What you see:** Disko will print partition creation steps. At two points it
@@ -239,7 +239,7 @@ sudo nix --extra-experimental-features "nix-command flakes" \
 
 After disko completes, check that everything is mounted correctly. (The
 example below matches serenity's two-drive layout; nostromo's may differ —
-check whatever `hosts/$HOST/disko.nix` actually declares.)
+check whatever `modules/hosts/$HOST/disko.nix` actually declares.)
 
 ```bash
 mount | grep /mnt
@@ -274,22 +274,23 @@ btrfs subvolume list /mnt | grep blank
 
 ```bash
 nixos-generate-config --no-filesystems --root /mnt --show-hardware-config \
-  > /tmp/nixos-setups/hosts/$HOST/hardware-configuration.nix
+  > /tmp/hardware-configuration.nix
 ```
 
 The `--no-filesystems` flag skips generating `fileSystems` entries (disko
 handles those). The output captures your exact NVMe controller modules, CPU
 microcode settings, and host platform.
 
-> **What you see:** The command exits silently if successful. The file is
-> created in the config directory.
-
 View what was generated (for your education):
 ```bash
-cat /tmp/nixos-setups/hosts/$HOST/hardware-configuration.nix
+cat /tmp/hardware-configuration.nix
 ```
 
-You do not need to edit this file. It is purely auto-detected hardware data.
+In this repo the hardware scan does not live in its own file: its contents
+are the body of the deferred module in `modules/hosts/$HOST/hardware.nix`.
+Compare the generated output against that file and update the
+`boot.initrd.availableKernelModules` / `boot.kernelModules` /
+`nixpkgs.hostPlatform` lines inside it if they differ.
 
 ### 4.2 Copy config to /mnt
 
@@ -311,7 +312,8 @@ nix flake check --no-build
 >
 > **If you see errors:** Common causes:
 > - Syntax error in a .nix file you edited (look for "error: ... at line N")
-> - Missing hardware-configuration.nix (check the copy in 4.2)
+> - Hardware modules out of date (check `modules/hosts/$HOST/hardware.nix`
+>   against the generated scan from 4.1)
 
 ### 4.4 Run nixos-install
 
@@ -485,8 +487,8 @@ sudo sbctl create-keys
 > Wrote keys to /var/lib/sbctl
 > ```
 > Current `sbctl` writes keys to `/var/lib/sbctl` by default — that's also
-> the path `pkiBundle` is already set to in both hosts' `configuration.nix`,
-> so there's nothing to redirect here. (Older guides for lanzaboote reference
+> the path `pkiBundle` is already set to in the shared boot module
+> (`modules/pc/boot.nix`), so there's nothing to redirect here. (Older guides for lanzaboote reference
 > `/etc/secureboot` — that was the old sbctl default and doesn't apply here.)
 
 ### 6.4 Enroll your keys (keep Microsoft keys)
@@ -515,11 +517,11 @@ directories list (see Phase 9) or your keys will vanish on the next boot and
 lanzaboote will stop being able to sign new generations. This guide's Phase 9
 example already includes it.
 
-### 6.6 Enable Lanzaboote in configuration.nix
+### 6.6 Enable Lanzaboote
 
-Edit the config:
+Edit the shared boot module (both hosts use the same boot chain):
 ```bash
-sudo nano /etc/nixos/hosts/$HOST/configuration.nix
+sudo nano /etc/nixos/modules/pc/boot.nix
 ```
 
 Find the `lanzaboote` block inside `boot.loader` — it's already there, just
@@ -681,10 +683,10 @@ Replace `/dev/nvme1n1p1` with your actual data LUKS partition path.
 
 ### 7.4 Configure NixOS to use systemd-cryptsetup for TPM unlock
 
-The initrd must use systemd-based crypto setup (already enabled in
-`configuration.nix`). Verify it is enabled:
+The initrd must use systemd-based crypto setup (already enabled in the
+shared boot module). Verify it is enabled:
 ```bash
-grep -n "systemd.enable" /etc/nixos/hosts/$HOST/configuration.nix
+grep -n "systemd.enable" /etc/nixos/modules/pc/boot.nix
 ```
 > **Expected output:** `initrd.systemd.enable = true;`
 
@@ -724,8 +726,8 @@ disable Secure Boot), you can unlock using the passphrase at the prompt.
 
 The Framework 13's power button doubles as a fingerprint reader, supported by
 `fprintd`. **This applies to nostromo only** — serenity is a desktop with no
-fingerprint hardware, and its `configuration.nix` correctly sets
-`services.fprintd.enable = false;`.
+fingerprint hardware, and its `modules/hosts/serenity/desktop-plasma.nix`
+correctly sets `services.fprintd.enable = false;`.
 
 **Current status:** this phase is not active yet. `services.fprintd.enable`
 is `true` on nostromo, but the PAM wiring (`security.pam.services.*.fprintAuth`)
@@ -733,8 +735,8 @@ is still commented out from earlier work-in-progress, so nothing will actually
 prompt for a fingerprint yet. Treat this whole phase as optional future work —
 skip it for now and come back once you're ready to wire it up. When you do:
 
-- Uncomment and adjust the `security.pam.services` block in
-  `hosts/nostromo/configuration.nix`.
+- Adjust the `security.pam.services` settings in
+  `modules/hosts/nostromo/fingerprint.nix`.
 - Since nostromo uses Plasma Login Manager rather than SDDM, PLM already
   prompts for a fingerprint automatically at the login screen once
   `fprintd.enable = true` — you don't need a PAM change for the *login screen*
@@ -792,7 +794,7 @@ sudo echo "Fingerprint sudo works"
 > Touch the reader.
 >
 > **If it falls back to password:** Check that PAM fprintAuth is set to true
-> in `configuration.nix` and rebuild: `sudo nixos-rebuild switch`.
+> in `modules/hosts/nostromo/fingerprint.nix` and rebuild: `sudo nixos-rebuild switch`.
 
 ---
 
@@ -806,7 +808,8 @@ At this point your system has all the subvolumes needed for impermanence:
 
 To activate the root wipe-on-boot:
 
-1. Open `hosts/$HOST/configuration.nix`.
+1. Open `modules/pc/boot.nix` (the wipe-root block is shared by both hosts;
+   move it into a host module first if only one host should wipe).
 2. Find the commented-out `boot.initrd.systemd.services.wipe-root` block.
 3. Uncomment the entire block.
 4. Move anything from `/` that you want to keep into `/persist/`:
@@ -826,7 +829,7 @@ To activate the root wipe-on-boot:
    sudo mkdir -p /persist/var/lib/sbctl
    sudo cp -r /var/lib/sbctl/. /persist/var/lib/sbctl/
    ```
-5. Add `environment.persistence` declarations to `configuration.nix` for
+5. Add `environment.persistence` declarations to a module (e.g. `modules/pc/impermanence.nix`) for
    anything that must persist (SSH keys, machine-id, Secure Boot keys, etc.):
    ```nix
    environment.persistence."/persist" = {
