@@ -25,8 +25,6 @@
     # Deliberately the legacy calling convention (positional `system`,
     # not nixpkgs.hostPlatform) — reproduces the original evaluation.
     system = "x86_64-linux";
-    # TRANSITIONAL (refactor phase 1-3): removed in phase 4.
-    specialArgs = { inherit inputs; };
     modules = [ inputs.self.modules.nixos.serenity ];
   };
 }
