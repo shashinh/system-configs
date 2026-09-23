@@ -7,13 +7,11 @@
     imports = [
       # Hardware profile: Framework 13 AMD 7040 quirks, firmware, kernel params.
       inputs.nixos-hardware.nixosModules.framework-13-7040-amd
-      inputs.disko.nixosModules.disko
-      inputs.lanzaboote.nixosModules.lanzaboote
-      inputs.impermanence.nixosModules.impermanence
       inputs.noctalia.nixosModules.default
       ../../_legacy/nostromo/disko.nix
       ../../_legacy/nostromo/hardware-configuration.nix
       inputs.self.modules.nixos.pc
+      inputs.self.modules.nixos.shashin
       ../../_legacy/nostromo/configuration.nix
       inputs.home-manager.nixosModules.home-manager
       {

@@ -7,12 +7,10 @@
     imports = [
       # Hardware profile: AMD Strix Halo quirks, firmware, kernel params.
       inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
-      inputs.disko.nixosModules.disko
-      inputs.lanzaboote.nixosModules.lanzaboote
-      inputs.impermanence.nixosModules.impermanence
       ../../_legacy/serenity/disko.nix
       ../../_legacy/serenity/hardware-configuration.nix
       inputs.self.modules.nixos.pc
+      inputs.self.modules.nixos.shashin
       ../../_legacy/serenity/configuration.nix
     ];
   };
