@@ -1,4 +1,6 @@
-{ ... }:
+{
+  flake.modules.homeManager.shashin =
+    { ... }:
 
 # Custom launcher entries for app-launch variants that don't get their own
 # .desktop file upstream (e.g. "always open a private window", "always
@@ -74,4 +76,6 @@
       terminal = false;
     };
   };
+}
+;
 }

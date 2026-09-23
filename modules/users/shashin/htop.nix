@@ -1,4 +1,10 @@
-{ config, ... }:
+# DEFINED BUT DELIBERATELY UNWIRED: no host or user imports
+# flake.modules.homeManager.htop, so this module is never evaluated.
+# Wire it by adding it to home-manager.users.shashin.imports (see
+# modules/users/shashin/home-manager.nix).
+{
+  flake.modules.homeManager.htop =
+    { config, ... }:
 
 {
   programs.htop = {
@@ -40,4 +46,6 @@
       (text "Systemd")
     ]);
   };
+}
+;
 }

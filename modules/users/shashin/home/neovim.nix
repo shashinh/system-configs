@@ -1,4 +1,6 @@
-{ pkgs, ... }:
+{
+  flake.modules.homeManager.shashin =
+    { pkgs, ... }:
 
 # Plugins normally come from pkgs.vimPlugins.<name> (nixpkgs' curated,
 # auto-generated plugin set). If something isn't packaged there yet, package
@@ -316,4 +318,6 @@
       }
     ];
   };
+}
+;
 }

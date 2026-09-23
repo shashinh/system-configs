@@ -1,10 +1,18 @@
 # Declarative Firefox config via home-manager's `programs.firefox` module.
 #
-# NOT imported into home.nix yet. Right now Firefox is provided by the NixOS
-# system module instead (see hosts/pc-common.nix's `programs.firefox`), which
-# only covers package/policies/native-messaging-hosts. This file exists as a
-# reference for a future switch to home-manager, once ready to hand profile
+# DEFINED BUT DELIBERATELY UNWIRED: no host or user imports
+# flake.modules.homeManager.firefox, so this module is never evaluated.
+# Right now Firefox is provided by the NixOS system module instead (see
+# modules/pc/programs.nix's `programs.firefox`), which only covers
+# package/policies/native-messaging-hosts. This file exists as a reference
+# for a future switch to home-manager, once ready to hand profile
 # management over to Nix.
+#
+# BEFORE WIRING THIS IN: the extensions.packages section references
+# `inputs.nur`, which is NOT a flake input of this config. Add a `nur`
+# input (declare it via flake-file.inputs next to this module) and supply
+# it to the module (e.g. close over the top-level `inputs` instead of the
+# `inputs` module argument) — or drop that section.
 #
 # The values below were reverse-engineered from the real profile on this
 # machine (~/.config/mozilla/firefox/<hash>.default) on 2026-08-16: prefs.js,
@@ -17,7 +25,9 @@
 # doesn't use is included commented-out (or noted) so the full tunable
 # surface is visible in one place.
 
-{ pkgs, inputs, ... }:
+{
+  flake.modules.homeManager.firefox =
+    { pkgs, inputs, ... }:
 
 {
   programs.firefox = {
@@ -279,4 +289,6 @@
       # extensions.force = false;
     };
   };
+}
+;
 }

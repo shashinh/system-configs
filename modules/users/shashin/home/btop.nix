@@ -1,4 +1,6 @@
-{ config, pkgs, ... }:
+{
+  flake.modules.homeManager.shashin =
+    { config, pkgs, ... }:
 
 {
   programs.btop = {
@@ -118,4 +120,6 @@
       custom_gpu_name5 = "";
     };
   };
+}
+;
 }

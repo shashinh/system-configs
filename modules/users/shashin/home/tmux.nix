@@ -1,4 +1,6 @@
-{ ... }:
+{
+  flake.modules.homeManager.shashin =
+    { ... }:
 
 {
   programs.tmux = {
@@ -53,4 +55,6 @@
       bind - split-window -vc "#{pane_current_path}"
     '';
   };
+}
+;
 }

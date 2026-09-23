@@ -13,14 +13,7 @@
       inputs.noctalia.nixosModules.default
       inputs.self.modules.nixos.pc
       inputs.self.modules.nixos.shashin
-      inputs.home-manager.nixosModules.home-manager
-      {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        # TRANSITIONAL: dropped in phase 3 when home modules close over inputs.
-        home-manager.extraSpecialArgs = { inherit inputs; };
-        home-manager.users.shashin = ../../_legacy/nostromo/home.nix;
-      }
+      inputs.self.modules.nixos.home-shashin
     ];
 
     networking.hostName = "nostromo";

@@ -1,4 +1,6 @@
-{ ... }:
+{
+  flake.modules.homeManager.shashin =
+    { ... }:
 
 {
   programs.git = {
@@ -19,4 +21,6 @@
       format.pretty = "format:%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset";
     };
   };
+}
+;
 }

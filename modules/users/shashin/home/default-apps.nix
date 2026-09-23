@@ -1,4 +1,6 @@
-{ ... }:
+{
+  flake.modules.homeManager.shashin =
+    { ... }:
 
 # Ports the mime associations KDE had set up imperatively in
 # ~/.config/mimeapps.list into home-manager, plus Thunar as the default file
@@ -74,4 +76,6 @@ in
       "application/pdf" = "org.kde.okular.desktop";
     };
   };
+}
+;
 }

@@ -1,4 +1,6 @@
-{ ... }:
+{
+  flake.modules.homeManager.shashin =
+    { ... }:
 
 {
   programs.kitty = {
@@ -20,4 +22,6 @@
       include themes/noctalia.conf
     '';
   };
+}
+;
 }

@@ -1,4 +1,6 @@
-{ pkgs, ... }:
+{
+  flake.modules.homeManager.shashin =
+    { pkgs, ... }:
 
 # GTK widget theme, split out from KDE's own GTK sync (see below).
 #
@@ -87,4 +89,6 @@
       gtk-cursor-blink-time = 1000;
     };
   };
+}
+;
 }

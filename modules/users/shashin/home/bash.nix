@@ -1,4 +1,6 @@
-{ pkgs, ... }:
+{
+  flake.modules.homeManager.shashin =
+    { pkgs, ... }:
 
 {
   programs.bash.enable = true;
@@ -54,4 +56,6 @@
       fi
     fi
   '';
+}
+;
 }

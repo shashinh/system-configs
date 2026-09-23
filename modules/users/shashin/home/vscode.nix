@@ -1,4 +1,6 @@
-{ pkgs, ... }:
+{
+  flake.modules.homeManager.shashin =
+    { pkgs, ... }:
 
 {
   programs.vscode = {
@@ -215,4 +217,6 @@
       ];
     };
   };
+}
+;
 }

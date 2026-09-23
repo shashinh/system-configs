@@ -1,4 +1,8 @@
 {
+# DEFINED BUT DELIBERATELY UNWIRED: nothing imports
+# flake.modules.nixos.power-profile — kept as a ready-to-wire module.
+# Wire it by adding inputs.self.modules.nixos.power-profile to a host's
+# imports (it was last commented out of nostromo).
   flake.modules.nixos.power-profile =
     { pkgs, ... }:
 
