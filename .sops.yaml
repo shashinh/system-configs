@@ -1,0 +1,45 @@
+# Who can decrypt the files under secrets/.
+#
+# Two kinds of recipients, both derived from SSH keys with `ssh-to-age`:
+#
+#   user_*  — an operator's personal key (from ~/.ssh/id_ed25519). This is what
+#             lets a human EDIT secrets (`sops secrets/common.yaml`).
+#   host_*  — a machine's SSH host key (/etc/ssh/ssh_host_ed25519_key). This is
+#             what lets the machine DECRYPT at activation. Nothing to
+#             provision: the host key already exists after an install.
+#
+# Derive a recipient:
+#   ssh-to-age -i ~/.ssh/id_ed25519.pub                        # a user
+#   ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub            # local host
+#   ssh-keyscan -t ed25519 <host> | ssh-to-age                 # remote host
+#
+# After changing this file, re-encrypt existing secrets so the new recipient
+# list takes effect:   sops updatekeys secrets/common.yaml
+keys:
+  - &user_shashin age156a3qyzplxcgeunrfsrs9pvtw35vh2hcs9mggsl4d7699ellacxqhrdzu2
+  - &host_nostromo age1vjd3v2y53qzput6ake257t55ay9rtm3txt7ku7agr8emx3jzla5sxjln5l
+  - &host_serenity age1qajgxlcrre6fhpxvefx3m6xcpqw2s36sqw4sks6e6exfjrsuxsfsunq3fq
+
+creation_rules:
+  # Secrets any host may need. Encrypted to the operator (to edit) and to every
+  # machine (to decrypt). Use this for anything tied to a portable feature.
+  - path_regex: secrets/common\.yaml$
+    key_groups:
+      - age:
+          - *user_shashin
+          - *host_nostromo
+          - *host_serenity
+
+  # Host-scoped secrets: only the operator and that one machine can read them.
+  # Create these as secrets/<host>.yaml when a secret is genuinely host-bound.
+  - path_regex: secrets/nostromo\.yaml$
+    key_groups:
+      - age:
+          - *user_shashin
+          - *host_nostromo
+
+  - path_regex: secrets/serenity\.yaml$
+    key_groups:
+      - age:
+          - *user_shashin
+          - *host_serenity

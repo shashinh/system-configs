@@ -1,6 +1,25 @@
 # Secrets handling for this repo
 
-Status: DRAFT for discussion. Nothing described here is implemented.
+Status: sops-nix is IMPLEMENTED as the backbone (see "What is implemented"
+below). The rest of this document is the survey that led to that choice and
+the list of things still open.
+
+## What is implemented
+
+| Piece | Where |
+|---|---|
+| Recipients (operator + both host keys) | `.sops.yaml` |
+| Encrypted store | `secrets/common.yaml` |
+| Baseline wiring (input, host-key decryption, CLI tools) | `modules/pc/sops.nix` |
+| First secret: noctalia wallhaven API key | `modules/features/noctalia-wallhaven.nix` |
+
+Hosts decrypt with their own SSH host key (`ssh-to-age`); humans decrypt and
+edit with their personal SSH key. Secrets are rendered at activation into
+`/run/secrets` and never enter the Nix store — verified by scanning the
+whole system closure for the plaintext value.
+
+Still to migrate: the CIFS credentials (see the inventory below), which
+remain a hand-placed file at `/home/shashin/.smb/creds`.
 
 ## Why now
 
