@@ -88,8 +88,8 @@ modules/
     greetd.nix             greetd + tuigreet display manager
     niri/                  the niri compositor — system.nix (compositor +
                            home-manager wiring), dotfiles.nix (links shared
-                           config.kdl + per-host hosts/<name>.kdl via niri's
-                           own `include`, + generated noctalia.kdl)
+                           config.kdl plus per-host hosts/<name>/{host,
+                           noctalia}.kdl, composed by niri's own `include`)
     noctalia/              the Noctalia shell — system.nix (services + the
                            home-manager wiring for the whole feature),
                            dotfiles.nix (vendored config layer),
