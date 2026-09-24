@@ -1,0 +1,28 @@
+# Enabled plugins and their settings.
+# Migrated from ~/.local/state/noctalia/settings.toml.
+#
+# IMPORTANT: enabling a plugin here does not INSTALL it. Plugin code lives in
+# ~/.local/state/noctalia/plugins/ (git-source caches, re-fetchable) and
+# ~/.local/share/noctalia/plugins/. On a fresh machine these must be fetched
+# (`noctalia msg plugins ...`) before the entries below do anything.
+#
+# noctalia/wallhaven's settings are NOT here — its API key is a secret,
+# rendered into wallhaven.toml by sops-nix.
+
+[plugins]
+enabled = [
+    "noctalia/wallhaven",
+    "raycursive/niri-displays",
+    "noctalia/bongocat",
+    "nightwatch75/todo",
+    "aristides/udiskie",
+    "thepunkoff/pomodoro",
+    "dotnetrob/cat"
+]
+
+[plugin_settings."aristides/udiskie"]
+manager_open_near_click = true
+manager_placement = "attached"
+
+[plugin_settings."thepunkoff/pomodoro"]
+auto-start-breaks = true

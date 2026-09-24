@@ -1,0 +1,23 @@
+# Theme selection and which templates noctalia writes on a theme change.
+# Migrated from ~/.local/state/noctalia/settings.toml.
+#
+# NOTE: `source = "wallpaper"` means the palette is DERIVED from the current
+# wallpaper — and the wallpaper itself stays machine-local (it is a path to a
+# file under ~/Pictures/Wallpapers). So this setting is portable but its
+# result is not.
+# NOTE: community_palette and theme.templates.community_ids reference
+# downloaded content under ~/.local/state/noctalia/community-*/ — a fresh
+# machine must fetch those before they resolve.
+# NOTE: this file sorts AFTER obsidian.toml and BEFORE user-templates.toml;
+# all three touch [theme.templates.*]. Verify the merge (see migration plan).
+
+[theme]
+builtin = "Ayu"
+community_palette = "Oasis Abyss"
+mode = "dark"
+source = "wallpaper"
+wallpaper_scheme = "m3-rainbow"
+
+[theme.templates]
+builtin_ids = [ "btop", "gtk3", "gtk4", "kcolorscheme", "kitty", "niri", "qt" ]
+community_ids = [ "pywalfox-beta4", "libreoffice", "neovim", "obsidian", "vscode", "fastfetch", "tmux", "yazi" ]

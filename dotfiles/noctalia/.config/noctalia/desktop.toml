@@ -1,0 +1,55 @@
+# Shell / panel / dock appearance and behaviour.
+# Migrated from ~/.local/state/noctalia/settings.toml.
+#
+# The odd float precision below is preserved verbatim from the GUI-written
+# values so the migration is provably behaviour-identical. Round them to
+# 0.5 / 1.25 as a separate, deliberate cleanup once migration is verified.
+
+[backdrop]
+enabled = true
+tint_intensity = 0.4999999888241291
+
+[control_center]
+show_session_button = false
+
+[control_center.calendar]
+show_week_numbers = true
+
+[dock]
+reserve_space = false
+smart_auto_hide = true
+
+[shell]
+external_ip_enabled = true
+password_style = "random"
+
+[shell.animation]
+speed = 1.2500000186264515
+
+[shell.launcher]
+pinned = [ "firefox", "spotify", "zotero" ]
+show_app_actions = true
+
+[shell.panel]
+clipboard_placement = "attached"
+control_center_position = "center"
+launcher_placement = "attached"
+list_item_background = true
+open_near_click_clipboard = true
+open_near_click_control_center = true
+open_near_click_launcher = true
+open_near_click_session = true
+open_near_click_wallpaper = true
+
+[shell.screen_corners]
+enabled = true
+size = 16
+
+[shell.screenshot]
+confirm_region = true
+
+[shell.session]
+show_shortcuts = false
+
+[shell.shadow]
+direction = "down_right"

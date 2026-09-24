@@ -1,0 +1,42 @@
+# Background services: idle behaviour, location, nightlight, weather, calendar.
+# Migrated from ~/.local/state/noctalia/settings.toml.
+#
+# NOTE: idle timeouts are arguably host-shaped (a desktop may not want
+# screen-off at 330s). Portable for now; split per host later if it chafes.
+# NOTE: the calendar ACCOUNT is listed here but its credentials live in the
+# desktop Secret Service (gnome-keyring), not in any config file — a fresh
+# machine will need to re-authorise before the account works.
+
+[calendar]
+enabled = true
+
+[calendar.account.personal_google]
+name = "sshashinn"
+type = "google"
+
+[idle]
+behavior_order = [ "lock", "screen-off", "lock-and-suspend" ]
+
+[idle.behavior.lock]
+action = "lock"
+enabled = true
+timeout = 300.0
+
+[idle.behavior.lock-and-suspend]
+action = "lock_and_suspend"
+enabled = false
+timeout = 900.0
+
+[idle.behavior.screen-off]
+action = "screen_off"
+enabled = true
+timeout = 330.0
+
+[location]
+auto_locate = true
+
+[nightlight]
+enabled = true
+
+[weather]
+unit = "imperial"
