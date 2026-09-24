@@ -190,7 +190,8 @@ layout {
     //   together with the previously focused column.
     center-focused-column "never"
 
-    always-center-single-column
+    // Uncomment to center a column when it is the only one in a workspace.
+    //always-center-single-column
 
     empty-workspace-above-first
 
