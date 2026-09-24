@@ -60,14 +60,38 @@
       package = pkgs.adw-gtk3;
     };
 
-    # Papirus-Dark, matching what nwg-look was being used to set. Declared
-    # here because home-manager owns BOTH sinks GTK reads — it writes
-    # ~/.config/gtk-{3,4}.0/settings.ini (as read-only store symlinks) and
-    # dconf org/gnome/desktop/interface. nwg-look can only write the latter,
-    # so its choice survived until the next activation and was then reverted.
+    # Papirus-Nord — the Nord recolour of Papirus — with folders pinned to
+    # "Polar Night 4" (Nord nord3, #4c566a).
+    #
+    # Declared here rather than set through nwg-look because home-manager owns
+    # BOTH sinks GTK reads: ~/.config/gtk-{3,4}.0/settings.ini (installed as
+    # read-only store symlinks) and dconf org/gnome/desktop/interface.
+    # nwg-look can only write the latter, so a choice made there survived
+    # until the next activation and was then reverted.
+    #
+    # The colour is applied with overrideAttrs instead of the package's own
+    # `accent` argument because of a typo in nixpkgs: its validAccents list
+    # contains "polarnight3" twice and omits "polarnight4", so
+    #   papirus-nord.override { accent = "polarnight4"; }
+    # fails lib.checkListOfEnum at eval time. Upstream's papirus-folders does
+    # accept polarnight4 and the icons ship in the source, so recolour after
+    # the default install. Remove this workaround once nixpkgs is fixed.
+    #
+    # Note this does NOT track the Noctalia palette. Icon themes have no
+    # composition point (no @import equivalent for ~2000 SVGs), so unlike the
+    # GTK colours below they cannot be a runtime-generated leaf file — the
+    # folder colour is a build-time package choice.
     iconTheme = {
       name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
+      package = pkgs.papirus-nord.overrideAttrs (old: {
+        postInstall = (old.postInstall or "") + ''
+          for theme in $out/share/icons/*; do
+            USER_HOME=$HOME DISABLE_UPDATE_ICON_CACHE=1 \
+              ./papirus-folders -t "$theme" -o -C polarnight4
+            gtk-update-icon-cache --force "$theme"
+          done
+        '';
+      });
     };
 
     # Noctalia writes its palette to ~/.config/gtk-{3,4}.0/noctalia.css, and
