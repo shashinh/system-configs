@@ -61,9 +61,6 @@
         libreoffice
         tumbler # thumbnailer daemon Thunar talks to over D-Bus; registers its
                 # own dbus-activated service, so no extra wiring needed here
-        xarchiver # standalone archive GUI. NOTE: the Thunar archive plugin
-                  # cannot drive it — it ships no xarchiver.tap helper, so the
-                  # plugin uses file-roller (see modules/features/thunar.nix).
 
         # Communicators
         signal-desktop-libsecret
