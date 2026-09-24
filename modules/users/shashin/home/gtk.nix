@@ -70,6 +70,43 @@
       package = pkgs.papirus-icon-theme;
     };
 
+    # Noctalia writes its palette to ~/.config/gtk-{3,4}.0/noctalia.css, and
+    # its apply.sh ensures gtk.css imports it. That script returns early —
+    # leaving gtk.css untouched — as soon as the file already contains the
+    # import, so home-manager can own gtk.css outright provided we keep that
+    # line. (Without it, apply.sh deletes the read-only store symlink.)
+    #
+    # The override exists because adw-gtk3 and libadwaita paint a SELECTED
+    # row's text with window_fg_color (near-white) and its background from the
+    # accent. That assumes a DARK accent — true of their default blue, false
+    # for Noctalia, whose accent is wallpaper-derived and currently a light
+    # amber (#f1bf48). Near-white on light amber is unreadable.
+    #
+    # Measured on this machine: a selected row resolves fg=#e2e2e2 in BOTH
+    # GTK3 and GTK4, while Noctalia generates a properly contrasting
+    # accent_fg_color (#3f2e00) that neither theme consults for list
+    # selections. So pin the pair Noctalia generated for exactly this purpose.
+    gtk3.extraCss = ''
+      @import url("noctalia.css");
+
+      treeview.view:selected, treeview.view:selected:focus,
+      .view:selected, iconview:selected,
+      list > row:selected, row:selected {
+        background-color: @accent_bg_color;
+        color: @accent_fg_color;
+      }
+    '';
+
+    gtk4.extraCss = ''
+      @import url("noctalia.css");
+
+      listview > row:selected, list > row:selected, row:selected,
+      gridview > child:selected, columnview > row:selected {
+        background-color: @accent_bg_color;
+        color: @accent_fg_color;
+      }
+    '';
+
     gtk3.extraConfig = {
       gtk-decoration-layout = "icon:minimize,maximize,close";
       gtk-primary-button-warps-slider = true;
