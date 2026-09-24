@@ -60,9 +60,14 @@
       package = pkgs.adw-gtk3;
     };
 
+    # Papirus-Dark, matching what nwg-look was being used to set. Declared
+    # here because home-manager owns BOTH sinks GTK reads — it writes
+    # ~/.config/gtk-{3,4}.0/settings.ini (as read-only store symlinks) and
+    # dconf org/gnome/desktop/interface. nwg-look can only write the latter,
+    # so its choice survived until the next activation and was then reverted.
     iconTheme = {
-      name = "Adwaita";
-      package = pkgs.adwaita-icon-theme;
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
     };
 
     gtk3.extraConfig = {
