@@ -11,7 +11,13 @@
 # Derive a recipient:
 #   ssh-to-age -i ~/.ssh/id_ed25519.pub                        # a user
 #   ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub            # local host
-#   ssh-keyscan -t ed25519 <host> | ssh-to-age                 # remote host
+#   ssh <host> 'cat /etc/ssh/ssh_host_ed25519_key.pub' | ssh-to-age   # remote
+#
+# Read the remote file — do NOT use `ssh-keyscan`. It reports whatever host
+# key the transport presents, which is not the machine's own key when the
+# connection is intercepted (e.g. Tailscale SSH terminates port 22 on the
+# tailnet and serves a generated key). Encrypting to that key yields a host
+# that cannot decrypt at activation.
 #
 # After changing this file, re-encrypt existing secrets so the new recipient
 # list takes effect:   sops updatekeys secrets/common.yaml
