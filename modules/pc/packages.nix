@@ -77,6 +77,7 @@
         kdePackages.keditbookmarks
         kde-rounded-corners
         zip
+        unzip
         amdgpu_top
         lact
         jq
