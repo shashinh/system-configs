@@ -86,7 +86,9 @@ modules/
   features/                host-agnostic features, one name per file
     plasma.nix             KDE Plasma 6 + Plasma login manager
     greetd.nix             greetd + tuigreet display manager
-    niri.nix               the niri compositor
+    niri/                  the niri compositor — system.nix (compositor +
+                           home-manager wiring), dotfiles.nix (vendored
+                           config.kdl + generated noctalia.kdl)
     noctalia/              the Noctalia shell — system.nix (services + the
                            home-manager wiring for the whole feature),
                            dotfiles.nix (vendored config layer),
