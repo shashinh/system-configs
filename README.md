@@ -109,7 +109,11 @@ modules/
   hosts/nostromo/          hardware-bound config → flake.modules.nixos.nostromo; host.nix composes + wires output
 tools/                     verify-parity.sh / drv-equiv.sh — evaluation comparison harness
 skills/dendritic-module/   agent skill for extending this config
-dotfiles/                  GNU stow tree, applied manually — never read by Nix
+dotfiles/                  stow-shaped tree. Most entries are applied manually
+                           with GNU stow; niri/ and noctalia/ are instead linked
+                           by home-manager as out-of-store symlinks (edits apply
+                           without a rebuild, and show up as a dirty tree) —
+                           do not stow those two
 INSTALL.md                 from-blank-machine install runbook
 ```
 
