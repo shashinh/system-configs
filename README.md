@@ -87,8 +87,9 @@ modules/
     plasma.nix             KDE Plasma 6 + Plasma login manager
     greetd.nix             greetd + tuigreet display manager
     niri/                  the niri compositor — system.nix (compositor +
-                           home-manager wiring), dotfiles.nix (vendored
-                           config.kdl + generated noctalia.kdl)
+                           home-manager wiring), dotfiles.nix (links shared
+                           config.kdl + per-host hosts/<name>.kdl via niri's
+                           own `include`, + generated noctalia.kdl)
     noctalia/              the Noctalia shell — system.nix (services + the
                            home-manager wiring for the whole feature),
                            dotfiles.nix (vendored config layer),

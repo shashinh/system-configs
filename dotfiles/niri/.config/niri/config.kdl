@@ -165,67 +165,13 @@ input {
     position x=1280 y=0
 }
 
-// Primary laptop display - default spec is 2256x1504@59.999
-// Mod+Shift+1 hotkey-overlay-title="Turn on/off eDP-1" {spawn-sh "niri msg outputs | grep -n2 eDP | grep -q Disabled && { echo off; niri msg output eDP-1 on; } || { echo on; niri msg output eDP-1 off; }";}
-output "eDP-1" {
-    // Uncomment this line to disable this output.
-    // off
-
-    // Resolution and, optionally, refresh rate of the output.
-    // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
-    // If the refresh rate is omitted, niri will pick the highest refresh rate
-    // for the resolution.
-    // If the mode is omitted altogether or is invalid, niri will pick one automatically.
-    // Run `niri msg outputs` while inside a niri instance to list all outputs and their modes.
-    mode "2256x1504@59.999"
-
-    // You can use integer or fractional scale, for example use 1.5 for 150% scale.
-    scale 1.35
-
-    // Transform allows to rotate the output counter-clockwise, valid values are:
-    // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
-    transform "normal"
-
-    // Position of the output in the global coordinate space.
-    // This affects directional monitor actions like "focus-monitor-left", and cursor movement.
-    // The cursor can only move between directly adjacent outputs.
-    // Output scale and rotation has to be taken into account for positioning:
-    // outputs are sized in logical, or scaled, pixels.
-    // For example, a 3840×2160 output with scale 2.0 will have a logical size of 1920×1080,
-    // so to put another output directly adjacent to it on the right, set its x to 1920.
-    // If the position is unset or results in an overlap, the output is instead placed
-    // automatically.
-    position x=0 y=0
-}
-
-// home monitor
-output "LG Electronics LG HDR WQHD 307MXZJ91253" {
-  // off
-  mode "3440x1440@84.979"
-  scale 1
-  transform "normal"
-  // this is sketchy, needs to be computed based on scaling of previous monitor.
-  // turned off for now, since niri appears to park monitors on the right anyways.
-  // position x=1671 y=0
-}
-
-// Output "Dell Inc. DELL U2723QE F46X3P3" (DP-2)
-//   Current mode: 3840x2160 @ 59.997 Hz (preferred)
-//   Variable refresh rate: not supported
-//   Physical size: 600x340 mm
-//   Logical position: 0, 0
-//   Logical size: 2560x1440
-//   Scale: 1.5
-//   Transform: normal
-//   Available modes:
-//     3840x2160@59.997 (current, preferred)
-output "Dell Inc. DELL U2723QE F46X3P3" {
-  // off
-  mode "3840x2160@59.997"
-  scale 1.5
-  transform "normal"
-  // TODO figure out logical position wrt internal display
-}
+// ─── Host-specific configuration ────────────────────────────────────────────
+// Display layout lives per machine in dotfiles/niri/hosts/<hostname>.kdl.
+// home-manager links that file to ~/.config/niri/host.kdl.
+//
+// NOTE: a missing host.kdl is a FATAL parse error — niri refuses the whole
+// config. Any host importing the niri feature must have a hosts/<name>.kdl.
+include "host.kdl"
 
 
 

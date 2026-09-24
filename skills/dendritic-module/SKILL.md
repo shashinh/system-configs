@@ -93,6 +93,46 @@ a proper option inside the feature's deferred module
 (`options.features.<name>.<knob> = lib.mkOption { … }`) and have hosts set
 it — use this when the knob has no existing NixOS option.
 
+### Split an app's dotfile into shared + per-host parts
+
+When a config file is mostly portable but has a machine-specific section
+(display layout, device paths), don't fork the whole file per host. Split it
+using the *application's own* include mechanism, and let home-manager pick
+the per-host half by hostname:
+
+```
+dotfiles/<app>/.config/<app>/config      shared; contains `include "host.conf"`
+dotfiles/<app>/hosts/<hostname>.conf     per-host fragment
+```
+
+```nix
+flake.modules.homeManager.<app> = { config, osConfig, ... }:
+  let src = "${config.dotfiles.repoPath}/dotfiles/<app>"; in {
+    xdg.configFile."<app>/config".source =
+      config.lib.file.mkOutOfStoreSymlink "${src}/.config/<app>/config";
+    xdg.configFile."<app>/host.conf".source =
+      config.lib.file.mkOutOfStoreSymlink "${src}/hosts/${osConfig.networking.hostName}.conf";
+  };
+```
+
+`osConfig` is the enclosing NixOS config, available because home-manager runs
+as a NixOS module here.
+
+**Verify two things before relying on this**, because both are
+app-dependent and silently fatal when wrong:
+
+1. **Include resolution.** Does the app resolve a relative include against the
+   directory of the config file it was *given*, or against the symlink's
+   *target*? If the latter, the include looks inside the repo and the scheme
+   collapses. Test it: put a deliberately-broken fragment next to the real
+   file in the repo, a valid one next to the symlink, and see which one the
+   app's validator complains about. (niri resolves against the symlink's
+   directory — the scheme works there.)
+2. **Missing-include behaviour.** For niri a missing include is a *fatal parse
+   error* that takes down the whole config, so every host importing the
+   feature must have its `hosts/<hostname>` file. Check what your app does and
+   note it in the module header.
+
 ### Hardware-bound config
 
 Create `modules/hosts/<host>/<file>.nix` merging into
