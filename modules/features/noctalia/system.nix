@@ -14,6 +14,14 @@
   flake.modules.nixos.noctalia = {
     imports = [ inputs.noctalia.nixosModules.default ];
 
+    # Deliver the home-manager half of this feature (dotfiles.nix, and the
+    # sops-rendered plugin settings in wallhaven-secret.nix) to every HM user
+    # on the host. This is the single wiring point for the user-side config —
+    # keep it here, not in a sibling that a future cleanup might delete.
+    #
+    # Requires the host to enable home-manager (import `home-shashin`).
+    home-manager.sharedModules = [ inputs.self.modules.homeManager.noctalia ];
+
     programs.noctalia.enable = true;
 
     # Xfconf: lets Thunar persist per-folder view settings (list/icon/compact).

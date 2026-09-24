@@ -86,7 +86,11 @@ modules/
   features/                host-agnostic features, one name per file
     plasma.nix             KDE Plasma 6 + Plasma login manager
     greetd.nix             greetd + tuigreet display manager
-    niri.nix  noctalia.nix the niri + Noctalia desktop stack
+    niri.nix               the niri compositor
+    noctalia/              the Noctalia shell — system.nix (services + the
+                           home-manager wiring for the whole feature),
+                           dotfiles.nix (vendored config layer),
+                           wallhaven-secret.nix (sops-rendered plugin key)
     gaming.nix             Steam, emulators, controller/mouse tooling
     fingerprint.nix        fprintd + PAM wiring (hosts with a reader)
     printing.nix           CUPS + the UT CS department printer
@@ -166,7 +170,11 @@ fragment IS the per-host branch.
   it — no other edits.
 - **Add an optional feature**: create `modules/features/<name>.nix`
   defining `flake.modules.nixos.<name>`, then add `<name>` to the import
-  list of each host that wants it.
+  list of each host that wants it. When a feature grows past one concern,
+  promote it to a directory (`modules/features/<name>/`) rather than
+  scattering `<name>-*.nix` files among unrelated features — and keep the
+  wiring that delivers the feature (e.g. `home-manager.sharedModules`) in
+  its primary file, not in an optional sibling that may later be deleted.
 - **Move a feature between hosts**: edit the two `host.nix` import lists —
   the feature file itself never moves.
 - **Add hardware-bound config**: a file under `modules/hosts/<host>/`

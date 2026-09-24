@@ -5,15 +5,14 @@
 # hand-written config. That file carries a credential, so it is rendered from
 # an encrypted secret at activation instead of being committed.
 #
-# DEPENDS on home-manager being enabled on the host (the host must import
-# `home-shashin`): the rendered file is delivered into the user's config
-# directory through home-manager.sharedModules.
-{ inputs, ... }:
+# The rendered file reaches ~/.config/noctalia via the home-manager module in
+# dotfiles.nix, which system.nix wires in for the whole feature.
 {
+
   flake.modules.nixos.noctalia =
     { config, ... }:
     {
-      sops.secrets."noctalia/wallhaven_api_key".sopsFile = ../../secrets/common.yaml;
+      sops.secrets."noctalia/wallhaven_api_key".sopsFile = ../../../secrets/common.yaml;
 
       # Rendered at activation into /run/secrets/rendered/ (tmpfs). The store
       # only ever sees the placeholder, never the key.
@@ -26,7 +25,6 @@
         '';
       };
 
-      home-manager.sharedModules = [ inputs.self.modules.homeManager.noctalia ];
     };
 
   # Link the rendered file into the noctalia config directory. The symlink is
