@@ -22,6 +22,7 @@
       noctalia
       fingerprint
       printing
+      thunar
     ];
 
     networking.hostName = "nostromo";

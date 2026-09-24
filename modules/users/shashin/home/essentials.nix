@@ -59,13 +59,10 @@
         opencode
         onedrivegui
         libreoffice
-        thunar
         tumbler # thumbnailer daemon Thunar talks to over D-Bus; registers its
                 # own dbus-activated service, so no extra wiring needed here
-        xfce.thunar-archive-plugin # adds "Compress..."/"Extract..." to Thunar's
-                                    # context menu; shells out to an archive
-                                    # manager below rather than doing it itself
-        xarchiver # lightweight archive manager the plugin above drives; uses
+        xarchiver # archive manager that Thunar's archive plugin shells out to
+                  # (the plugin itself is wired in modules/features/thunar.nix); uses
                   # zip/unrar (already installed) as backends
 
         # Communicators
