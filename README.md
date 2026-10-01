@@ -99,7 +99,9 @@ modules/
     printing.nix           CUPS + the UT CS department printer
     lact.nix  nas.nix      GPU monitoring daemon; CIFS NAS mount
     ai/                    llama-swap, open-webui, searxng (llama-swap depends on lact)
+    claude-skills.nix      links the claude-skills package into ~/.claude/skills (needs HM)
     power-profile.nix      UNWIRED: flake.modules.nixos.power-profile
+  packages/                perSystem.packages.<name> (claude-skills: bundles skills/)
   users/shashin/
     user.nix               the OS account → flake.modules.nixos.shashin
     home-manager.nix       HM wiring for a host → flake.modules.nixos.home-shashin
@@ -109,7 +111,8 @@ modules/
   hosts/serenity/          hardware-bound config → flake.modules.nixos.serenity; host.nix composes + wires output
   hosts/nostromo/          hardware-bound config → flake.modules.nixos.nostromo; host.nix composes + wires output
 tools/                     verify-parity.sh / drv-equiv.sh — evaluation comparison harness
-skills/dendritic-module/   agent skill for extending this config
+skills/nixos-config/       agent skill for working on this config (packaged by
+                           modules/packages/claude-skills.nix)
 dotfiles/                  stow-shaped tree. Most entries are applied manually
                            with GNU stow; niri/ and noctalia/ are instead linked
                            by home-manager as out-of-store symlinks (edits apply
@@ -219,6 +222,9 @@ fragment IS the per-host branch.
 
 ## Skills
 
-`skills/dendritic-module/SKILL.md` teaches a coding agent the recipes above
-(file templates, verification ritual, sharp edges). Point Claude Code or a
-compatible agent at it when extending this config.
+`skills/nixos-config/SKILL.md` teaches a coding agent how to locate this
+config and the recipes above (file templates, verification ritual, sharp
+edges). Every directory under `skills/` is bundled by the `claude-skills`
+package; hosts importing the `claude-skills` feature get each skill linked
+into `~/.claude/skills/` on rebuild, so Claude Code loads it as a user
+skill. On a host without the feature, point the agent at the file directly.

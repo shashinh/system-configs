@@ -944,7 +944,7 @@ nix store diff-closures \
 nix run .#write-flake && nix flake lock
 # (git diff flake.lock must only ADD nodes)
 
-# Verify a refactor changed nothing (see also skills/dendritic-module):
+# Verify a refactor changed nothing (see also skills/nixos-config):
 nix eval .#nixosConfigurations.$HOST.config.system.build.toplevel.drvPath
 
 # Search for a package

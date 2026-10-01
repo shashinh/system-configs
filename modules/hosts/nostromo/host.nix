@@ -23,6 +23,7 @@
       fingerprint
       printing
       thunar
+      claude-skills
     ];
 
     networking.hostName = "nostromo";
