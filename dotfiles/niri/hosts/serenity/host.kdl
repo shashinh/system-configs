@@ -1,0 +1,17 @@
+// serenity — Framework Desktop (AMD AI Max+ 395)
+//
+// Host-specific niri configuration: display layout. Included by config.kdl as
+// `include "host.kdl"`; home-manager links ~/.config/niri/host.kdl to the file
+// named after this machine.
+//
+// One monitor on HDMI-A-1. niri names outputs "<make> <model> <serial>"
+// (from EDID; `niri msg outputs` lists them). It is the same LG panel
+// nostromo's host.kdl knows, so the block is identical apart from this
+// being the only output.
+output "LG Electronics LG HDR WQHD 307MXZJ91253" {
+    // 3440x1440, highest refresh the panel offers.
+    mode "3440x1440@84.979"
+    scale 1
+    transform "normal"
+    position x=0 y=0
+}
