@@ -405,10 +405,14 @@ binds {
 
     // Example media keys mapping using playerctl.
     // This will work with any MPRIS-enabled media player.
-    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
-    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
-    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
-    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+    // --ignore-player=kdeconnect: KDE Connect exposes the phone's player over
+    // MPRIS and lists first; playerctl would send play/pause to the phone
+    // (prev/next fell through to the desktop player only because the proxy
+    // reports CanGoNext=false). Found on serenity, 2026-10-01.
+    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl --ignore-player=kdeconnect play-pause"; }
+    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl --ignore-player=kdeconnect stop"; }
+    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl --ignore-player=kdeconnect previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl --ignore-player=kdeconnect next"; }
 
     // Example brightness key mappings for brightnessctl.
     // You can use regular spawn with multiple arguments too (to avoid going through "sh"),
