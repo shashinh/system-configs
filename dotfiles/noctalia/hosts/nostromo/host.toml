@@ -1,0 +1,4 @@
+# nostromo's per-host Noctalia layer. Linked to ~/.config/noctalia/host.toml
+# by modules/features/noctalia/dotfiles.nix (file named after the host).
+# Empty on purpose: nostromo's host-specific values still live in the shared
+# layer it was written for. Put nostromo-only keys here when they appear.

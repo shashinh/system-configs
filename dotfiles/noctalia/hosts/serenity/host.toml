@@ -1,0 +1,14 @@
+# serenity's per-host Noctalia layer. Linked to ~/.config/noctalia/host.toml
+# by modules/features/noctalia/dotfiles.nix (file named after the host).
+#
+# Keys here are ones the shared layer (dotfiles/noctalia/.config/noctalia/*.toml)
+# does not set, so no merge-order question arises. GUI-made changes never
+# land here: Noctalia writes them to ~/.local/state/noctalia/settings.toml,
+# which is already per machine.
+
+# Obsidian theme template: serenity's vault lives at ~/Documents/Obsidian Vault
+# (nostromo's is under Documents/nostromo-nix, see the shared obsidian.toml,
+# which serenity disables in modules/hosts/serenity/home.nix).
+[theme.templates.user.obsidian_extra]
+input_path = "/home/$USER/.config/noctalia/Obsidian/obsidian.css"
+output_path = "/home/$USER/Documents/Obsidian Vault/.obsidian/snippets/noctalia.css"
