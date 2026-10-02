@@ -28,7 +28,7 @@ thickness = 32
 margin_ends = 250
 start = [ "clock", "workspaces" ]
 center = []
-end = [ "nixos_dirty", "media", "widget", "tray", "notifications", "volume", "group:g2" ]
+end = [ "git_status", "media", "widget", "tray", "notifications", "volume", "group:g2" ]
 
 [[bar.default.capsule_group]]
 accordion = true
@@ -52,10 +52,14 @@ tooltip_format = "{:%A, %B %d, %Y}"
 
 # Plugins this bar uses (no bongocat, todo or cat on serenity).
 [plugins]
-enabled = [ "noctalia/wallhaven", "raycursive/niri-displays", "aristides/udiskie", "thepunkoff/pomodoro" ]
+enabled = [ "noctalia/wallhaven", "raycursive/niri-displays", "aristides/udiskie", "thepunkoff/pomodoro", "shashinh/git-status" ]
 
 [nightlight]
 temperature_night = 4600
 
 [lockscreen]
 transition_duration = 100
+
+# shashinh/git-status: placed on this bar only (nostromo can add it from the bar editor).
+[widget.git_status]
+type = "shashinh/git-status:dot"

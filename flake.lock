@@ -123,6 +123,26 @@
         "type": "github"
       }
     },
+    "git-status": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790914795,
+        "narHash": "sha256-z6M0YoWio0qd8w65RLNmgdlzEr0sBmApS8ibslK9aFA=",
+        "owner": "shashinh",
+        "repo": "git-status-noctalia-plugin",
+        "rev": "90631ba53d8e08c2e01d6f2f01c3b110d597086e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "shashinh",
+        "repo": "git-status-noctalia-plugin",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -218,26 +238,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "lanzaboote",
-        "type": "github"
-      }
-    },
-    "nixos-dirty": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1790913702,
-        "narHash": "sha256-XiEqMUjbckXNzzGZkJMnGcWc3znxZEBUjD6oG/mMGE8=",
-        "owner": "shashinh",
-        "repo": "git-status-noctalia-plugin",
-        "rev": "f8825c8fb8334d3cc749d3b7550ea4f6a5c0292a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "shashinh",
-        "repo": "git-status-noctalia-plugin",
         "type": "github"
       }
     },
@@ -384,11 +384,11 @@
         "disko": "disko",
         "flake-file": "flake-file",
         "flake-parts": "flake-parts",
+        "git-status": "git-status",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
-        "nixos-dirty": "nixos-dirty",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-zotero": "nixpkgs-zotero",

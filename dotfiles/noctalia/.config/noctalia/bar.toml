@@ -8,7 +8,7 @@
 
 [bar.default]
 center = [ "clock", "widget" ]
-end = [ "nixos_dirty", "media", "todo", "tray", "notifications", "volume", "group:g2" ]
+end = [ "media", "todo", "tray", "notifications", "volume", "group:g2" ]
 margin_ends = 150
 start = [ "group:g1", "workspaces", "cat" ]
 thickness = 25
@@ -50,10 +50,6 @@ font_weight = 700
 artist_first = true
 hide_when_no_media = true
 title_scroll = "always"
-
-[widget.nixos_dirty]
-type = "shashinh/nixos-dirty:dot"
-hide_when_clean = false
 
 [widget.status]
 hide_when_empty = true
