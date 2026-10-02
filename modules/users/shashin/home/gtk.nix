@@ -1,6 +1,6 @@
 {
   flake.modules.homeManager.shashin =
-    { pkgs, ... }:
+    { lib, pkgs, ... }:
 
 # GTK widget theme, split out from KDE's own GTK sync (see below).
 #
@@ -37,7 +37,17 @@
 # inherited by every spawned app) and, via gtk.enable, also supplies
 # gtk.cursorTheme itself — so the manual cursorTheme block was dropped
 # here to avoid a redundant second source of truth.
+let
+  # Titlebar buttons on client-side-decorated windows: the conventional
+  # desktop layout, as a default. A window manager that has no use for
+  # them overrides it (the niri feature: modules/features/niri/gtk.nix).
+  buttonLayout = lib.mkDefault "icon:minimize,maximize,close";
+in
 {
+  # GTK on Wayland reads the layout via the settings portal, i.e. from
+  # dconf, not settings.ini; set both so neither sink disagrees.
+  dconf.settings."org/gnome/desktop/wm/preferences".button-layout = buttonLayout;
+
   home.pointerCursor = {
     enable = true;
     package = pkgs.adwaita-icon-theme;
@@ -132,7 +142,7 @@
     '';
 
     gtk3.extraConfig = {
-      gtk-decoration-layout = "icon:minimize,maximize,close";
+      gtk-decoration-layout = buttonLayout;
       gtk-primary-button-warps-slider = true;
       gtk-sound-theme-name = "ocean";
       gtk-xft-dpi = 122880;
@@ -147,7 +157,7 @@
     };
 
     gtk4.extraConfig = {
-      gtk-decoration-layout = "icon:minimize,maximize,close";
+      gtk-decoration-layout = buttonLayout;
       gtk-primary-button-warps-slider = true;
       gtk-sound-theme-name = "ocean";
       gtk-xft-dpi = 122880;
