@@ -1,6 +1,7 @@
 # DEPENDS on the lact feature: the service joins the lact-gpu-monitoring
 # group, which features/lact.nix creates. Import both, or drop the group
 # from SupplementaryGroups below.
+{ inputs, ... }:
 {
   flake.modules.nixos.llama-swap =
     { config, lib, pkgs, ... }:
@@ -180,6 +181,10 @@ in
     };
   };
 
+  # Shell shim for the local endpoint (claude-local), see the homeManager
+  # half below. Requires the host to enable home-manager (home-shashin).
+  home-manager.sharedModules = [ inputs.self.modules.homeManager.llama-swap ];
+
   # DynamicUser gets no group memberships by default — needed for /dev/dri, /dev/kfd access
   systemd.services.llama-swap.serviceConfig.SupplementaryGroups = [ "render" "video" "lact-gpu-monitoring"];
 
@@ -196,4 +201,23 @@ in
   ];
 }
 ;
+  # Shell shim for driving Claude Code against the local llama-swap endpoint
+  # (`claude-local`), delivered through home-manager. Ported from serenity's
+  # hand-written ~/.bashrc on 2026-10-01. The token is a dummy: llama-swap
+  # runs without auth (no `apiKeys` in its settings), the client just needs a
+  # non-empty string.
+  #
+  # Requires the host to enable home-manager (import `home-shashin`).
+  flake.modules.homeManager.llama-swap =
+    { ... }:
+    {
+      programs.bash.initExtra = ''
+        claude-local() {
+          ANTHROPIC_BASE_URL="http://127.0.0.1:8686" \
+          ANTHROPIC_AUTH_TOKEN="local-llama-swap" \
+          ANTHROPIC_MODEL="minimax-M2.7" \
+          claude "$@"
+        }
+      '';
+    };
 }
