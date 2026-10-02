@@ -16,7 +16,11 @@
     # crisp man summaries
     man = "tldr";
     top = "btop";
-    
+
+    # common locations
+    sc = "cd ~/system-configs";
+    pj = "cd ~/Projects";
+
     #git
     gst = "git status";
     glo = "git log --graph";
@@ -30,6 +34,24 @@
     mkcd() {
       mkdir -p "$1" && cd "$1"
     }
+
+    # p <project>[/subdir]: cd into ~/Projects/... (bare `p` -> ~/Projects),
+    # tab-completing directories relative to ~/Projects at any depth.
+    # Completions carry their own trailing "/" with nospace, so `p venk<Tab>`
+    # gives `p venkat/` ready for the next level. (bash's own filenames
+    # option can't add the slash: it tests the name against the cwd, not
+    # ~/Projects; it's kept for quoting names with spaces.)
+    p() {
+      cd ~/Projects/"$1"
+    }
+    _p() {
+      local IFS=$'\n' d
+      COMPREPLY=()
+      for d in $(cd ~/Projects && compgen -d -- "$2"); do
+        COMPREPLY+=("$d/")
+      done
+    }
+    complete -o filenames -o nospace -F _p p
 
     stress-cores() {
       nix-shell -p stress-ng --run 'stress-ng --cpu $(nproc) --cpu-load 20 --timeout 5s && stress-ng --cpu $(nproc) --cpu-load 60 --timeout 5s'

@@ -16,8 +16,18 @@
           "input" # input devices (needed by some Wayland compositors)
           "tss" # TPM access (tpm2-tools)
         ];
-        # Shell defaults to bash. Change to pkgs.fish or pkgs.zsh here if you prefer.
-        shell = pkgs.bash;
+        # Login shell. Its config is home-manager's (home/zsh.nix); bash
+        # stays configured (home/bash.nix) as a fallback.
+        shell = pkgs.zsh;
       };
+
+      # Required for a zsh login shell (/etc/zshenv, /etc/shells entry).
+      # home-manager runs compinit itself; the global one would be a second,
+      # slower pass. pathsToLink exposes packages' share/zsh completions.
+      programs.zsh = {
+        enable = true;
+        enableGlobalCompInit = false;
+      };
+      environment.pathsToLink = [ "/share/zsh" ];
     };
 }
