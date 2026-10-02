@@ -1,0 +1,81 @@
+[2d1f78c8-cbce-4f6b-baa6-6617b1bf3ae0]
+Description=Application settings for Zotero
+desktops=fb6fda1a-5ceb-4050-86ae-7049a3c62860
+desktopsrule=4
+wmclass=zotero-bin Zotero
+wmclasscomplete=true
+wmclassmatch=1
+
+[414cd42a-ef47-4a30-89a7-361e25f4ac35]
+Description=Application settings for md.Obsidian
+desktops=fb6fda1a-5ceb-4050-86ae-7049a3c62860
+desktopsrule=4
+wmclass=electron md.Obsidian
+wmclasscomplete=true
+wmclassmatch=1
+
+[58583eee-d429-4e13-bde1-f190d86d00a5]
+Description=Application settings for obsidian
+desktops=fb6fda1a-5ceb-4050-86ae-7049a3c62860
+desktopsrule=4
+wmclass=electron obsidian
+wmclasscomplete=true
+wmclassmatch=1
+
+[7317e99e-0e20-43dd-9463-3c94a3c7835e]
+Description=Application settings for org.kde.okular
+desktops=fb6fda1a-5ceb-4050-86ae-7049a3c62860
+desktopsrule=2
+wmclass=okular org.kde.okular
+wmclasscomplete=true
+wmclassmatch=1
+
+[General]
+count=9
+rules=b37fb0b6-e8a9-4f0b-91da-43835a22b61f,d243e3b8-e88b-4d73-9b17-1604aa3405bd,414cd42a-ef47-4a30-89a7-361e25f4ac35,f3ae59ad-c472-466b-99e1-f69dc1c9ffed,2d1f78c8-cbce-4f6b-baa6-6617b1bf3ae0,db4c550b-1d72-4ad9-abda-43116ee21ed1,7317e99e-0e20-43dd-9463-3c94a3c7835e,58583eee-d429-4e13-bde1-f190d86d00a5,b56ad9d0-94b7-4836-8160-8ebd94f056af
+
+[b37fb0b6-e8a9-4f0b-91da-43835a22b61f]
+Description=Application settings for signal
+desktops=1abd1fdd-623f-45e9-b669-ec26ae347fcc
+desktopsrule=4
+wmclass=electron signal
+wmclasscomplete=true
+wmclassmatch=1
+
+[b56ad9d0-94b7-4836-8160-8ebd94f056af]
+Description=Window settings for firefox
+above=true
+aboverule=2
+fsplevel=4
+fsplevelrule=2
+layer=osd
+layerrule=2
+skippager=true
+skippagerrule=2
+title=Picture-in-Picture
+titlematch=1
+types=1
+wmclass=firefox
+wmclassmatch=1
+
+[d243e3b8-e88b-4d73-9b17-1604aa3405bd]
+Description=Application settings for zoom
+clientmachine=localhost
+desktops=1abd1fdd-623f-45e9-b669-ec26ae347fcc
+desktopsrule=3
+wmclass=zoom
+wmclassmatch=1
+
+[db4c550b-1d72-4ad9-abda-43116ee21ed1]
+Description=Application settings for slack
+desktops=1abd1fdd-623f-45e9-b669-ec26ae347fcc
+desktopsrule=4
+wmclass=slack
+wmclassmatch=1
+
+[f3ae59ad-c472-466b-99e1-f69dc1c9ffed]
+Description=Application settings for code
+desktops=4a6a5ab5-895e-476e-b3b1-1b71e6879239
+desktopsrule=4
+wmclass=code
+wmclassmatch=1

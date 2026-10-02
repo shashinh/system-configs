@@ -1,4 +1,8 @@
 # KDE Plasma 6 with the Plasma login manager.
+#
+# Dormant since 2026-10-01: serenity moved to niri + Noctalia. Kept as the
+# emergency revert, together with dotfiles.nix (seeds the backed-up KDE user
+# config from dotfiles/kde/) and dotfiles/kde/README.md (the revert recipe).
 # Mutually exclusive with the greetd feature (both claim the display
 # manager); a host imports one or the other.
 {
@@ -18,6 +22,7 @@
       # and kdeconnect stay in pc; they work under any desktop.
       environment.systemPackages = with pkgs; [
         kde-rounded-corners
+        whitesur-cursors # the cursor theme kdedefaults/kcminputrc names
         kdePackages.plasma-browser-integration
         kdePackages.plasma-vault
         kdePackages.koko
