@@ -17,7 +17,8 @@ enabled = [
     "nightwatch75/todo",
     "aristides/udiskie",
     "thepunkoff/pomodoro",
-    "dotnetrob/cat"
+    "dotnetrob/cat",
+    "shashinh/nixos-dirty"
 ]
 
 [plugin_settings."aristides/udiskie"]
@@ -26,3 +27,6 @@ manager_placement = "attached"
 
 [plugin_settings."thepunkoff/pomodoro"]
 auto-start-breaks = true
+
+[plugin_settings."shashinh/nixos-dirty"]
+repo_path = "~/system-configs"

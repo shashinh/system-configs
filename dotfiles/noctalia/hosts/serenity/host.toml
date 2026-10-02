@@ -28,7 +28,7 @@ thickness = 32
 margin_ends = 250
 start = [ "clock", "workspaces" ]
 center = []
-end = [ "media", "widget", "tray", "notifications", "volume", "group:g2" ]
+end = [ "nixos_dirty", "media", "widget", "tray", "notifications", "volume", "group:g2" ]
 
 [[bar.default.capsule_group]]
 accordion = true

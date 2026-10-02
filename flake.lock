@@ -221,6 +221,26 @@
         "type": "github"
       }
     },
+    "nixos-dirty": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790913702,
+        "narHash": "sha256-XiEqMUjbckXNzzGZkJMnGcWc3znxZEBUjD6oG/mMGE8=",
+        "owner": "shashinh",
+        "repo": "git-status-noctalia-plugin",
+        "rev": "f8825c8fb8334d3cc749d3b7550ea4f6a5c0292a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "shashinh",
+        "repo": "git-status-noctalia-plugin",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "inputs": {
         "nixpkgs": "nixpkgs_2"
@@ -368,6 +388,7 @@
         "impermanence": "impermanence",
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
+        "nixos-dirty": "nixos-dirty",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-zotero": "nixpkgs-zotero",
