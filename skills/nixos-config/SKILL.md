@@ -159,7 +159,8 @@ editing the shared module:
 - App config files: a per-host fragment under
   `dotfiles/<app>/hosts/<hostname>/`, linked by hostname (niri: `host.kdl`,
   included last so it overrides: outputs, column widths, laptop input, host binds;
-  `noctalia.kdl`; Noctalia: `host.toml`, linked as `zz-host.toml` so it loads after
+  noctalia.kdl is generated machine-local and optionally included, not vendored;
+  Noctalia: `host.toml`, linked as `zz-host.toml` so it loads after
   the shared files and overrides them). To keep a shared file off one host:
   `xdg.configFile."<app>/<file>".enable = lib.mkForce false;` host-side.
 - Noctalia GUI changes go to `~/.local/state/noctalia/settings.toml`,
