@@ -1,4 +1,7 @@
 # Host-specific packages and containers.
+# (nwg-look, adw-gtk3, papirus-icon-theme, udiskie, okular and ddcutil moved
+# to modules/features/noctalia/desktop-packages.nix on 2026-10-01: they belong
+# to the niri + Noctalia desktop, not to this hardware.)
 {
   flake.modules.nixos.nostromo =
     { pkgs, ... }:
@@ -10,14 +13,6 @@
         wl-clipboard # wl-copy / wl-paste
         xdg-utils # xdg-open etc.
         evtest
-
-        ddcutil
-        nwg-look
-        adw-gtk3
-        papirus-icon-theme
-        udiskie
-
-        kdePackages.okular
       ];
 
       # Rootless Podman (no persistent root daemon, unlike Docker).

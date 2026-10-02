@@ -14,9 +14,8 @@
       nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
       hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-      # i2c for external monitor control (ddcutil).
-      hardware.i2c.enable = true;
-      users.users.shashin.extraGroups = [ "i2c" ];
+      # i2c for ddcutil now comes with the noctalia feature
+      # (modules/features/noctalia/desktop-packages.nix).
 
       #QMK support
       hardware.keyboard.qmk.enable = true;
