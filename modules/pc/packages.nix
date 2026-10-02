@@ -69,13 +69,8 @@
         tldr
         piper
         libratbag
-        kdePackages.koko
         kdePackages.kcalc
-        kdePackages.plasma-browser-integration
         kdePackages.kdenlive
-        kdePackages.plasma-vault
-        kdePackages.keditbookmarks
-        kde-rounded-corners
         zip
         unzip
         amdgpu_top
