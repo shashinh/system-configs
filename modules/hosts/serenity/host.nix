@@ -18,6 +18,7 @@
       # Features (modules/features/) — importing is what enables them.
       plasma
       gaming
+      moonshine
       lact
       nas
       llama-swap
