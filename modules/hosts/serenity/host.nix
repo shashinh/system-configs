@@ -1,4 +1,5 @@
-# serenity — Framework Desktop (AMD AI Max+ 395), Plasma 6 desktop.
+# serenity — Framework Desktop (AMD AI Max+ 395), niri + Noctalia desktop,
+# gaming and local LLM serving.
 # Sibling files (hardware-bound config) merge into
 # `flake.modules.nixos.serenity`; reusable behavior comes from the
 # features imported below. This file adds the host identity and wires
@@ -15,8 +16,15 @@
       inputs.nixos-hardware.nixosModules.framework-desktop-amd-ai-max-300-series
       pc
       shashin
+      home-shashin
       # Features (modules/features/) — importing is what enables them.
-      plasma
+      # Desktop: greetd + niri + noctalia (+ thunar). Emergency revert to
+      # KDE: replace those three with `plasma` (see dotfiles/kde/README.md).
+      greetd
+      niri
+      noctalia
+      thunar
+      claude-skills
       gaming
       moonshine
       lact
