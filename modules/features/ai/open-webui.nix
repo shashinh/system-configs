@@ -3,6 +3,26 @@
     { config, lib, pkgs, ... }:
 
 {
+  # torchcodec 0.16.0 compares its mp3 encoder output against the ffmpeg CLI;
+  # with ffmpeg 9.0.1 the 8 kHz mp3 cases drift past tolerance:
+  #   FAILED test_encoders.py::TestEncoder::test_audio_against_cli[...-mp3-8000-...]
+  #     AssertionError: Tensor-likes are not close!
+  # nixpkgs already disables test_audio_against_cli on aarch64/darwin but not
+  # on x86_64-linux. Without this, torchaudio -> sentence-transformers ->
+  # open-webui all fail to build. (Ported from serenity's legacy config.)
+  # TODO: drop once nixpkgs disables these upstream (or torchcodec retunes them).
+  nixpkgs.overlays = [
+    (_: prev: {
+      pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+        (_: pyPrev: {
+          torchcodec = pyPrev.torchcodec.overrideAttrs (old: {
+            disabledTests = (old.disabledTests or []) ++ [ "test_audio_against_cli" ];
+          });
+        })
+      ];
+    })
+  ];
+
   services.open-webui = {
     enable = true;
     host = "127.0.0.1";   # loopback only, consistent with the rest of your stack
