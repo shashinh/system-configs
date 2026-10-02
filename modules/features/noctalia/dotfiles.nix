@@ -10,11 +10,13 @@
 #
 # Shared + per-host, like niri's config:
 #   dotfiles/noctalia/.config/noctalia/*.toml   shared layer (both hosts)
-#   dotfiles/noctalia/hosts/<hostname>/host.toml  per-host keys, linked as
-#                                                 ~/.config/noctalia/host.toml
-# host.toml carries only keys the shared layer does not set (templates with
-# machine-specific paths, per-output brightness), so the merge order between
-# the files never matters. A shared file a host must NOT get is disabled host
+#   dotfiles/noctalia/hosts/<hostname>/host.toml  per-host layer, linked as
+#                                                 ~/.config/noctalia/zz-host.toml
+# Noctalia loads the *.toml files in sorted name order and later files win
+# (tables merge key by key; arrays and scalars are replaced whole), so the
+# per-host link is named zz-host.toml to load after every shared file and
+# override it. settings.toml (GUI) still loads last of all. A shared file a
+# host must NOT get is disabled host
 # side: xdg.configFile."noctalia/<file>".enable = lib.mkForce false in
 # modules/hosts/<host>/home.nix.
 #
@@ -60,7 +62,7 @@
           }) vendored
         )
         // {
-          "noctalia/host.toml".source = config.lib.file.mkOutOfStoreSymlink "${hostDir}/host.toml";
+          "noctalia/zz-host.toml".source = config.lib.file.mkOutOfStoreSymlink "${hostDir}/host.toml";
         };
     };
 }
