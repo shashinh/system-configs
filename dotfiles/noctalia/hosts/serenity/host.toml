@@ -63,3 +63,4 @@ transition_duration = 100
 # shashinh/git-status: placed on this bar only (nostromo can add it from the bar editor).
 [widget.git_status]
 type = "shashinh/git-status:dot"
+nixos_mode = true

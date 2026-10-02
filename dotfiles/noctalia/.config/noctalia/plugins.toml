@@ -27,6 +27,3 @@ manager_placement = "attached"
 
 [plugin_settings."thepunkoff/pomodoro"]
 auto-start-breaks = true
-
-[plugin_settings."shashinh/git-status"]
-nixos_mode = true

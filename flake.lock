@@ -130,11 +130,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790914795,
-        "narHash": "sha256-z6M0YoWio0qd8w65RLNmgdlzEr0sBmApS8ibslK9aFA=",
+        "lastModified": 1790916005,
+        "narHash": "sha256-FBoDmQCUkH9RN05jLogCzu41FUrrEy3Y8A3RlAAu97w=",
         "owner": "shashinh",
         "repo": "git-status-noctalia-plugin",
-        "rev": "90631ba53d8e08c2e01d6f2f01c3b110d597086e",
+        "rev": "87d43d51c9943c95c967b18508e9c9aa7dedd4df",
         "type": "github"
       },
       "original": {
