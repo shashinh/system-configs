@@ -9,14 +9,15 @@ This guide takes you from a blank machine to a fully running NixOS system with:
 
 This guide covers **both hosts** in the flake:
 - **serenity** — Framework Desktop AI Max+ 395; two encrypted drives;
-  KDE Plasma 6 with Plasma Login Manager (PLM)
+  niri + Noctalia with greetd/tuigreet, home-manager, gaming, moonshine
+  game streaming, local LLM stack (KDE Plasma kept as a dormant `plasma`
+  feature for emergency revert, see `dotfiles/kde/README.md`)
 - **nostromo** — Framework 13 Ryzen 7840U; one encrypted drive;
-  niri + Noctalia with greetd/tuigreet as the greeter
+  niri + Noctalia with greetd/tuigreet, home-manager, fingerprint reader
 
 Anywhere you see `$HOST`, substitute `serenity` or `nostromo` depending on which
-machine you're installing. A few phases are called out as host-specific where
-the two machines genuinely differ (desktop stack, fingerprint reader hardware,
-disk layout).
+machine you're installing. The two machines share one user experience; the
+phases called out as host-specific concern fingerprint hardware and disk layout.
 
 **Phases at a glance**
 
@@ -29,7 +30,7 @@ disk layout).
 | 5 | First boot verification | Installed system |
 | 6 | Enroll Secure Boot keys, enable lanzaboote | Installed system |
 | 7 | Enroll LUKS to TPM2 + PIN | Installed system |
-| 8 | Enroll fingerprints | Installed system |
+| 8 | Enroll fingerprints (nostromo only) | Installed system |
 | 9 | Enable impermanence (optional, your schedule) | Installed system |
 
 ---
@@ -63,11 +64,14 @@ the exact same system months later.
 
 Key commands you will use after the install:
 ```
-nixos-rebuild switch       # rebuild and activate the running system
-nix flake update           # update ALL inputs — do this deliberately, then rebuild-test
-nix flake update nixpkgs   # update only nixpkgs
+sudo nixos-rebuild switch --flake ~/system-configs#$HOST   # rebuild and activate
+nix flake update <input>   # update ONE input deliberately; never a bare `nix flake update` here
 nix run .#write-flake      # regenerate flake.nix after declaring a new input
 ```
+Both hosts share one `flake.lock`, so an input bump reaches the other host
+at its next switch. The `nixos-config` skill (`skills/nixos-config/SKILL.md`,
+installed into `~/.claude/skills/` by home-manager) has the recipes and the
+verification ritual.
 
 During install you use `nixos-install`.
 
@@ -342,6 +346,15 @@ nix flake check --no-build
 > - Hardware modules out of date (check `modules/hosts/$HOST/hardware.nix`
 >   against the generated scan from 4.1)
 
+### 4.3b Secrets on a fresh machine
+
+The config decrypts `secrets/common.yaml` with the machine's SSH host key.
+A fresh install does not have the enrolled key yet, so the first activation
+logs a sops decryption error and the secret-backed files are absent until
+Phase 5.4 enrolls the new key (or the old key is restored into
+`/mnt/etc/ssh/` before `nixos-install`). The system itself installs and
+boots regardless.
+
 ### 4.4 Fresh machine only: temporarily boot with systemd-boot
 
 The committed config has lanzaboote **enabled** (`modules/pc/boot.nix`) —
@@ -369,7 +382,7 @@ nixos-install --flake /mnt/etc/nixos#$HOST --no-root-passwd
 > speed. You will see lines like:
 > ```
 > copying path '/nix/store/...' from 'https://cache.nixos.org'...
-> building '/nix/store/...nixos-system-serenity-25.11...'
+> building '/nix/store/...nixos-system-serenity-26.11...'
 > ```
 > At the end:
 > ```
@@ -409,9 +422,8 @@ Remove the USB when the screen goes dark. The machine will boot from the NVMe.
 > see a second prompt for cryptdata (the 2 TB drive) — enter the same (or
 > your chosen) passphrase.
 >
-> **After the prompt(s):** systemd finishes booting and the greeter appears —
-> the Plasma Login Manager (PLM) screen on serenity, the tuigreet text
-> greeter on nostromo.
+> **After the prompt(s):** systemd finishes booting and the tuigreet text
+> greeter appears on both hosts.
 
 ---
 
@@ -419,22 +431,17 @@ Remove the USB when the screen goes dark. The machine will boot from the NVMe.
 
 ### 5.1 Log in
 
-**serenity:** at the PLM login screen, click your username (shashin) and
-enter your password.
-
-> **What you see:** KDE Plasma (Wayland). PLM is KDE-specific by design — there's
-> no session picker for alternate window managers the way SDDM had one.
-
-**nostromo:** at the tuigreet text greeter, type your username and password.
+Both hosts use the tuigreet text greeter: type your username and password.
 tuigreet remembers the last-picked session (`--remember-session`); on the
 very first boot pick the **niri** session if prompted.
 
-> **What you see:** the niri compositor with the Noctalia bar/shell.
+> **What you see:** the niri compositor with the Noctalia bar/shell. On a
+> fresh machine Noctalia starts without a wallpaper or plugins; see 5.5.
 
 ### 5.2 Basic checks
 
-Open a terminal — Konsole on serenity (press **SUPER** and search for it),
-kitty on nostromo (launch it from Noctalia's launcher).
+Open a terminal: kitty, from Noctalia's launcher (Super+Space by default,
+or the keybind in `dotfiles/niri/.config/niri/config.kdl`).
 
 Run these checks:
 ```bash
@@ -467,10 +474,14 @@ ls /dev/tpm*
 ### 5.3 Set up the working checkout
 
 The copy at `/etc/nixos` got the machine installed; day-to-day you work
-from a normal clone in your home directory:
+from a clone in your home directory, and `/etc/nixos` becomes a symlink to it
+(so plain `sudo nixos-rebuild switch` and the `nixos-config` skill both find
+the repo root):
 
 ```bash
-git clone git@github.com:shashinh/system-configs.git ~/system-configs
+git clone -b dendritic git@github.com:shashinh/system-configs.git ~/system-configs
+sudo rm -rf /etc/nixos && sudo ln -sfn /home/shashin/system-configs /etc/nixos
+readlink -f /etc/nixos        # /home/shashin/system-configs
 cd ~/system-configs
 # Bring over any machine-specific edits made during the install
 # (device paths in modules/hosts/$HOST/disko.nix, hardware.nix deltas) —
@@ -479,12 +490,50 @@ git add -A && git commit -m "install: $HOST hardware/disk adjustments" && git pu
 ```
 
 From this point on, the workflow is:
-1. Edit files in the checkout
+1. Edit files in the checkout (the `nixos-config` skill has the recipes)
 2. `sudo nixos-rebuild switch --flake ~/system-configs#$HOST` to apply
-3. `git add -A && git commit && git push` to back up
+3. Review for secrets, `git commit`, `git push` to back up
 
-(Plain `sudo nixos-rebuild switch` keeps using `/etc/nixos` — either keep
-that copy in sync, or remove it and always pass `--flake`.)
+### 5.4 Secrets: enroll the new host key
+
+Both hosts decrypt `secrets/common.yaml` with their SSH host key
+(`modules/pc/sops.nix`). A fresh install has a **new** host key, so sops
+cannot decrypt until the key is enrolled. Either restore the old
+`/etc/ssh/ssh_host_ed25519_key{,.pub}` from backup before the first
+rebuild, or from a working machine (the operator key lives there):
+
+```bash
+ssh $HOST 'cat /etc/ssh/ssh_host_ed25519_key.pub' | ssh-to-age   # not ssh-keyscan
+# paste the age key into .sops.yaml (keys + creation_rules), then
+sops updatekeys secrets/common.yaml
+git commit -am "sops: enroll $HOST's new host key" && git push
+```
+
+Then pull on the new host and rebuild. Until then the rebuild still works
+but the secret-backed files (Noctalia's `wallhaven.toml`) are missing and
+the activation log shows the sops error; there is no `sops-install-secrets`
+unit to watch on these hosts, sops runs as an activation step.
+
+### 5.5 First login into the niri + Noctalia session
+
+- **Existing home directory** (reinstall, or migrating a machine): files that
+  home-manager owns must not pre-exist with other content, or activation
+  fails. Before the first switch: `stow -D` any old dotfile links, and move
+  `~/.bashrc`, `~/.gitconfig`, `~/.config/mimeapps.list`, `~/.gtkrc-2.0` and
+  `~/.config/gtk-{3,4}.0/{settings.ini,gtk.css}` aside. Then check
+  `journalctl -u home-manager-shashin.service -b` for `clobber|skipped`.
+- **Noctalia:** pick a wallpaper (the palette is derived from it); install
+  the plugins listed in `dotfiles/noctalia/.config/noctalia/plugins.toml`
+  from Noctalia's plugin browser (not automatic); enable Settings → Color
+  Scheme → Templates → Advanced → "Enable User Templates" for the nvim
+  colours. GUI changes go to `~/.local/state/noctalia/settings.toml`, which
+  is per machine; hand-written per-host keys go to
+  `dotfiles/noctalia/hosts/$HOST/host.toml`.
+- **Stow packages** not handled by home-manager:
+  `cd ~/system-configs/dotfiles && stow htop gnupg claude`.
+- **Keyring:** Electron/Chromium apps store their secrets in gnome-keyring
+  (unlocked at login by PAM). On a machine that previously ran Plasma see
+  the troubleshooting entry about KWallet.
 
 ---
 
@@ -917,8 +966,12 @@ To activate the root wipe-on-boot:
 # Apply a config change (from your working checkout)
 sudo nixos-rebuild switch --flake ~/system-configs#$HOST
 
-# Update all inputs, then rebuild — deliberate act, rebuild-test after
-nix flake update && sudo nixos-rebuild switch --flake ~/system-configs#$HOST
+# Update inputs — never a bare `nix flake update` on these machines. One
+# input at a time, deliberately, then build and compare before switching:
+nix flake update nixpkgs
+nixos-rebuild build --flake ~/system-configs#$HOST && nix run nixpkgs#nvd -- diff /run/current-system ./result
+# Both hosts share one flake.lock: a bump lands on the other host at its next
+# switch (kernel and lanzaboote included). Keep the LUKS passphrase at hand.
 
 # Roll back to the previous generation (if something broke)
 sudo nixos-rebuild switch --rollback
@@ -973,18 +1026,37 @@ sudo systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=0+7 --t
 If this happens often enough to be annoying, see the tradeoff note in
 Phase 7.2 about dropping PCR 0 from the enrollment.
 
-### Plasma Login Manager shows a blank screen (serenity)
-Check the PLM/greeter logs: `journalctl -u plasmalogin` (unit name may vary —
-`systemctl list-units | grep -i plasma` to confirm). If PLM itself won't
-start, you can drop to a TTY (Ctrl+Alt+F2) and check
-`journalctl -b -u display-manager`.
-
-### tuigreet doesn't appear / greeter loops (nostromo)
+### tuigreet doesn't appear / greeter loops (both hosts)
 Check `journalctl -b -u greetd`. tuigreet's config is generated to
 `/etc/tuigreet/config.toml` by `modules/features/greetd.nix`; a bad
 session entry there (or a broken niri session) sends you back to the
 greeter after login — check `journalctl -b --user -u niri` from a TTY
-(Ctrl+Alt+F2).
+(Ctrl+Alt+F2). niri refuses its whole config if an `include` is missing:
+`dotfiles/niri/hosts/$HOST/{host,noctalia}.kdl` must exist for the host.
+
+### home-manager activation failed: "would be clobbered"
+A file home-manager wants to own already exists with different content.
+`journalctl -u home-manager-shashin.service -b` names it. Move it aside
+(`mv <file> <file>.pre-hm`) and re-run activation:
+`sudo systemctl restart home-manager-shashin.service`. An identical file is
+silently skipped instead (look for "will be skipped since they are the same").
+
+### An Electron/Chromium app says its database is locked or cannot be decrypted
+Its secrets were wrapped by a different keyring (KWallet under Plasma,
+gnome-keyring under niri). Signal in particular refuses to open the database
+when its recorded `safeStorageBackend` differs. Recipe (copy the old wrapping
+password across, then update the recorded backend) in the private workspace,
+`serenity/SIGNAL-KEYRING-MIGRATION.md`. Other apps just need a fresh sign-in.
+
+### Noctalia plugins show as broken
+The vendored `plugins.toml` enables plugins but Noctalia does not fetch them.
+Install each from Noctalia's plugin browser once; they live under
+`~/.local/state/noctalia/plugins/`.
+
+### Reverting serenity to KDE Plasma
+Swap `greetd niri noctalia` for `plasma` in `modules/hosts/serenity/host.nix`
+and rebuild with `boot` + reboot. `dotfiles/kde/README.md` has the full
+recipe and its limitations.
 
 ### Secure Boot verification fails after a nixos-rebuild
 Lanzaboote signs new generations automatically during `nixos-rebuild switch`.
@@ -1021,7 +1093,7 @@ If it failed, the TPM slot for cryptdata may need re-enrollment.
 - [nix-community/disko](https://github.com/nix-community/disko)
 - [nix-community/lanzaboote — Prepare your system](https://github.com/nix-community/lanzaboote/blob/master/docs/getting-started/prepare-your-system.md)
   (current upstream example uses `pkiBundle = "/var/lib/sbctl"`, matching this repo's configs)
-- [NixOS Wiki — Plasma Login Manager](https://wiki.nixos.org/wiki/Plasma_Login_Manager)
-- [NixOS Wiki — KDE](https://wiki.nixos.org/wiki/KDE)
+- [niri wiki](https://github.com/YaLTeR/niri/wiki) and [Noctalia docs](https://docs.noctalia.dev/)
+- [NixOS Wiki — KDE](https://wiki.nixos.org/wiki/KDE) (only relevant for the dormant `plasma` revert feature)
 - [Secure Boot & TPM FDE on NixOS — jnsgr.uk](https://jnsgr.uk/2024/04/nixos-secure-boot-tpm-fde/)
 - [NixOS Framework Partnership Announcement](https://nixos.org/blog/announcements/2026/framework-partnership-announcement/)
