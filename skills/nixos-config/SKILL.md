@@ -285,6 +285,33 @@ claude-code-statusline is declared in both `pc/packages.nix` and
   in `modules/users/shashin/firefox.nix`). It still takes `inputs` as a
   module argument, so convert it to the closure style when wiring.
 
+## Before committing
+
+Every commit is reviewed for secrets before it is made. `system-configs` is a
+public repo; a leaked value cannot be unpublished.
+
+1. Stage only the intended files (`git add <paths>`), then read every hunk of
+   `git diff --cached`.
+2. Grep the added lines and justify every hit:
+
+   ```bash
+   git diff --cached -U0 | grep -E "^\+" | grep -v "^+++" \
+     | grep -niE "age1|AGE-SECRET|PRIVATE KEY|api_key|token|passw|secret|sk-[A-Za-z0-9]{8}"
+   ```
+
+   Known non-secrets: `sk-local` and the `local-llama-swap` dummy token
+   (llama-swap has no auth), the `$SEARX_SECRET_KEY` placeholder, sops
+   placeholders (`config.sops.placeholder.*`), age *public* keys in
+   `.sops.yaml`, and the NAS address and credentials *path* in `nas.nix`.
+3. When vendoring files an application wrote (dotfiles, exported configs),
+   also grep the staged tree for `password`, `token`, `Certificate`, `key=`,
+   and never add key material, wallets, certificates, device pairings
+   (`kdeconnect/`), clipboard history or caches.
+4. A secret value goes in `secrets/*.yaml` via sops (see Secrets); the
+   operator-only notes stay in the private workspace, not here.
+5. `nix flake check --no-build` and the verification ritual below must have
+   passed on the exact tree being committed.
+
 ## Verification ritual
 
 Run this after every change, before committing:
