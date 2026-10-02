@@ -24,7 +24,7 @@ description: Use when the user asks to look at, investigate, edit, extend or reb
 | Host | Hardware | Desktop | home-manager |
 |---|---|---|---|
 | nostromo | Framework 13, AMD 7040 | niri + Noctalia (greetd) | yes (`home-shashin`) |
-| serenity | Framework Desktop, AI Max+ 395 | Plasma 6 | no |
+| serenity | Framework Desktop, AI Max+ 395 | niri + Noctalia (greetd) | yes (`home-shashin`) |
 
 ## Invariants: internalize before editing
 
@@ -92,7 +92,8 @@ feature between hosts means editing two import lists. The file never moves.
 Existing feature names: plasma, greetd, niri, noctalia, thunar, gaming,
 fingerprint, printing, lact, nas, llama-swap, open-webui, searxng,
 claude-skills. Dependencies: llama-swap depends on lact's group. plasma and
-greetd are mutually exclusive, because both claim the display manager. niri,
+greetd are mutually exclusive, because both claim the display manager
+   (plasma is dormant: the KDE revert for serenity, see dotfiles/kde/README.md). niri,
 noctalia and claude-skills need home-manager on the host (see next).
 
 ### Feature with a home-manager half
@@ -141,6 +142,27 @@ Escalation ladder:
 3. Declare a proper option inside the feature's deferred module
    (`options.features.<name>.<knob> = lib.mkOption { … }`) and have hosts
    set it. Use this when the knob has no existing NixOS option.
+
+### Per-host override of shared config (the rule)
+
+Shared values live in `pc`, a feature, or `homeManager.shashin`; with no
+host-specific config a host looks and behaves like the other. A host
+overrides in its own files only (`modules/hosts/<host>/*.nix`), never by
+editing the shared module:
+
+- NixOS options: additive merge for lists/attrsets, `lib.mkForce` for
+  scalars (previous recipe).
+- home-manager options: the same, through
+  `home-manager.users.shashin.<option> = lib.mkForce …;` in a
+  `flake.modules.nixos.<host>` fragment (see
+  `modules/hosts/serenity/home.nix`: GTK dpi, a disabled shared file).
+- App config files: a per-host fragment under
+  `dotfiles/<app>/hosts/<hostname>/`, linked by hostname (niri: `host.kdl`,
+  `noctalia.kdl`; Noctalia: `host.toml`, which only holds keys the shared
+  layer does not set). To keep a shared file off one host:
+  `xdg.configFile."<app>/<file>".enable = lib.mkForce false;` host-side.
+- Noctalia GUI changes go to `~/.local/state/noctalia/settings.toml`,
+  machine-local by construction; they never reach the shared files.
 
 ### Split an app's dotfile into shared + per-host parts
 
@@ -363,7 +385,6 @@ nix eval --raw .#nixosConfigurations.nostromo.config.system.build.toplevel.drvPa
   over, and read the `checkLinkTargets` output, not just the exit status.
 - **New files must be `git add`ed** before `nix eval`/`build`. A flake only
   sees tracked files.
-- The serenity fonts quirk is intentional: `fontconfig.defaultFonts` names
-  JetBrainsMono Nerd Font, which serenity's `fonts.packages` does not
-  install. Fixing it changes serenity's closure, so do it deliberately, not
-  as a side effect.
+- Fonts are shared (`modules/pc/fonts.nix`) since 2026-10-01; both hosts
+  install everything `fontconfig.defaultFonts` names. The old serenity quirk
+  (JetBrainsMono named but not installed) is gone.

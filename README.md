@@ -5,8 +5,13 @@ pattern.
 
 | Host | Hardware | Role |
 |------|----------|------|
-| `serenity` | Framework Desktop (AMD AI Max+ 395) | Plasma 6 desktop, gaming, local LLM serving |
+| `serenity` | Framework Desktop (AMD AI Max+ 395) | niri + Noctalia desktop, home-manager, gaming, game streaming, local LLM serving |
 | `nostromo` | Framework 13 (AMD 7040) | niri + Noctalia laptop, home-manager |
+
+Both hosts share the same user experience by default; per-host differences
+live only under `modules/hosts/<host>/` and `dotfiles/<app>/hosts/<host>/`
+(see "Configuring a feature per host"). `dotfiles/kde/` is the backed-up KDE
+configuration behind the dormant `plasma` feature (emergency revert; see its README).
 
 Rebuild a host from a checkout of this repo:
 
@@ -117,7 +122,9 @@ dotfiles/                  stow-shaped tree. Most entries are applied manually
                            with GNU stow; niri/ and noctalia/ are instead linked
                            by home-manager as out-of-store symlinks (edits apply
                            without a rebuild, and show up as a dirty tree) —
-                           do not stow those two
+                           do not stow those two. kde/ is the dormant KDE
+                           backup (see dotfiles/kde/README.md); <app>/hosts/<host>/
+                           holds per-host fragments (niri, noctalia)
 INSTALL.md                 from-blank-machine install runbook
 ```
 
