@@ -158,6 +158,7 @@ editing the shared module:
   `modules/hosts/serenity/home.nix`: GTK dpi, a disabled shared file).
 - App config files: a per-host fragment under
   `dotfiles/<app>/hosts/<hostname>/`, linked by hostname (niri: `host.kdl`,
+  included last so it overrides: outputs, column widths, laptop input, host binds;
   `noctalia.kdl`; Noctalia: `host.toml`, which only holds keys the shared
   layer does not set). To keep a shared file off one host:
   `xdg.configFile."<app>/<file>".enable = lib.mkForce false;` host-side.

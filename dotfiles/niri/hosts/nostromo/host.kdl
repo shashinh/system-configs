@@ -69,3 +69,36 @@ output "Dell Inc. DELL U2723QE F46X3P3" {
   transform "normal"
   // TODO figure out logical position wrt internal display
 }
+
+// ─── Layout: column widths for the laptop panel / 4K monitor ────────────────
+// Mod+R cycles the presets; new windows open at default-column-width.
+layout {
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.5; }
+}
+
+// ─── Laptop input devices (merged into the shared input section) ────────────
+input {
+    touchpad {
+        tap
+        natural-scroll
+        // accel-speed 0.2
+        // accel-profile "flat"
+        // disabled-on-external-mouse
+    }
+    trackpoint {
+        // natural-scroll
+        // accel-speed 0.2
+    }
+}
+
+// ─── Host-only binds ────────────────────────────────────────────────────────
+binds {
+    // Turn the internal display on/off, for when the laptop is docked to the
+    // external monitors (untested).
+    Mod+Shift+1 hotkey-overlay-title="Turn on/off eDP-1" {spawn-sh "niri msg outputs | grep -n2 eDP | grep -q Disabled && { echo off; niri msg output eDP-1 on; } || { echo on; niri msg output eDP-1 off; }";}
+}

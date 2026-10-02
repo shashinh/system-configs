@@ -87,37 +87,14 @@ input {
     // Next sections include libinput settings.
     // Omitting settings disables them, or leaves them at their default values.
     // All commented-out settings here are examples, not defaults.
-    touchpad {
-        // off
-        tap
-        // dwt
-        // dwtp
-        // drag false
-        // drag-lock
-        natural-scroll
-        // accel-speed 0.2
-        // accel-profile "flat"
-        // scroll-method "two-finger"
-        // disabled-on-external-mouse
-    }
-
+    // touchpad and trackpoint are laptop hardware: configured in
+    // dotfiles/niri/hosts/nostromo/host.kdl (the input section merges).
     mouse {
         // off
         // natural-scroll
         // accel-speed 0.2
         // accel-profile "flat"
         // scroll-method "no-scroll"
-    }
-
-    trackpoint {
-        // off
-        // natural-scroll
-        // accel-speed 0.2
-        // accel-profile "flat"
-        // scroll-method "on-button-down"
-        // scroll-button 273
-        // scroll-button-lock
-        // middle-emulation
     }
 
     // Uncomment this to make the mouse warp to the center of newly focused windows.
@@ -128,52 +105,9 @@ input {
     // focus-follows-mouse max-scroll-amount="0%"
 }
 
-// You can configure outputs by their name, which you can find
-// by running `niri msg outputs` while inside a niri instance.
-// The built-in laptop monitor is usually called "eDP-1".
-// Find more information on the wiki:
-// https://niri-wm.github.io/niri/Configuration:-Outputs
-// Remember to uncomment the node by removing "/-"!
-/-output "eDP-1" {
-    // Uncomment this line to disable this output.
-    // off
-
-    // Resolution and, optionally, refresh rate of the output.
-    // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
-    // If the refresh rate is omitted, niri will pick the highest refresh rate
-    // for the resolution.
-    // If the mode is omitted altogether or is invalid, niri will pick one automatically.
-    // Run `niri msg outputs` while inside a niri instance to list all outputs and their modes.
-    mode "1920x1080@120.030"
-
-    // You can use integer or fractional scale, for example use 1.5 for 150% scale.
-    scale 2
-
-    // Transform allows to rotate the output counter-clockwise, valid values are:
-    // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
-    transform "normal"
-
-    // Position of the output in the global coordinate space.
-    // This affects directional monitor actions like "focus-monitor-left", and cursor movement.
-    // The cursor can only move between directly adjacent outputs.
-    // Output scale and rotation has to be taken into account for positioning:
-    // outputs are sized in logical, or scaled, pixels.
-    // For example, a 3840×2160 output with scale 2.0 will have a logical size of 1920×1080,
-    // so to put another output directly adjacent to it on the right, set its x to 1920.
-    // If the position is unset or results in an overlap, the output is instead placed
-    // automatically.
-    position x=1280 y=0
-}
-
-// ─── Host-specific configuration ────────────────────────────────────────────
-// Display layout lives per machine in dotfiles/niri/hosts/<hostname>.kdl.
-// home-manager links that file to ~/.config/niri/host.kdl.
-//
-// NOTE: a missing host.kdl is a FATAL parse error — niri refuses the whole
-// config. Any host importing the niri feature must have a hosts/<name>.kdl.
-include "host.kdl"
-
-
+// Outputs are configured per machine in host.kdl (see the include at the end
+// of this file). Find output names with `niri msg outputs`; the wiki has the
+// full reference: https://niri-wm.github.io/niri/Configuration:-Outputs
 
 // Settings that influence how windows are positioned and sized.
 // Find more information on the wiki:
@@ -195,26 +129,14 @@ layout {
 
     empty-workspace-above-first
 
-    // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
-    preset-column-widths {
-        // Proportion sets the width as a fraction of the output width, taking gaps into account.
-        // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
-        // The default preset widths are 1/3, 1/2 and 2/3 of the output.
-        proportion 0.33333
-        proportion 0.5
-        proportion 0.66667
-
-        // Fixed sets the width in logical pixels exactly.
-        // fixed 1920
-    }
+    // Column widths are display-bound and live in host.kdl (included at the
+    // end of this file): preset-column-widths (Mod+R cycles them) and
+    // default-column-width (new windows). 50% of a 4K/laptop panel is one
+    // thing, 50% of a 34" ultrawide another.
 
     // You can also customize the heights that "switch-preset-window-height" (Mod+Ctrl+Shift+R) toggles between.
     // preset-window-heights { }
 
-    // You can change the default width of the new windows.
-    default-column-width { proportion 0.5; }
-    // If you leave the brackets empty, the windows themselves will decide their initial width.
-    // default-column-width {}
 
     // By default focus ring and border are rendered as a solid background rectangle
     // behind windows. That is, they will show up through semitransparent windows.
@@ -737,10 +659,6 @@ binds {
     // moving the mouse or pressing any other key.
     Mod+Shift+P { power-off-monitors; }
 
-    // a custom binding that can turn the internal display on/off, for when you want
-    // turned off when connected to external displays (haven't tested yet).
-    Mod+Shift+1 hotkey-overlay-title="Turn on/off eDP-1" {spawn-sh "niri msg outputs | grep -n2 eDP | grep -q Disabled && { echo off; niri msg output eDP-1 on; } || { echo on; niri msg output eDP-1 off; }";}
-
     // Core Noctalia binds
     Mod+Space { spawn-sh "noctalia msg panel-toggle launcher"; }
     Mod+S { spawn-sh "noctalia msg panel-toggle control-center"; }
@@ -753,3 +671,16 @@ binds {
 }
 
 include "noctalia.kdl"
+
+// ─── Host-specific configuration ────────────────────────────────────────────
+// dotfiles/niri/hosts/<hostname>/host.kdl, linked by home-manager to
+// ~/.config/niri/host.kdl. It holds everything display- or hardware-bound:
+// output blocks, default/preset column widths, laptop input devices, host-only
+// binds. It is included LAST on purpose: niri merges includes positionally,
+// so a value set here overrides the shared value above (layout and input
+// merge field by field, a bind with the same key replaces the shared one,
+// outputs and window rules accumulate).
+//
+// NOTE: a missing host.kdl is a FATAL parse error — niri refuses the whole
+// config. Any host importing the niri feature must have its hosts/<name>/ files.
+include "host.kdl"

@@ -15,3 +15,15 @@ output "LG Electronics LG HDR WQHD 307MXZJ91253" {
     transform "normal"
     position x=0 y=0
 }
+
+// ─── Layout: column widths for the 34" 3440x1440 ultrawide ──────────────────
+// Half of this panel is too wide for a default window; a third (~1140 px) is
+// about a 1080p-wide column. Mod+R cycles the presets.
+layout {
+    preset-column-widths {
+        proportion 0.25
+        proportion 0.33333
+        proportion 0.5
+    }
+    default-column-width { proportion 0.33333; }
+}
