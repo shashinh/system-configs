@@ -41,12 +41,15 @@ members = [ "control-center", "clipboard", "status", "screenshot", "bar", "batte
 opacity = 0.5
 padding = 5.0
 
-# Clock stacked for the vertical bar: hours over minutes, thin mono face.
+# Clock stacked for the vertical bar: hours over minutes in a tall condensed
+# face (installed by modules/hosts/serenity/clock-fonts.nix).
 # vertical_format is written exactly as Noctalia's settings UI saved it (a
 # literal backslash-n that Noctalia expands itself).
 [widget.clock]
-font_family = "JetBrainsMonoNL NF Thin"
-scale = 0.75
+font_family = "Big Shoulders Display Thin"
+font_scale = 1.75
+font_weight = 350
+scale = 1.0
 vertical_format = "{:%H\\n%M}"
 tooltip_format = "{:%A, %B %d, %Y}"
 
