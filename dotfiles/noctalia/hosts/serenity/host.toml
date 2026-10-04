@@ -15,8 +15,8 @@
 # (nostromo's is under Documents/nostromo-nix, see the shared obsidian.toml,
 # which serenity disables in modules/hosts/serenity/home.nix).
 [theme.templates.user.obsidian_extra]
-input_path = "/home/$USER/.config/noctalia/Obsidian/obsidian.css"
-output_path = "/home/$USER/Documents/Obsidian Vault/.obsidian/snippets/noctalia.css"
+input_path = "~/.config/noctalia/Obsidian/obsidian.css"
+output_path = "~/Documents/Obsidian Vault/.obsidian/snippets/noctalia.css"
 
 # ─── Bar: vertical, on the left of the 34" ultrawide ────────────────────────
 # Uses the extra vertical space; the todo and cat widgets and the g1 wallpaper

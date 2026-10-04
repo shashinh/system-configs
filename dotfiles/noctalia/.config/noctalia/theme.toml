@@ -20,4 +20,4 @@ wallpaper_scheme = "m3-rainbow"
 
 [theme.templates]
 builtin_ids = [ "btop", "gtk3", "gtk4", "kcolorscheme", "kitty", "niri", "qt" ]
-community_ids = [ "pywalfox", "libreoffice", "neovim", "obsidian", "vscode", "fastfetch", "tmux", "yazi" ]
+community_ids = [ "pywalfox", "libreoffice", "neovim", "vscode", "fastfetch", "tmux", "yazi" ]

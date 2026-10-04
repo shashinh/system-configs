@@ -10,11 +10,11 @@
   --background-modifier-form-field: {{colors.surface_container_lowest.default.hex}};
   --background-modifier-form-field-highlighted: {{colors.surface_container_low.default.hex}};
   --background-modifier-box-shadow: {{colors.shadow.default.hex}};
-  --background-modifier-success: {{colors.primary.default.hex | set_alpha 0.15}};
-  --background-modifier-error:  {{colors.error.default.hex | set_alpha 0.15}};
+  --background-modifier-success: {{colors.primary.default.rgba | set_alpha 0.15}};
+  --background-modifier-error:  {{colors.error.default.rgba | set_alpha 0.15}};
   --background-modifier-error-rgb: {{colors.error.default.rgb_csv}};
-  --background-modifier-error-hover: {{colors.error.default.hex | set_alpha 0.25}};
-  --background-modifier-cover:  {{colors.shadow.default.hex | set_alpha 0.6}};
+  --background-modifier-error-hover: {{colors.error.default.rgba | set_alpha 0.25}};
+  --background-modifier-cover:  {{colors.shadow.default.rgba | set_alpha 0.6}};
 
   /* Text colors */
   --text-normal:                {{colors.on_surface.default.hex}};
@@ -24,9 +24,9 @@
   --text-on-accent-inverted:    {{colors.primary.default.hex}};
   --text-error:                 {{colors.error.default.hex}};
   --text-success:               {{colors.primary.default.hex}};
-  --text-selection:             {{colors.primary.default.hex | set_alpha 0.2}};
+  --text-selection:             {{colors.primary.default.rgba | set_alpha 0.2}};
   --text-accent:                {{colors.primary.default.hex}};
-  --text-highlight-bg:          {{colors.tertiary.default.hex | set_alpha 0.25}};
+  --text-highlight-bg:          {{colors.tertiary.default.rgba | set_alpha 0.25}};
 
   /* Interactive accent */
   --interactive-normal:         {{colors.surface_container.default.hex}};
@@ -38,8 +38,8 @@
 
   /* Scrollbar */
   --scrollbar-bg:               {{colors.surface.default.hex}};
-  --scrollbar-thumb-bg:         {{colors.outline_variant.default.hex | set_alpha 0.3}};
-  --scrollbar-active-thumb-bg:  {{colors.outline.default.hex | set_alpha 0.5}};
+  --scrollbar-thumb-bg:         {{colors.outline_variant.default.rgba | set_alpha 0.3}};
+  --scrollbar-active-thumb-bg:  {{colors.outline.default.rgba | set_alpha 0.5}};
 
   /* Tab styling */
   --tab-text-color:             {{colors.on_surface_variant.default.hex}};
@@ -53,7 +53,7 @@
   --nav-item-color-hover:       {{colors.on_surface.default.hex}};
   --nav-item-color-active:      {{colors.primary.default.hex}};
   --nav-item-background-hover:  {{colors.surface_container_high.default.hex}};
-  --nav-item-background-active: {{colors.primary.default.hex | set_alpha 0.12}};
+  --nav-item-background-active: {{colors.primary.default.rgba | set_alpha 0.12}};
   --nav-collapse-icon-color:    {{colors.outline.default.hex}};
 
   /* Titlebar */
@@ -79,10 +79,10 @@
   /* Links */
   --link-color:                 {{colors.primary.default.hex}};
   --link-color-hover:           {{colors.primary.default.hex | lighten 0.1}};
-  --link-decoration-color:      {{colors.primary.default.hex | set_alpha 0.4}};
+  --link-decoration-color:      {{colors.primary.default.rgba | set_alpha 0.4}};
   --link-external-color:        {{colors.tertiary.default.hex}};
   --link-external-color-hover:  {{colors.tertiary.default.hex | lighten 0.1}};
-  --link-unresolved-color:      {{colors.error.default.hex | set_alpha 0.7}};
+  --link-unresolved-color:      {{colors.error.default.rgba | set_alpha 0.7}};
 
   /* Code */
   --code-normal:                {{colors.secondary.default.hex}};
@@ -90,7 +90,7 @@
   --code-comment:               {{colors.outline.default.hex}};
 
   /* Blockquotes */
-  --blockquote-border-color:    {{colors.primary.default.hex | set_alpha 0.5}};
+  --blockquote-border-color:    {{colors.primary.default.rgba | set_alpha 0.5}};
 
   /* Checkbox */
   --checkbox-color:             {{colors.primary.default.hex}};
@@ -98,7 +98,7 @@
   --checkbox-border-color:      {{colors.outline.default.hex}};
 
   /* Graph view */
-  --graph-line:                 {{colors.outline_variant.default.hex | set_alpha 0.4}};
+  --graph-line:                 {{colors.outline_variant.default.rgba | set_alpha 0.4}};
   --graph-node:                 {{colors.primary.default.hex}};
   --graph-node-focused:         {{colors.tertiary.default.hex}};
   --graph-node-tag:             {{colors.secondary.default.hex}};
@@ -108,13 +108,13 @@
   --vault-name-color:           {{colors.on_surface.default.hex}};
 
   /* Indentation guide */
-  --indentation-guide-color:    {{colors.outline_variant.default.hex | set_alpha 0.3}};
-  --indentation-guide-color-active: {{colors.outline_variant.default.hex | set_alpha 0.6}};
+  --indentation-guide-color:    {{colors.outline_variant.default.rgba | set_alpha 0.3}};
+  --indentation-guide-color-active: {{colors.outline_variant.default.rgba | set_alpha 0.6}};
 
   /* Obsidian 1.0+ variables */
   --color-accent:               {{colors.primary.default.hex}};
-  --color-accent-1:             {{colors.primary.default.hex | set_alpha 0.12}};
-  --color-accent-2:             {{colors.primary.default.hex | set_alpha 0.25}};
+  --color-accent-1:             {{colors.primary.default.rgba | set_alpha 0.12}};
+  --color-accent-2:             {{colors.primary.default.rgba | set_alpha 0.25}};
 
   /* Icon colors */
   --icon-color:                 {{colors.on_surface_variant.default.hex}};
@@ -145,7 +145,7 @@
   --italic-color:               {{colors.on_surface.default.hex}};
 
   /* List markers */
-  --list-marker-color:          {{colors.primary.default.hex | set_alpha 0.7}};
+  --list-marker-color:          {{colors.primary.default.rgba | set_alpha 0.7}};
 }
 
 .theme-light {
@@ -158,11 +158,11 @@
   --background-modifier-form-field: {{colors.surface_container_lowest.light.hex}};
   --background-modifier-form-field-highlighted: {{colors.surface_container_low.light.hex}};
   --background-modifier-box-shadow: {{colors.shadow.light.hex}};
-  --background-modifier-success: {{colors.primary.light.hex | set_alpha 0.1}};
-  --background-modifier-error:  {{colors.error.light.hex | set_alpha 0.1}};
+  --background-modifier-success: {{colors.primary.light.rgba | set_alpha 0.1}};
+  --background-modifier-error:  {{colors.error.light.rgba | set_alpha 0.1}};
   --background-modifier-error-rgb: {{colors.error.light.rgb_csv}};
-  --background-modifier-error-hover: {{colors.error.light.hex | set_alpha 0.2}};
-  --background-modifier-cover:  {{colors.shadow.light.hex | set_alpha 0.4}};
+  --background-modifier-error-hover: {{colors.error.light.rgba | set_alpha 0.2}};
+  --background-modifier-cover:  {{colors.shadow.light.rgba | set_alpha 0.4}};
 
   /* Text colors */
   --text-normal:                {{colors.on_surface.light.hex}};
@@ -172,9 +172,9 @@
   --text-on-accent-inverted:    {{colors.primary.light.hex}};
   --text-error:                 {{colors.error.light.hex}};
   --text-success:               {{colors.primary.light.hex}};
-  --text-selection:             {{colors.primary.light.hex | set_alpha 0.15}};
+  --text-selection:             {{colors.primary.light.rgba | set_alpha 0.15}};
   --text-accent:                {{colors.primary.light.hex}};
-  --text-highlight-bg:          {{colors.tertiary.light.hex | set_alpha 0.2}};
+  --text-highlight-bg:          {{colors.tertiary.light.rgba | set_alpha 0.2}};
 
   /* Interactive accent */
   --interactive-normal:         {{colors.surface_container.light.hex}};
@@ -186,8 +186,8 @@
 
   /* Scrollbar */
   --scrollbar-bg:               {{colors.surface.light.hex}};
-  --scrollbar-thumb-bg:         {{colors.outline_variant.light.hex | set_alpha 0.3}};
-  --scrollbar-active-thumb-bg:  {{colors.outline.light.hex | set_alpha 0.5}};
+  --scrollbar-thumb-bg:         {{colors.outline_variant.light.rgba | set_alpha 0.3}};
+  --scrollbar-active-thumb-bg:  {{colors.outline.light.rgba | set_alpha 0.5}};
 
   /* Tab styling */
   --tab-text-color:             {{colors.on_surface_variant.light.hex}};
@@ -201,7 +201,7 @@
   --nav-item-color-hover:       {{colors.on_surface.light.hex}};
   --nav-item-color-active:      {{colors.primary.light.hex}};
   --nav-item-background-hover:  {{colors.surface_container_high.light.hex}};
-  --nav-item-background-active: {{colors.primary.light.hex | set_alpha 0.1}};
+  --nav-item-background-active: {{colors.primary.light.rgba | set_alpha 0.1}};
   --nav-collapse-icon-color:    {{colors.outline.light.hex}};
 
   /* Titlebar */
@@ -227,10 +227,10 @@
   /* Links */
   --link-color:                 {{colors.primary.light.hex}};
   --link-color-hover:           {{colors.primary.light.hex | darken 0.08}};
-  --link-decoration-color:      {{colors.primary.light.hex | set_alpha 0.4}};
+  --link-decoration-color:      {{colors.primary.light.rgba | set_alpha 0.4}};
   --link-external-color:        {{colors.tertiary.light.hex}};
   --link-external-color-hover:  {{colors.tertiary.light.hex | darken 0.08}};
-  --link-unresolved-color:      {{colors.error.light.hex | set_alpha 0.7}};
+  --link-unresolved-color:      {{colors.error.light.rgba | set_alpha 0.7}};
 
   /* Code */
   --code-normal:                {{colors.secondary.light.hex}};
@@ -238,7 +238,7 @@
   --code-comment:               {{colors.outline.light.hex}};
 
   /* Blockquotes */
-  --blockquote-border-color:    {{colors.primary.light.hex | set_alpha 0.5}};
+  --blockquote-border-color:    {{colors.primary.light.rgba | set_alpha 0.5}};
 
   /* Checkbox */
   --checkbox-color:             {{colors.primary.light.hex}};
@@ -246,7 +246,7 @@
   --checkbox-border-color:      {{colors.outline.light.hex}};
 
   /* Graph view */
-  --graph-line:                 {{colors.outline_variant.light.hex | set_alpha 0.4}};
+  --graph-line:                 {{colors.outline_variant.light.rgba | set_alpha 0.4}};
   --graph-node:                 {{colors.primary.light.hex}};
   --graph-node-focused:         {{colors.tertiary.light.hex}};
   --graph-node-tag:             {{colors.secondary.light.hex}};
@@ -256,13 +256,13 @@
   --vault-name-color:           {{colors.on_surface.light.hex}};
 
   /* Indentation guide */
-  --indentation-guide-color:    {{colors.outline_variant.light.hex | set_alpha 0.3}};
-  --indentation-guide-color-active: {{colors.outline_variant.light.hex | set_alpha 0.6}};
+  --indentation-guide-color:    {{colors.outline_variant.light.rgba | set_alpha 0.3}};
+  --indentation-guide-color-active: {{colors.outline_variant.light.rgba | set_alpha 0.6}};
 
   /* Obsidian 1.0+ variables */
   --color-accent:               {{colors.primary.light.hex}};
-  --color-accent-1:             {{colors.primary.light.hex | set_alpha 0.1}};
-  --color-accent-2:             {{colors.primary.light.hex | set_alpha 0.2}};
+  --color-accent-1:             {{colors.primary.light.rgba | set_alpha 0.1}};
+  --color-accent-2:             {{colors.primary.light.rgba | set_alpha 0.2}};
 
   /* Icon colors */
   --icon-color:                 {{colors.on_surface_variant.light.hex}};
@@ -293,5 +293,5 @@
   --italic-color:               {{colors.on_surface.light.hex}};
 
   /* List markers */
-  --list-marker-color:          {{colors.primary.light.hex | set_alpha 0.7}};
+  --list-marker-color:          {{colors.primary.light.rgba | set_alpha 0.7}};
 }
