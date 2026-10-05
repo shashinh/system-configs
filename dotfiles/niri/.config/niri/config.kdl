@@ -261,11 +261,11 @@ layout {
         // off
         on
         hide-when-single-tab
-        //place-within-column
-        gap 4
-        width 3
-        length total-proportion=0.75
-        position "left"
+        place-within-column
+        gap 5
+        width 5
+        length total-proportion=0.50
+        position "top"
         gaps-between-tabs 5
         corner-radius 8
         //active-color "red"
@@ -432,8 +432,8 @@ binds {
     // Mod+Up    { focus-window-up; }
     // Mod+Right { focus-column-right; }
     Mod+H     { focus-column-left; }
-    Mod+J     { focus-window-down; }
-    Mod+K     { focus-window-up; }
+    Mod+J     { focus-window-down-or-top; }
+    Mod+K     { focus-window-up-or-bottom; }
     Mod+L     { focus-column-right; }
 
     // Mod+Ctrl+Left  { move-column-left; }
