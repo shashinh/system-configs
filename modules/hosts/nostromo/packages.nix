@@ -13,6 +13,8 @@
         wl-clipboard # wl-copy / wl-paste
         xdg-utils # xdg-open etc.
         evtest
+        pcsx2
+        ppsspp
       ];
 
       # Rootless Podman (no persistent root daemon, unlike Docker).
