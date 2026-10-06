@@ -102,3 +102,9 @@ binds {
     // external monitors (untested).
     Mod+Shift+1 hotkey-overlay-title="Turn on/off eDP-1" {spawn-sh "niri msg outputs | grep -n2 eDP | grep -q Disabled && { echo off; niri msg output eDP-1 on; } || { echo on; niri msg output eDP-1 off; }";}
 }
+
+// create the "chat" workspace on DP-2 (default work monitor)
+workspace "chat" {
+  open-on-output "DP-2"
+}
+
