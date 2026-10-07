@@ -7,7 +7,7 @@
     {
       home-manager.users.shashin = {
         # 10pt UI font on the 34" 3440x1440 panel at scale 1 (what KDE had
-        # set here); the shared 12.5pt is a laptop choice. Qt follows it.
+        # set here); the shared 11pt is a laptop choice. Qt follows it.
         gtk.font.size = lib.mkForce 10;
 
         # The shared obsidian.toml points at nostromo's vault; serenity's

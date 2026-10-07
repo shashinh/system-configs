@@ -65,10 +65,10 @@ in
     # it with gtk-xft-dpi instead: GTK4 on Wayland ignores settings.ini's
     # value (it takes text-scaling-factor from the settings portal), and Qt
     # on Wayland ignores DPI overrides entirely, so only GTK3 obeyed it.
-    # 12.5 equals the old 10pt at 120 dpi.
+    # (Was 12.5, i.e. the old 10pt at 120 dpi.)
     font = {
       name = "Noto Sans";
-      size = 12.5;
+      size = 11;
     };
 
     theme = {
