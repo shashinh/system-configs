@@ -29,16 +29,13 @@
     # kdeglobals, so set just this key in place (kwriteconfig6 at
     # activation) rather than taking over the file.
     #
-    # Fonts follow gtk.nix. GTK scales its point size by gtk-xft-dpi (120 dpi
-    # shared, 96 on serenity via modules/hosts/serenity/home.nix), while Qt
-    # on Wayland always renders points at 96 dpi; so the Qt size is the GTK
-    # size rescaled to 96 dpi, and a host's GTK dpi override carries over.
+    # Fonts follow gtk.font verbatim, a host's override included: both
+    # toolkits render points at 96 dpi, so equal numbers look equal.
     # The qt*ct GUIs can't save over these files (read-only store links):
     # change fonts here.
     let
       palette = qtct: "${config.xdg.configHome}/${qtct}/colors/noctalia.conf";
-      gtkDpi = config.gtk.gtk3.extraConfig.gtk-xft-dpi / 1024.0;
-      size = toString (config.gtk.font.size * gtkDpi / 96);
+      size = toString config.gtk.font.size;
       # Qt5's 10-field QFont::toString() form (weight 50 = normal), which Qt5
       # writes natively and Qt 6.11 still parses (mapping 50 -> 400); Qt 6
       # rejects shorter strings outright. Quoted, or QSettings splits the

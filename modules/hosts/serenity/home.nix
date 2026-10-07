@@ -6,11 +6,9 @@
     { lib, ... }:
     {
       home-manager.users.shashin = {
-        # 96 dpi for GTK font sizing on the 34" 3440x1440 panel at scale 1
-        # (what KDE had set here); nostromo's shared value of 120 dpi is a
-        # laptop choice. 1024 * 96.
-        gtk.gtk3.extraConfig.gtk-xft-dpi = lib.mkForce 98304;
-        gtk.gtk4.extraConfig.gtk-xft-dpi = lib.mkForce 98304;
+        # 10pt UI font on the 34" 3440x1440 panel at scale 1 (what KDE had
+        # set here); the shared 12.5pt is a laptop choice. Qt follows it.
+        gtk.font.size = lib.mkForce 10;
 
         # The shared obsidian.toml points at nostromo's vault; serenity's
         # template lives in dotfiles/noctalia/hosts/serenity/host.toml.

@@ -60,9 +60,15 @@ in
     enable = true;
     colorScheme = "dark";
 
+    # The one UI font size: GTK3, GTK4 and Qt (qt.nix) all render points at
+    # 96 dpi here, so this number is what every toolkit shows. Don't scale
+    # it with gtk-xft-dpi instead: GTK4 on Wayland ignores settings.ini's
+    # value (it takes text-scaling-factor from the settings portal), and Qt
+    # on Wayland ignores DPI overrides entirely, so only GTK3 obeyed it.
+    # 12.5 equals the old 10pt at 120 dpi.
     font = {
       name = "Noto Sans";
-      size = 10;
+      size = 12.5;
     };
 
     theme = {
@@ -145,7 +151,6 @@ in
       gtk-decoration-layout = buttonLayout;
       gtk-primary-button-warps-slider = true;
       gtk-sound-theme-name = "ocean";
-      gtk-xft-dpi = 122880;
       gtk-toolbar-style = 3;
       gtk-button-images = true;
       gtk-menu-images = true;
@@ -160,7 +165,6 @@ in
       gtk-decoration-layout = buttonLayout;
       gtk-primary-button-warps-slider = true;
       gtk-sound-theme-name = "ocean";
-      gtk-xft-dpi = 122880;
       gtk-cursor-blink = true;
       gtk-cursor-blink-time = 1000;
     };
