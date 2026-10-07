@@ -1,0 +1,31 @@
+[Desktop Entry]
+FullScreen=false
+
+[General]
+LockSidebar=true
+ShowSidebar=false
+
+[Notification Messages]
+presentationInfo=false
+
+[Recent Files]
+File1[$e]=$HOME/oneDrive_shashin-ut/books/pl/Handbook of Model Checking - Clarke, Henzinger, Veith, Bloem.pdf
+File10[$e]=$HOME/Downloads/lo5-feature-briefings.pdf
+File2[$e]=$HOME/Downloads/Teenage Mutant Ninja Turtles – The Last Ronin - Director's Cut (TPB) (2023).cbz
+File3[$e]=$HOME/Games/tis-100/drive_c/GOG Games/TIS-100/TIS-100 Reference Manual.pdf
+File4[$e]=/mnt/nas/optiprox-share/store/comics/Akira (01-38) (1988)/Akira (01-38) (1988)/Akira (1988) #01.cbr
+File5[$e]=/mnt/nas/optiprox-share/store/comics/Akira-Volume 01.cbr
+File6[$e]=/run/media/shashin/KOBOeReader/Comics and Graphic Novels/Gaiman, Neil/The Sandman Deluxe Edition/The Sandman - The Deluxe Edition Book 03 (2021) (digital) (Son of Ultron-Empire).cbr
+File7[$e]=$HOME/Pictures/zerodha/081026/070125-063026.pdf
+File8[$e]=$HOME/Downloads/Form_pdf_980206340310726.pdf
+File9[$e]=$HOME/Downloads/70000000117737104_154276923_2025_AST_SHASHIN - OGE.pdf
+Name1[$e]=Handbook of Model Checking - Clarke, Henzinger, Veith, Bloem.pdf
+Name10[$e]=lo5-feature-briefings.pdf
+Name2[$e]=Teenage Mutant Ninja Turtles – The Last Ronin - Director's Cut (TPB) (2023).cbz
+Name3[$e]=TIS-100 Reference Manual.pdf
+Name4[$e]=Akira (1988) #01.cbr
+Name5[$e]=Akira-Volume 01.cbr
+Name6[$e]=The Sandman - The Deluxe Edition Book 03 (2021) (digital) (Son of Ultron-Empire).cbr
+Name7[$e]=070125-063026.pdf
+Name8[$e]=Form_pdf_980206340310726.pdf
+Name9[$e]=70000000117737104_154276923_2025_AST_SHASHIN - OGE.pdf

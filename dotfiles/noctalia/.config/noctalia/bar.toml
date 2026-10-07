@@ -1,0 +1,69 @@
+# Bar layout and per-widget settings.
+# Migrated from ~/.local/state/noctalia/settings.toml.
+#
+# NOTE: several widgets are provided by plugins (see plugins.toml). A widget
+# whose plugin is not installed/enabled will not render.
+# NOTE: widget.bar is the niri-displays plugin — niri-specific, would need
+# replacing on a Plasma host.
+
+[bar.default]
+center = [ "clock", "widget" ]
+end = [ "media", "todo", "tray", "notifications", "volume", "group:g2" ]
+margin_ends = 150
+start = [ "group:g1", "workspaces", "cat" ]
+thickness = 25
+widget_spacing = 5
+
+[[bar.default.capsule_group]]
+accordion = true
+accordion_direction = "end"
+enabled = true
+fill = "surface_variant"
+id = "g1"
+members = [ "wallpaper", "wallhaven" ]
+opacity = 1.0
+padding = 6.0
+
+[[bar.default.capsule_group]]
+accordion = true
+accordion_direction = "start"
+border = ""
+enabled = true
+fill = "surface_variant"
+id = "g2"
+members = [ "control-center", "clipboard", "status", "screenshot", "bar", "battery", "session" ]
+opacity = 0.5
+padding = 5.0
+
+[widget.bar]
+show_resolution = false
+type = "raycursive/niri-displays:bar"
+
+[widget.cat]
+cat_size = 30
+type = "dotnetrob/cat:cat"
+
+[widget.clock]
+font_weight = 700
+
+[widget.media]
+artist_first = true
+hide_when_no_media = true
+title_scroll = "always"
+
+[widget.status]
+hide_when_empty = true
+type = "aristides/udiskie:status"
+
+[widget.todo]
+type = "nightwatch75/todo:todo"
+
+[widget.volume]
+mute_color = "outline"
+show_label = false
+
+[widget.wallhaven]
+type = "noctalia/wallhaven:wallhaven"
+
+[widget.widget]
+type = "thepunkoff/pomodoro:widget"

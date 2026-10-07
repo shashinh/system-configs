@@ -1,0 +1,33 @@
+[CompactMode]
+PreviewSize=16
+
+[DetailsMode]
+IconSize=22
+PreviewSize=22
+RightPadding=0
+
+[ExtractDialog]
+3440x1440 screen: Height=720
+3440x1440 screen: Width=2016
+DirHistory[$e]=$HOME/Downloads/delete-me/desi/mms/
+
+[General]
+FilterBar=true
+RememberOpenedTabs=false
+ShowFullPathInTitlebar=true
+Version=202
+ViewPropsTimestamp=2026,4,15,1,49,2.314
+
+[IconsMode]
+IconSize=160
+PreviewSize=176
+
+[KFileDialog Settings]
+Places Icons Auto-resize=false
+Places Icons Static Size=22
+
+[MainWindow]
+MenuBar=Disabled
+
+[PreviewSettings]
+Plugins=appimagethumbnail,audiothumbnail,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,mobithumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,svgthumbnail,ffmpegthumbs

@@ -1,0 +1,69 @@
+# serenity's per-host Noctalia layer. Linked to ~/.config/noctalia/zz-host.toml
+# by modules/features/noctalia/dotfiles.nix (source named after the host).
+#
+# Merge order: Noctalia loads every *.toml in ~/.config/noctalia in sorted
+# name order and later files win (tables merge key by key; arrays and scalars
+# are replaced whole). The link is named zz-host.toml so this file loads after
+# all shared files and overrides them. ~/.local/state/noctalia/settings.toml
+# (the GUI layer) still loads after everything and beats this file, so once a
+# GUI change is vendored here, delete it from settings.toml.
+#
+# Machine-local on purpose (stay in settings.toml): wallpaper paths and the
+# lockscreen widget geometry.
+
+# Obsidian theme template: serenity's vault lives at ~/Documents/Obsidian Vault
+# (nostromo's is under Documents/nostromo-nix, see the shared obsidian.toml,
+# which serenity disables in modules/hosts/serenity/home.nix).
+[theme.templates.user.obsidian_extra]
+input_path = "~/.config/noctalia/Obsidian/obsidian.css"
+output_path = "~/Documents/Obsidian Vault/.obsidian/snippets/noctalia.css"
+
+# ─── Bar: vertical, on the left of the 34" ultrawide ────────────────────────
+# Uses the extra vertical space; the todo and cat widgets and the g1 wallpaper
+# group are dropped from this bar. capsule_group is an array, so it replaces
+# the shared list wholesale (g2 only).
+[bar.default]
+position = "left"
+thickness = 32
+margin_ends = 250
+start = [ "clock", "workspaces" ]
+center = []
+end = [ "git_status", "media", "widget", "tray", "notifications", "volume", "group:g2" ]
+
+[[bar.default.capsule_group]]
+accordion = true
+accordion_direction = "start"
+border = ""
+enabled = true
+fill = "surface_variant"
+id = "g2"
+members = [ "control-center", "clipboard", "status", "screenshot", "bar", "battery", "session" ]
+opacity = 0.5
+padding = 5.0
+
+# Clock stacked for the vertical bar: hours over minutes in a tall condensed
+# face (installed by modules/hosts/serenity/clock-fonts.nix).
+# vertical_format is written exactly as Noctalia's settings UI saved it (a
+# literal backslash-n that Noctalia expands itself).
+[widget.clock]
+font_family = "Big Shoulders Display Thin"
+font_scale = 1.75
+font_weight = 350
+scale = 1.0
+vertical_format = "{:%H\\n%M}"
+tooltip_format = "{:%A, %B %d, %Y}"
+
+# Plugins this bar uses (no bongocat, todo or cat on serenity).
+[plugins]
+enabled = [ "noctalia/wallhaven", "raycursive/niri-displays", "aristides/udiskie", "thepunkoff/pomodoro", "shashinh/git-status" ]
+
+[nightlight]
+temperature_night = 4600
+
+[lockscreen]
+transition_duration = 100
+
+# shashinh/git-status: placed on this bar only (nostromo can add it from the bar editor).
+[widget.git_status]
+type = "shashinh/git-status:dot"
+nixos_mode = true

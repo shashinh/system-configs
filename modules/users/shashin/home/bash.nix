@@ -1,0 +1,83 @@
+{
+  flake.modules.homeManager.shashin =
+    { pkgs, ... }:
+
+{
+  programs.bash.enable = true;
+
+  home.sessionVariables = {
+    EDITOR = "nvim";
+  };
+
+  home.shellAliases = {
+    nv = "nvim";
+    cc = "claude";
+    vsc = "code";
+    # crisp man summaries
+    man = "tldr";
+    top = "btop";
+
+    # common locations
+    sc = "cd ~/system-configs";
+    pj = "cd ~/Projects";
+
+    #git
+    gst = "git status";
+    glo = "git log --graph";
+    gad = "git add -A";
+    gco = "git commit -m";
+    gpub = "git push --set-upstream origin $(git branch --show-current)";
+    gs = "git stash";
+  };
+
+  programs.bash.initExtra = ''
+    mkcd() {
+      mkdir -p "$1" && cd "$1"
+    }
+
+    # p <project>[/subdir]: cd into ~/Projects/... (bare `p` -> ~/Projects),
+    # tab-completing directories relative to ~/Projects at any depth.
+    # Completions carry their own trailing "/" with nospace, so `p venk<Tab>`
+    # gives `p venkat/` ready for the next level. (bash's own filenames
+    # option can't add the slash: it tests the name against the cwd, not
+    # ~/Projects; it's kept for quoting names with spaces.)
+    p() {
+      cd ~/Projects/"$1"
+    }
+    _p() {
+      local IFS=$'\n' d
+      COMPREPLY=()
+      for d in $(cd ~/Projects && compgen -d -- "$2"); do
+        COMPREPLY+=("$d/")
+      done
+    }
+    complete -o filenames -o nospace -F _p p
+
+    stress-cores() {
+      nix-shell -p stress-ng --run 'stress-ng --cpu $(nproc) --cpu-load 20 --timeout 5s && stress-ng --cpu $(nproc) --cpu-load 60 --timeout 5s'
+    }
+
+    # Prompt: [\u@\h:\w] shape and title-bar behavior as NixOS's default
+    # (nixos/modules/programs/bash/bash.nix promptInit), with the current
+    # git branch appended right before the prompt character when the cwd is
+    # inside a repo. __git_ps1 comes from git's own contrib script rather
+    # than a hand-rolled check, so detached HEAD/rebase/merge states are
+    # reported correctly too.
+    source "${pkgs.git}/share/git/contrib/completion/git-prompt.sh"
+
+    if [ "$TERM" != "dumb" ] || [ -n "$INSIDE_EMACS" ]; then
+      PROMPT_COLOR="1;31m"
+      ((UID)) && PROMPT_COLOR="1;32m"
+      if [ -n "$INSIDE_EMACS" ]; then
+        PS1="\n\[\033[$PROMPT_COLOR\][\u@\h:\w]\$(__git_ps1 ' (%s)')\\$\[\033[0m\] "
+      else
+        PS1="\n\[\033[$PROMPT_COLOR\][\[\e]0;\u@\h: \w\a\]\u@\h:\w]\$(__git_ps1 ' (%s)')\\$\[\033[0m\] "
+      fi
+      if test "$TERM" = "xterm"; then
+        PS1="\[\033]2;\h:\u:\w\007\]$PS1"
+      fi
+    fi
+  '';
+}
+;
+}
