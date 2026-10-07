@@ -412,7 +412,7 @@ binds {
     Mod+B hotkey-overlay-title="Open a Web Browser: Firefox" { spawn "firefox"; }
     Mod+Shift+B hotkey-overlay-title="Open a Web Browser: Firefox (Private)" { spawn-sh "firefox --private-window"; }
     // Noctalia IPC for Lock session.
-    Super+Alt+L hotkey-overlay-title="Session Lock" { spawn-sh "noctalia msg session lock"; }
+    Super+X hotkey-overlay-title="Session Lock" { spawn-sh "noctalia msg session lock"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
