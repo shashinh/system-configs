@@ -28,4 +28,6 @@ layout {
         proportion 0.75
     }
     default-column-width { proportion 0.33333; }
+
+    center-focused-column "on-overflow"
 }
