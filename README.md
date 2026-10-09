@@ -180,6 +180,44 @@ Three tiers, in order of preference:
 Never branch on `networking.hostName` inside a feature — the host
 fragment IS the per-host branch.
 
+## Updating
+
+After `nix flake update`, preview what the update changes before you switch.
+`nvd`, `dix` and `nix-diff` aren't installed, so they run through `nix run`.
+
+```sh
+# 1. Which inputs moved (paste old/new nixpkgs revs into
+#    github.com/NixOS/nixpkgs/compare/<old>...<new> for the commit log)
+git diff flake.lock
+
+# 2. Download size and local compiles, without building anything
+nix build .#nixosConfigurations.<host>.config.system.build.toplevel --dry-run
+
+# 3. Build without activating (leaves ./result)
+nixos-rebuild build --flake .#<host>
+
+# 4. Compare against the running system
+nix run nixpkgs#nvd -- diff /run/current-system ./result  # versions + closure size delta
+nix store diff-closures /run/current-system ./result      # built-in, per-package size deltas
+nix path-info -Sh /run/current-system ./result            # total closure sizes
+
+# 5. Preview activation
+sudo nixos-rebuild dry-activate --flake .#<host>          # units to restart/reload
+readlink /run/booted-system/kernel ./result/kernel        # differs → reboot needed
+```
+
+| Check | What to look for |
+|-------|------------------|
+| `--dry-run` | "will be built": cache misses that compile locally (kernel, browsers). "will be fetched": total download and unpacked size. |
+| `nvd diff` | Upgraded, added and removed packages, plus the total closure size delta. Home-manager packages are included because HM is a NixOS module here. |
+| `dry-activate` | Services that would restart. Watch for the display manager, networking or anything else that interrupts the session. |
+
+To trace an unexpected change, `nix run nixpkgs#nix-diff -- /run/current-system ./result`
+shows the derivation-level cause. When the diff looks right,
+`sudo nixos-rebuild switch --flake .#<host>` reuses the build from step 3
+and only activates. If it goes wrong, `sudo nixos-rebuild switch --rollback`
+returns to the previous generation.
+
 ## Do
 
 - **Add a baseline feature** (every host, always): create one file under
