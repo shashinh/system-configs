@@ -285,11 +285,7 @@ layout {
 
 }
 
-workspace "chat" {
-
-}
-
-// open chat apps in named workspace
+// open chat applications on a named workspace.
 window-rule {
   match app-id="signal"
   match app-id="slack"
@@ -300,6 +296,7 @@ window-rule {
 window-rule {
   match app-id="signal"
   match app-id="slack"
+  match app-id="vesktop"
   block-out-from "screencast"
 }
 

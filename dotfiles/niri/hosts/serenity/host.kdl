@@ -31,3 +31,5 @@ layout {
 
     center-focused-column "on-overflow"
 }
+
+workspace "chat" {}
