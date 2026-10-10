@@ -31,6 +31,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-status = {
+      url = "github:shashinh/nixos-status";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-zotero.url = "github:NixOS/nixpkgs/4975466d324710c576dc11ad614684e6bd8cad8e";
     noctalia = {

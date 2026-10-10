@@ -260,6 +260,26 @@
         "type": "github"
       }
     },
+    "nixos-status": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791653633,
+        "narHash": "sha256-vavogCXi/sqr197+q0TH29YRWGUb1kp7bc5UKoSdCWU=",
+        "owner": "shashinh",
+        "repo": "nixos-status",
+        "rev": "dd385ad7ecea5d21d7126c218a9f954933b3ecc4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "shashinh",
+        "repo": "nixos-status",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1768564909,
@@ -390,6 +410,7 @@
         "import-tree": "import-tree",
         "lanzaboote": "lanzaboote",
         "nixos-hardware": "nixos-hardware",
+        "nixos-status": "nixos-status",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-zotero": "nixpkgs-zotero",
         "noctalia": "noctalia",
