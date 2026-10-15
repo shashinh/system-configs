@@ -26,5 +26,11 @@
 
       # optimized driver for Xbox One controller
       hardware.xpadneo.enable = true;
+
+      # hidraw access for 8BitDo controllers (vendor 2dc8) so firmware updaters
+      # can talk to them without root
+      services.udev.extraRules = ''
+        SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2dc8", MODE="0666"
+      '';
     };
 }
