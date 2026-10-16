@@ -3,9 +3,13 @@
 # with a Tailscale-issued cert. open-webui itself stays bound to loopback and
 # the firewall stays shut; tailscaled does the proxying.
 #
-# Serve config persists in tailscaled's state, so this oneshot just reasserts
+# Serve config persists in tailscaled's state, so this unit just reasserts
 # it on boot / rebuild. (services.tailscale.serve is for svc: Tailscale
 # Services, which need admin-console setup and tagged nodes; not used here.)
+#
+# Type=simple, not oneshot: switch-to-configuration waits on a oneshot, so a
+# down/logged-out tailscale used to fail activation. Now the start returns
+# immediately and the script waits in the background until tailscale is up.
 {
   flake.modules.nixos.serenity =
     { config, ... }:
@@ -18,14 +22,18 @@
         after = [ "tailscaled.service" "open-webui.service" ];
         wants = [ "tailscaled.service" ];
         wantedBy = [ "multi-user.target" ];
+        script = ''
+          # `tailscale status` exits non-zero while stopped / logged out.
+          until ${tailscale} status --peers=false >/dev/null 2>&1; do sleep 5; done
+          exec ${tailscale} serve --bg --https=443 http://127.0.0.1:${toString config.services.open-webui.port}
+        '';
         serviceConfig = {
-          Type = "oneshot";
+          Type = "simple";
           RemainAfterExit = true;
-          ExecStart = "${tailscale} serve --bg --https=443 http://127.0.0.1:${toString config.services.open-webui.port}";
-          # tailscaled may not be logged in yet right after boot.
           Restart = "on-failure";
           RestartSec = 5;
-          ExecStop = "${tailscale} serve --https=443 off";
+          # "-": tailscale being down at stop time must not fail the unit.
+          ExecStop = "-${tailscale} serve --https=443 off";
         };
       };
     };
