@@ -24,6 +24,7 @@
       printing
       thunar
       claude-skills
+      texlive
     ];
 
     networking.hostName = "nostromo";
