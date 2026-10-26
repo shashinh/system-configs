@@ -59,7 +59,7 @@ type = "aristides/udiskie:status"
 type = "nightwatch75/todo:todo"
 
 [widget.volume]
-mute_color = "outline"
+mute_color = "outline_variant"
 show_label = false
 
 [widget.wallhaven]
