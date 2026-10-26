@@ -1,6 +1,7 @@
-# Boot chain shared by every PC: latest kernel, systemd initrd (required
-# for TPM2 LUKS unlock), systemd-boot for initial installs, lanzaboote
-# Secure Boot once keys are enrolled (INSTALL.md Phase 7).
+# Boot chain shared by every PC: latest kernel, systemd initrd (the only
+# initrd nixpkgs ships; required for TPM2 LUKS unlock), systemd-boot for
+# initial installs, lanzaboote Secure Boot once keys are enrolled
+# (INSTALL.md Phase 7).
 { inputs, ... }:
 {
   # Secure Boot via signed Unified Kernel Images.
@@ -40,9 +41,9 @@
 
           kernelModules = [ "amdgpu" ];
 
-          # systemd-based initrd is REQUIRED for TPM2 LUKS unlock via
-          # systemd-cryptenroll. It replaces the older scripted (busybox) initrd.
-          systemd.enable = true;
+          # The systemd-based initrd (required for TPM2 LUKS unlock via
+          # systemd-cryptenroll) is the only initrd in nixpkgs now; the
+          # scripted one was removed, so there is nothing to enable.
 
           # ── Impermanence: wipe / on boot ──────────────────────────────────
           # This service restores @root from @root-blank before / is mounted,
