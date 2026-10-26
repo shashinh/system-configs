@@ -1,8 +1,4 @@
 # TEXLIVE (minimal)
-# The smallest TeX Live that builds the CS 386C homework write-ups
-# (~/Projects/class/fa26/cs386c/hwN/hwN/build.sh): the same set that
-# build.sh pins in its nix-shell, so a local `latexmk -pdf main.tex`
-# produces the same PDF without the per-build nix-shell.
 #
 #   scheme-basic   latex, pdflatex, base fonts (Computer Modern)
 #   amsmath        align, cases, \tfrac, \eqref
