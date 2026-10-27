@@ -79,6 +79,8 @@ layout {
         proportion 0.66667
     }
     default-column-width { proportion 0.5; }
+    center-focused-column "on-overflow"
+    always-center-single-column
 }
 
 // ─── Laptop input devices (merged into the shared input section) ────────────
