@@ -31,5 +31,12 @@
     # Allow installing packages with non-free licenses (e.g. some firmware,
     # CUDA, Steam). This does NOT install anything; it just allows it.
     nixpkgs.config.allowUnfree = true;
+
+    # zotero 10 needs Gecko 140, and nixpkgs ships it as this prebuilt Firefox
+    # ESR, EOL since 2026-10-13. Bump the version when a lock update asks for
+    # it; drop this once nixpkgs moves zotero to Gecko 153.
+    nixpkgs.config.permittedInsecurePackages = [
+      "firefox-esr-140-bin-unwrapped-140.17.0esr"
+    ];
   };
 }
