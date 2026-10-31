@@ -29,6 +29,7 @@
       moonshine
       lact
       nas
+      jdownloader
       llama-swap
       open-webui
       searxng
