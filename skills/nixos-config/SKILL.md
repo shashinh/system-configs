@@ -86,7 +86,7 @@ for a multi-file feature) defining its own name:
 Then add `<name>` to the `imports = with inputs.self.modules.nixos; [ … ]`
 list in each `modules/hosts/<host>/host.nix` that wants it. A feature that
 needs a flake input declares it in the same file and imports the input's
-module itself (see `modules/features/noctalia/system.nix`). Moving a
+module itself (see `modules/features/noctalia/git-status.nix`). Moving a
 feature between hosts means editing two import lists. The file never moves.
 
 Existing feature names: plasma, greetd, niri, noctalia, thunar, gaming,

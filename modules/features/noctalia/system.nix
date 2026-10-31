@@ -5,15 +5,7 @@
 # recommendedServices is left off rather than re-asserting them opaquely.
 { inputs, ... }:
 {
-  # Noctalia — Quickshell-based desktop shell.
-  flake-file.inputs.noctalia = {
-    url = "github:noctalia-dev/noctalia";
-    inputs.nixpkgs.follows = "nixpkgs";
-  };
-
   flake.modules.nixos.noctalia = {
-    imports = [ inputs.noctalia.nixosModules.default ];
-
     # Deliver the home-manager half of this feature (dotfiles.nix, and the
     # sops-rendered plugin settings in wallhaven-secret.nix) to every HM user
     # on the host. This is the single wiring point for the user-side config —
