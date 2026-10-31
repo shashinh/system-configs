@@ -30,6 +30,7 @@ layout {
     default-column-width { proportion 0.33333; }
 
     center-focused-column "on-overflow"
+    always-center-single-column
 }
 
 workspace "chat" {}
