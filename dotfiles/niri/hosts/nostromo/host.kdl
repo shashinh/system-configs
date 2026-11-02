@@ -39,6 +39,10 @@ output "eDP-1" {
     // If the position is unset or results in an overlap, the output is instead placed
     // automatically.
     position x=0 y=0
+
+    layout {
+      default-column-width { proportion 0.6667; }
+    }
 }
 
 // home monitor
