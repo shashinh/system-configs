@@ -3,6 +3,11 @@
   flake.modules.nixos.gaming =
     { lib, pkgs, ... }:
     {
+      # lutris's FHS env still lists gtk2, which nixpkgs marks broken ahead of
+      # its removal (nixpkgs#410814). Downgrade to a warning; drop this once
+      # lutris stops pulling gtk2 in.
+      nixpkgs.config.problems.handlers."gtk+".broken = "warn";
+
       environment.systemPackages = with pkgs; [
         steam
         lutris
