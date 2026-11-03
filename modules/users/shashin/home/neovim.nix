@@ -113,6 +113,7 @@
 
     extraPackages = with pkgs; [
       ripgrep # backs telescope's live_grep
+      imagemagick # backs snacks.image's conversion of everything but PNG
     ];
 
     initLua = ''
@@ -314,6 +315,40 @@
           -- the window (unlike :bw, which hands the freed space to whatever
           -- window is left — e.g. neo-tree filling the screen).
           vim.keymap.set('n', '<leader>bd', ':Bdelete<CR>', { desc = 'Delete buffer, keep window' })
+        '';
+      }
+
+      # Optional render-markdown grammars: html conceals comments, yaml
+      # renders frontmatter. markdown and markdown_inline are bundled with
+      # Neovim core, whose ftplugin/markdown.lua also starts Treesitter.
+      nvim-treesitter-parsers.html
+      nvim-treesitter-parsers.yaml
+
+      {
+        plugin = render-markdown-nvim;
+        type = "lua";
+        config = ''
+          -- 'i' is added to the default modes so the buffer stays rendered
+          -- while typing. Only the cursor line shows raw markdown.
+          require('render-markdown').setup({
+            render_modes = { 'n', 'c', 't', 'i' },
+          })
+        '';
+      }
+
+      {
+        plugin = snacks-nvim;
+        type = "lua";
+        config = ''
+          -- Only image is enabled, every other snacks module stays off.
+          -- math is off because it needs tectonic or pdflatex, neither of
+          -- which is installed here.
+          require('snacks').setup({
+            image = {
+              enabled = true,
+              math = { enabled = false },
+            },
+          })
         '';
       }
     ];

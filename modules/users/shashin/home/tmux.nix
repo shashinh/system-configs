@@ -22,12 +22,11 @@
     extraConfig = ''
       set -g default-command "''${SHELL}"
 
-      # Kitty reports Shift+Enter (and other modified keys) via its own
-      # keyboard protocol, but tmux only forwards it to the running app if
-      # extended-keys is enabled; "always" forwards even when the app
-      # never requests the protocol itself. Required to play nice with
-      # certain TUI apps like Claude Code.
-      set -g extended-keys always
+      # Forwards modified keys only to apps that request them. Keep this at
+      # "on" rather than "always": snacks.nvim (see neovim.nix) only skips
+      # its XTVERSION query for "on", and under "always" the terminal's reply
+      # reaches nvim as typed keys and inserts text into the open buffer.
+      set -g extended-keys on
       set -g allow-passthrough on
       # -a appends to tmux's built-in terminal-features table instead of
       # replacing it; without -a this line wipes out the compiled-in
