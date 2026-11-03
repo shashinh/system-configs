@@ -182,8 +182,26 @@ fragment IS the per-host branch.
 
 ## Updating
 
-After `nix flake update`, preview what the update changes before you switch.
-`nvd`, `dix` and `nix-diff` aren't installed, so they run through `nix run`.
+```sh
+nixup               # update all inputs, preview, then [s]witch [b]oot [k]eep [a]bort
+nixup --no-update   # same for local config edits, flake.lock untouched
+```
+
+`nixup` (from the nixos-status flake, see below) runs `nix flake update`
+in `/etc/nixos`, then lists the moved inputs and every upgraded, added or
+removed package with `old -> new` and its closure size change, plus the
+download total and whether the kernel changes. All of this comes from
+evaluation and the binary cache, so the list appears in seconds, before
+anything is built. Packages the cache doesn't have (unfree ones, local
+overrides) show `(local build)` instead of a size. At the prompt, `?`
+explains each choice; `a` restores the previous `flake.lock`. Commit the
+updated `flake.lock` afterwards.
+
+### Manual checks
+
+The individual steps, for tracing a surprise or previewing service
+restarts. `nvd`, `dix` and `nix-diff` aren't installed, so they run through
+`nix run`.
 
 ```sh
 # 1. Which inputs moved (paste old/new nixpkgs revs into

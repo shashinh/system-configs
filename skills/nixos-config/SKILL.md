@@ -49,6 +49,10 @@ description: Use when the user asks to look at, investigate, edit, extend or reb
 5. These configure **live production machines**:
    - Never run a bare `nix flake update`. Update a single input
      (`nix flake update <input>`) only when the owner asks for that input.
+   - Never run `nixup` / `nixos-status update` on the repo: it updates every
+     input and can activate. It is the owner's update command; point them to
+     it. (Against a throwaway `git worktree` via `--flake`, answering `a` or
+     `k`, it is safe for testing the tool itself.)
    - Never commit a change you haven't verified.
    - Don't run `sudo nixos-rebuild`. Give the owner the command.
      `nixos-rebuild build` / `nix build` need no root and are fine for checking.
