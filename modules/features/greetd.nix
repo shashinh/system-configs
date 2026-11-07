@@ -9,6 +9,9 @@
           display.show_time = true;
           # display.greeting = "";
           # display.align_greeting = "center";
+          # Built-in green digital rain (tuigreet >= 0.11, NotAShelf fork),
+          # default colours/speeds; F4 switches it at the greeter.
+          background.kind = "matrix";
           remember = {
             username = true;
             session = true;
