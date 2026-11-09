@@ -121,7 +121,7 @@
       vim.cmd("set tabstop=2")
       vim.cmd("set softtabstop=2")
       vim.cmd("set shiftwidth=2")
-      vim.cmd("set nu")
+      vim.cmd("set rnu")
       vim.cmd("set nocompatible")
       vim.cmd("set showmatch")
       vim.cmd("set ignorecase")
