@@ -36,6 +36,14 @@ creation_rules:
           - *host_nostromo
           - *host_serenity
 
+  # Lab Claude gateway (claude-utns): API key, endpoint and CA. Every host.
+  - path_regex: secrets/utns\.yaml$
+    key_groups:
+      - age:
+          - *user_shashin
+          - *host_nostromo
+          - *host_serenity
+
   # Host-scoped secrets: only the operator and that one machine can read them.
   # Create these as secrets/<host>.yaml when a secret is genuinely host-bound.
   - path_regex: secrets/nostromo\.yaml$
