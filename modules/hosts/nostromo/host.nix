@@ -25,6 +25,7 @@
       thunar
       claude-skills
       texlive
+      backup
     ];
 
     networking.hostName = "nostromo";
