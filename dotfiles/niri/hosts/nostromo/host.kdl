@@ -78,9 +78,9 @@ output "Dell Inc. DELL U2723QE F46X3P3" {
 // Mod+R cycles the presets; new windows open at default-column-width.
 layout {
     preset-column-widths {
-        proportion 0.33333
+        proportion 0.4
         proportion 0.5
-        proportion 0.66667
+        proportion 0.6
     }
     default-column-width { proportion 0.5; }
     center-focused-column "on-overflow"
