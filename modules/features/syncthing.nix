@@ -41,7 +41,7 @@
           addresses = tailnet "serenity";
         };
         nostromo = {
-          id = "";
+          id = "LEKICCE-TFTN53T-6TERRBA-QOYOVN3-RHXBKIT-57DJQHK-2Q6EFWP-6TEKTQF";
           addresses = tailnet "nostromo";
         };
       };
