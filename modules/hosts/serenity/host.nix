@@ -34,6 +34,7 @@
       podman
       gufo
       open-webui
+      syncthing
       searxng
     ];
 

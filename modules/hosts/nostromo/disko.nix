@@ -120,6 +120,17 @@
                       mountOptions = [ "compress=zstd" "noatime" "space_cache=v2" ];
                     };
 
+                    # Synced data (Syncthing /data/sync). Its own subvolume so the
+                    # impermanence wipe of @root never touches it. Added after
+                    # install: on the existing machine it was created by hand
+                    # (btrfs subvolume create on the pool root); rebuilds never
+                    # run disko, they only mount it. nofail: boot proceeds if
+                    # the subvolume is missing.
+                    "@data" = {
+                      mountpoint   = "/data";
+                      mountOptions = [ "compress=zstd" "noatime" "space_cache=v2" "nofail" ];
+                    };
+
                     # Snapshot target — used by snapper or manual btrfs snapshots.
                     "@snapshots" = {
                       mountpoint   = "/.snapshots";
