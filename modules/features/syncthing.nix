@@ -37,7 +37,7 @@
 
       registry = {
         serenity = {
-          id = "";
+          id = "HSI37WG-JEUMG2S-H77MWRQ-D2YK3TV-OHF2L3C-3CCFHRF-7QQ7NWW-CPVIWAO";
           addresses = tailnet "serenity";
         };
         nostromo = {
