@@ -27,7 +27,7 @@
 # or folders added in the GUI (http://127.0.0.1:8384) are dropped on restart.
 {
   flake.modules.nixos.syncthing =
-    { config, lib, ... }:
+    { config, lib, pkgs, ... }:
     let
       tailnet = host: [
         "tcp://${host}:22000"
@@ -90,7 +90,13 @@
       # could propagate that as deletions. Without the mount it doesn't start.
       systemd.services.syncthing.unitConfig.RequiresMountsFor = [ "/data/sync" ];
 
-      # Create only if missing; `d` without an age never removes contents.
-      systemd.tmpfiles.rules = [ "d /data/sync 0755 shashin users -" ];
+      # Create the folder after /data is mounted, as root ("+" skips the
+      # unit's User= and sandbox), since shashin can't mkdir in a root-owned
+      # /data (nostromo). Not a tmpfiles rule: on switch that ran before the
+      # new /data mount and created the directory underneath it. `install -d`
+      # leaves existing contents alone.
+      systemd.services.syncthing.serviceConfig.ExecStartPre = [
+        "+${pkgs.coreutils}/bin/install -d -o shashin -g users -m 0755 /data/sync"
+      ];
     };
 }
