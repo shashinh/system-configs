@@ -46,7 +46,7 @@ padding = 5.0
 # vertical_format is written exactly as Noctalia's settings UI saved it (a
 # literal backslash-n that Noctalia expands itself).
 [widget.clock]
-font_family = "Big Shoulders Display Thin"
+font_family = ""
 font_scale = 1.75
 font_weight = 350
 scale = 1.0

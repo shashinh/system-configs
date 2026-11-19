@@ -20,6 +20,7 @@
       url = "github:shashinh/git-status-noctalia-plugin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    gufo.url = "github:gufo-org/gufo/2845939b2a7d61243d407c8816c6d42652512e50";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";

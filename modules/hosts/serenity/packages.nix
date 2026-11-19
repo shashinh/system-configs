@@ -9,6 +9,7 @@
         xdg-utils # xdg-open etc.
 
         claude-code
+        pi-coding-agent # coding agent, test drive against llama-swap
       ];
     };
 }

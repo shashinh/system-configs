@@ -31,6 +31,8 @@
       nas
       jdownloader
       llama-swap
+      podman
+      gufo
       open-webui
       searxng
     ];
