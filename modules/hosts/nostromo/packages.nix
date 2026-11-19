@@ -15,6 +15,7 @@
         evtest
         pcsx2
         ppsspp
+        galaxy-buds-client
       ];
 
       # Rootless Podman (no persistent root daemon, unlike Docker).
