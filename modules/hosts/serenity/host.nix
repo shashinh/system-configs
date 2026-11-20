@@ -36,6 +36,7 @@
       open-webui
       syncthing
       searxng
+      developer
     ];
 
     networking.hostName = "serenity";

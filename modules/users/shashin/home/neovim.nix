@@ -114,6 +114,13 @@
     extraPackages = with pkgs; [
       ripgrep # backs telescope's live_grep
       imagemagick # backs snacks.image's conversion of everything but PNG
+
+      # Language servers, enabled in the nvim-lspconfig entry below.
+      nixd
+      clang-tools # clangd (C, C++)
+      rust-analyzer
+      pyright
+      jdt-language-server # jdtls (Java)
     ];
 
     initLua = ''
@@ -302,6 +309,41 @@
             callback = function()
               vim.treesitter.start()
               vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            end,
+          })
+
+          -- Treesitter folding. Covers the six languages above plus lua and
+          -- markdown, whose parsers ship with Neovim core (markdown folds by
+          -- heading). foldlevelstart=99 opens every file fully unfolded.
+          vim.o.foldlevelstart = 99
+          vim.api.nvim_create_autocmd('FileType', {
+            pattern = { 'nix', 'java', 'c', 'cpp', 'rust', 'python', 'lua', 'markdown' },
+            callback = function()
+              vim.wo[0][0].foldmethod = 'expr'
+              vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+            end,
+          })
+        '';
+      }
+
+      {
+        plugin = nvim-lspconfig;
+        type = "lua";
+        config = ''
+          -- nvim-lspconfig only contributes the lsp/<server>.lua defaults
+          -- (cmd, filetypes, root markers); vim.lsp.enable starts each
+          -- server when a matching filetype opens. The binaries come from
+          -- extraPackages above.
+          vim.lsp.enable({ 'nixd', 'clangd', 'rust_analyzer', 'pyright', 'jdtls' })
+
+          -- Neovim maps K (hover), grn, gra, grr, gri, grt and gO itself
+          -- when a server attaches; gd/gD keep their non-LSP text-search
+          -- meaning unless remapped here.
+          vim.api.nvim_create_autocmd('LspAttach', {
+            callback = function(args)
+              local opts = function(desc) return { buffer = args.buf, desc = desc } end
+              vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts('LSP definition'))
+              vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts('LSP declaration'))
             end,
           })
         '';

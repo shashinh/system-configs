@@ -27,6 +27,7 @@
       texlive
       backup
       syncthing
+      developer
     ];
 
     networking.hostName = "nostromo";
