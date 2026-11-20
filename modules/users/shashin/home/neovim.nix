@@ -108,6 +108,67 @@
     post_hook = 'pkill -SIGUSR1 nvim'
   '';
 
+  # ── Code navigation cheat sheet ────────────────────────────────────────
+  #
+  # LSP (active once a server attaches; :checkhealth vim.lsp to debug)
+  #   gd / gD        go to definition / declaration
+  #   grt            go to type definition
+  #   gri            go to implementation
+  #   grr            list references (quickfix)
+  #   gO             list symbols in this file
+  #   K              hover docs / type info (K again to enter the popup)
+  #   <C-s>          signature help (insert mode)
+  #   grn            rename symbol across the project
+  #   gra            code action (fixes, imports, refactors)
+  #   <C-]>          go to definition via the tag stack; <C-t> pops back
+  #
+  # Diagnostics
+  #   ]d / [d        next / previous diagnostic
+  #   ]D / [D        last / first diagnostic in the buffer
+  #   <C-w>d         show diagnostic under cursor in a popup
+  #
+  # Jumping back and forth
+  #   <C-o> / <C-i>  older / newer position in the jump list (:jumps)
+  #   ``             toggle between current and last jump position
+  #   g; / g,        older / newer position in the change list
+  #   `.             last change in this buffer
+  #   ma / `a        set mark a / jump to it (A-Z marks work across files)
+  #
+  # Moving through code
+  #   %              matching bracket / paren / brace
+  #   [( ]) [{ ]}    enclosing unmatched paren / brace
+  #   * / #          search word under cursor forward / backward
+  #   gf             open the file path under cursor
+  #
+  # Quickfix list (references, grep results, compiler errors)
+  #   ]q / [q        next / previous entry
+  #   :copen         open the list; <CR> jumps to an entry; :cclose closes
+  #
+  # Treesitter
+  #   an / in        (visual) grow selection to parent / shrink to child node
+  #   ]n / [n        (visual) select next / previous sibling node
+  #   dan, yan, can  delete / yank / change the enclosing node
+  #   :InspectTree   show the syntax tree of the buffer
+  #   :Inspect       show highlight groups under cursor
+  #
+  # Folding (treesitter-based, all open on load)
+  #   za             toggle fold under cursor
+  #   zc / zo        close / open fold;  zC / zO  recursively
+  #   zM / zR        close / open all folds
+  #   zm / zr        fold one level more / less, file-wide
+  #   zj / zk        next / previous fold
+  #   [z / ]z        start / end of current open fold
+  #
+  # Files, buffers, windows
+  #   <leader>ff     find files            <leader>fg  live grep
+  #   <leader>fb     list buffers          <leader>fh  help tags
+  #   <C-n>          toggle file tree      <leader>bd  close buffer
+  #   <C-^>          alternate (previous) buffer
+  #   <C-w>v / <C-w>s   vertical / horizontal split
+  #   <C-w>h/j/k/l   move between windows
+  #   <C-w>]         go to definition in a new split
+  # ───────────────────────────────────────────────────────────────────────
+
   programs.neovim = {
     enable = true;
 
